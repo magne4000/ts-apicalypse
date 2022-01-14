@@ -1,4 +1,4 @@
-import { BuilderOperator, fields, limit, multi, offset, pipe, query, search, sort, where } from "./builder";
+import { BuilderOperator, exclude, fields, limit, multi, offset, pipe, query, search, sort, where } from "./builder";
 
 function testOp(...opd: BuilderOperator[]) {
   return pipe(...opd).toApicalypseString();
@@ -7,6 +7,10 @@ function testOp(...opd: BuilderOperator[]) {
 describe('operators', function () {
   test('fields', function () {
     expect(testOp(fields(['a', 'b', 'c']))).toEqual('fields a,b,c;');
+  });
+
+  test('exclude', function () {
+    expect(testOp(exclude(['a', 'b', 'c']))).toEqual('exclude a,b,c;');
   });
 
   test('limit & offest', function () {

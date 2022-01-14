@@ -21,17 +21,6 @@ export interface BuilderOperator {
   (builder: Builder): Builder
 }
 
-function newBuilder(): Builder {
-  return {
-    queryFields: {
-      where: []
-    },
-    toApicalypseString() {
-      return toStringSingle(this);
-    }
-  }
-}
-
 export function query(queryEndpoint: string, queryName: string): BuilderOperator {
   return builder => {
     return {
@@ -68,7 +57,7 @@ export function exclude(exclude: string[]): BuilderOperator {
       ...builder,
       queryFields: {
         ...builder.queryFields,
-        exclude: `fields ${fieldsString}`
+        exclude: `exclude ${fieldsString}`
       }
     }
   }
@@ -146,7 +135,18 @@ export function multi(...builders: Builder[]): Stringifiable {
   }
 }
 
-export function toStringMulti(builders: Builder[]) {
+function newBuilder(): Builder {
+  return {
+    queryFields: {
+      where: []
+    },
+    toApicalypseString() {
+      return toStringSingle(this);
+    }
+  }
+}
+
+function toStringMulti(builders: Builder[]) {
   return builders.map(b => `query ${b.queryEndpoint} "${b.queryName}" { ${toStringSingle(b)} };`).join("");
 }
 

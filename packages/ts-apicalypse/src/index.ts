@@ -14,7 +14,7 @@ export function apicalypse(builder: Stringifiable, options: Options = {}) {
       url: url,
     };
 
-    const raw = builder.toString();
+    const raw = builder.toApicalypseString();
 
     if (options.queryMethod ===  'url') {
       opts.params = {
@@ -33,5 +33,3 @@ export function apicalypse(builder: Stringifiable, options: Options = {}) {
     }
   }
 }
-
-apicalypse(pipe()).execute('')
