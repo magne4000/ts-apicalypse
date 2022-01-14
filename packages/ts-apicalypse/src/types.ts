@@ -21,9 +21,6 @@ export interface BuilderOperator<T> {
   (builder: Builder<T>): Builder<T>
 }
 
-// UTILS
-
-type Strip<T extends string> = T extends ` ${infer R}` ? Strip<R> : T extends `${infer R} ` ? Strip<R> : T;
 export type Operators = '=' | '!=' | '>=' | '>' | '<=' | '<' | '~';
 export type AllowedValues = true | false | null;
 

@@ -1,4 +1,4 @@
-import { exclude, fields, limit, multi, offset, pipe, query, search, sort, where, whereIn } from "./builder";
+import { and, exclude, fields, limit, multi, offset, or, pipe, query, search, sort, where, whereIn } from "./builder";
 import { BuilderOperator, WhereFlags, WhereInFlags } from "./types";
 
 function testOp<T = any>(...opd: BuilderOperator<T>[]) {
@@ -54,14 +54,23 @@ describe('operators', function () {
     // TS
 
     // TODO add where combination tests
-    expect(testOp<{a: '1' | '2', b: number}>(where('a', '=', '1'), where('b', '=', 2))).toEqual('where a = "1" & b = 2;');
     expect(
       testOp<{a: '1' | '2', b: number}>(
-        where('a', '=', '1'),
-        // @ts-expect-error
-        where('b', '=', '2', WhereFlags.NUMBER)
+        and(
+          where('a', '=', '1'),
+          where('b', '=', 2),
+        )
       )
-    ).toEqual('where a = "1" & b = 2;');
+    ).toEqual('where (a = "1" & b = 2);');
+    expect(
+      testOp<{a: '1' | '2', b: number}>(
+        or(
+          where('a', '=', '1'),
+          // @ts-expect-error
+          where('b', '=', '2', WhereFlags.NUMBER)
+        )
+      )
+    ).toEqual('where (a = "1" | b = 2);');
   });
 
   test('whereIn', function () {
@@ -71,10 +80,12 @@ describe('operators', function () {
 
     expect(
       testOp<{a: '1' | '2', b: number}>(
-        whereIn('a', ['1', '2'], WhereFlags.STRING | WhereInFlags.AND),
-        whereIn('b', [2, 4], WhereInFlags.EXACT)
+        and(
+          whereIn('a', ['1', '2'], WhereFlags.STRING | WhereInFlags.AND),
+          whereIn('b', [2, 4], WhereInFlags.EXACT),
+        )
       )
-    ).toEqual('where a = ["1","2"] & b = {2,4};');
+    ).toEqual('where (a = ["1","2"] & b = {2,4});');
     testOp<{a: '1' | '2', b: number}>(
       // @ts-expect-error
       whereIn('a', [1, '2']),

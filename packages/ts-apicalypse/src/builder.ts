@@ -162,7 +162,7 @@ export function where<T extends Record<any, any>, K extends keyof T>(key: K, op:
       ...builder,
       queryFields: {
         ...builder.queryFields,
-        where: [...builder.queryFields.where, `${key} ${op} ${encodeWhereParam(value, flag)}`]
+        where: [`${key} ${op} ${encodeWhereParam(value, flag)}`]
       }
     }
   }
@@ -174,12 +174,36 @@ export function whereIn<T extends Record<any, any>, K extends keyof T>(key: K, v
       ...builder,
       queryFields: {
         ...builder.queryFields,
-        where: [...builder.queryFields.where, `${key} = ${encodeWhereInParam(values, flag)}`]
+        where: [`${key} = ${encodeWhereInParam(values, flag)}`]
       }
     }
   }
 }
 
+export function groupWhere<T extends Record<any, any>>(orAnd: string, ...operators: BuilderOperator<T>[]): BuilderOperator<T> {
+  return builder => {
+    const sub = operators.flatMap(op => [...op(builder).queryFields.where, ` ${orAnd} `]);
+    if (sub.length === 0) return builder;
+
+    sub.pop(); // remove last ' ${orAnd} '
+
+    return {
+      ...builder,
+      queryFields: {
+        ...builder.queryFields,
+        where: ['(',  ...sub, ')']
+      }
+    }
+  }
+}
+
+export function and<T extends Record<any, any>>(...operators: BuilderOperator<T>[]): BuilderOperator<T> {
+  return groupWhere('&', ...operators);
+}
+
+export function or<T extends Record<any, any>>(...operators: BuilderOperator<T>[]): BuilderOperator<T> {
+  return groupWhere('|', ...operators);
+}
 
 export function pipe<T extends Record<any, any> = any>(...steps: BuilderOperator<T>[]): Builder<T> {
   return steps.reduce<Builder<T>>((output, f) => f(output), newBuilder())
@@ -210,7 +234,7 @@ function toStringMulti<T>(builders: Builder<T>[]) {
 
 function toStringSingle<T>(builder: Builder<T>) {
   const { where, ...rest } = builder.queryFields;
-  const w = where.length > 0 ? "where " + where.join(" & ") + ";" : "";
+  const w = where.length > 0 ? "where " + where.join("") + ";" : "";
   const r = Object.keys(rest).length > 0 ? Object.values(rest).join(";") + ";" : "";
   return r + w;
 }
