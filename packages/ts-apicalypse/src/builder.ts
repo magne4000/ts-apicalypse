@@ -1,27 +1,6 @@
-export interface Stringifiable {
-  toApicalypseString(): string;
-}
+import { Builder, BuilderOperator, Operators, Stringifiable } from "./types";
 
-export interface Builder extends Stringifiable {
-  queryFields: {
-    fields?: string,
-    exclude?: string;
-    sort?: string;
-    limit?: string;
-    offset?: string;
-    search?: string;
-    where: string[]
-  };
-
-  queryEndpoint?: string;
-  queryName?: string;
-}
-
-export interface BuilderOperator {
-  (builder: Builder): Builder
-}
-
-export function query(queryEndpoint: string, queryName: string): BuilderOperator {
+export function query<T extends Record<any, any>>(queryEndpoint: string, queryName: string): BuilderOperator<T> {
   return builder => {
     return {
       ...builder,
@@ -31,7 +10,7 @@ export function query(queryEndpoint: string, queryName: string): BuilderOperator
   }
 }
 
-export function fields(fields: string[] | '*'): BuilderOperator {
+export function fields<T extends Record<any, any>>(fields: (keyof T)[] | '*'): BuilderOperator<T> {
   if (Array.isArray(fields)) {
     const fieldsString = fields.join(",").replace(/\s/g, '')
 
@@ -46,10 +25,18 @@ export function fields(fields: string[] | '*'): BuilderOperator {
     }
   }
 
-  return builder => builder;
+  return builder => {
+    return {
+      ...builder,
+      queryFields: {
+        ...builder.queryFields,
+        fields: `fields *`
+      }
+    }
+  }
 }
 
-export function exclude(exclude: string[]): BuilderOperator {
+export function exclude<T extends Record<any, any>>(exclude: (keyof T)[]): BuilderOperator<T> {
   const fieldsString = exclude.join(",").replace(/\s/g, '')
 
   return builder => {
@@ -63,7 +50,7 @@ export function exclude(exclude: string[]): BuilderOperator {
   }
 }
 
-export function sort(field: string, direction: 'asc' | 'desc' = 'asc'): BuilderOperator {
+export function sort<T extends Record<any, any>>(field: keyof T, direction: 'asc' | 'desc' = 'asc'): BuilderOperator<T> {
   return builder => {
     return {
       ...builder,
@@ -75,7 +62,7 @@ export function sort(field: string, direction: 'asc' | 'desc' = 'asc'): BuilderO
   }
 }
 
-export function limit(limit: number): BuilderOperator {
+export function limit<T extends Record<any, any>>(limit: number): BuilderOperator<T> {
   return builder => {
     return {
       ...builder,
@@ -87,7 +74,7 @@ export function limit(limit: number): BuilderOperator {
   }
 }
 
-export function offset(offset: number): BuilderOperator {
+export function offset<T extends Record<any, any>>(offset: number): BuilderOperator<T> {
   return builder => {
     return {
       ...builder,
@@ -99,7 +86,7 @@ export function offset(offset: number): BuilderOperator {
   }
 }
 
-export function search(search: string): BuilderOperator {
+export function search<T extends Record<any, any>>(search: string): BuilderOperator<T> {
   return builder => {
     return {
       ...builder,
@@ -111,7 +98,7 @@ export function search(search: string): BuilderOperator {
   }
 }
 
-export function where(key: string, op: string, value: string | number | boolean): BuilderOperator {
+export function where<T extends Record<any, any>, K extends keyof T>(key: K, op: Operators, value: T[K]): BuilderOperator<T> {
   return builder => {
     return {
       ...builder,
@@ -123,11 +110,11 @@ export function where(key: string, op: string, value: string | number | boolean)
   }
 }
 
-export function pipe(...steps: BuilderOperator[]): Builder {
-  return steps.reduce<Builder>((output, f) => f(output), newBuilder())
+export function pipe<T extends Record<any, any> = any>(...steps: BuilderOperator<T>[]): Builder<T> {
+  return steps.reduce<Builder<T>>((output, f) => f(output), newBuilder())
 }
 
-export function multi(...builders: Builder[]): Stringifiable {
+export function multi<T extends Record<any, any> = any>(...builders: Builder<T>[]): Stringifiable {
   return {
     toApicalypseString() {
       return toStringMulti(builders);
@@ -135,7 +122,7 @@ export function multi(...builders: Builder[]): Stringifiable {
   }
 }
 
-function newBuilder(): Builder {
+function newBuilder<T>(): Builder<T> {
   return {
     queryFields: {
       where: []
@@ -146,11 +133,11 @@ function newBuilder(): Builder {
   }
 }
 
-function toStringMulti(builders: Builder[]) {
+function toStringMulti<T>(builders: Builder<T>[]) {
   return builders.map(b => `query ${b.queryEndpoint} "${b.queryName}" { ${toStringSingle(b)} };`).join("");
 }
 
-function toStringSingle(builder: Builder) {
+function toStringSingle<T>(builder: Builder<T>) {
   const { where, ...rest } = builder.queryFields;
   return Object.keys(builder.queryFields).length > 0 ||
   builder.queryFields.where.length > 0

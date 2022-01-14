@@ -1,5 +1,5 @@
 import axios, { AxiosRequestConfig } from 'axios';
-import { pipe, Stringifiable } from "./builder";
+import { Stringifiable } from "./types";
 
 interface Options extends AxiosRequestConfig {
   queryMethod?: 'url' | 'body',

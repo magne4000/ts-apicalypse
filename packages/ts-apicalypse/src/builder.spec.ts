@@ -1,12 +1,24 @@
-import { BuilderOperator, exclude, fields, limit, multi, offset, pipe, query, search, sort, where } from "./builder";
+import { exclude, fields, limit, multi, offset, pipe, query, search, sort, where } from "./builder";
+import { BuilderOperator } from "./types";
 
-function testOp(...opd: BuilderOperator[]) {
-  return pipe(...opd).toApicalypseString();
+function testOp<T = any>(...opd: BuilderOperator<T>[]) {
+  return pipe<T>(...opd).toApicalypseString();
 }
 
 describe('operators', function () {
   test('fields', function () {
     expect(testOp(fields(['a', 'b', 'c']))).toEqual('fields a,b,c;');
+
+    // TS
+
+    expect(testOp<{ a: 1, b: 1, c: 1 }>(fields(['a', 'b', 'c']))).toEqual('fields a,b,c;');
+    expect(testOp<{ a: 1, b: 1, c: 1 }>(fields('*'))).toEqual('fields *;');
+    expect(
+      testOp<{ a: 1, b: 1, c: 1 }>(
+        // @ts-expect-error
+        fields(['d'])
+      )
+    ).toEqual('fields d;');
   });
 
   test('exclude', function () {
@@ -20,6 +32,16 @@ describe('operators', function () {
   test('sort', function () {
     expect(testOp(sort("name", "desc"))).toEqual('sort name desc;');
     expect(testOp(sort("name"))).toEqual('sort name asc;');
+
+    // TS
+
+    expect(testOp<{ name: string }>(sort("name"))).toEqual('sort name asc;');
+    expect(
+      testOp<{ name: string }>(
+        // @ts-expect-error
+        sort("b")
+      )
+    ).toEqual('sort b asc;');
   });
 
   test('search', function () {
@@ -28,6 +50,17 @@ describe('operators', function () {
 
   test('where', function () {
     expect(testOp(where('a', '=', '1'))).toEqual('where a = 1;');
+
+    // TS
+
+    expect(testOp<{a: '1' | '2', b: number}>(where('a', '=', '1'), where('b', '=', 2))).toEqual('where a = 1;where b = 2;');
+    expect(
+      testOp<{a: '1' | '2', b: number}>(
+        where('a', '=', '1'),
+        // @ts-expect-error
+        where('b', '=', '2')
+      )
+    ).toEqual('where a = 1;where b = 2;');
   });
 });
 
@@ -52,5 +85,25 @@ describe('multi', function () {
     expect(test).toEqual(
       `query games "latest-games" { fields name;sort created_at desc;where created_at < ${now}; };query games "coming-soon" { fields name;sort created_at asc;where created_at > ${now}; };`
     );
+
+    // TS
+
+    multi<{
+      name: string,
+      created_at: number
+    }>(
+      pipe(
+        query("games", "latest-games"),
+        fields(["name"]),
+        sort("created_at", "desc"),
+        where("created_at", "<",  now),
+      ),
+      pipe(
+        query("games", "coming-soon"),
+        fields(["name"]),
+        sort("created_at", "asc"),
+        where("created_at", ">",  now),
+      )
+    )
   });
 });
