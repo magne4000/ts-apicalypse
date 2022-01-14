@@ -1,4 +1,8 @@
-interface Builder {
+export interface Stringifiable {
+  toApicalypseString(): string;
+}
+
+export interface Builder extends Stringifiable {
   queryFields: {
     fields?: string,
     exclude?: string;
@@ -9,12 +13,27 @@ interface Builder {
     where: string[]
   };
 
-  queryEndpoint: string;
-  queryName: string;
+  queryEndpoint?: string;
+  queryName?: string;
 }
 
-export function query(queryEndpoint: string, queryName: string) {
-  return (builder: Builder): Builder => {
+export interface BuilderOperator {
+  (builder: Builder): Builder
+}
+
+function newBuilder(): Builder {
+  return {
+    queryFields: {
+      where: []
+    },
+    toApicalypseString() {
+      return toStringSingle(this);
+    }
+  }
+}
+
+export function query(queryEndpoint: string, queryName: string): BuilderOperator {
+  return builder => {
     return {
       ...builder,
       queryEndpoint,
@@ -23,11 +42,11 @@ export function query(queryEndpoint: string, queryName: string) {
   }
 }
 
-export function fields(fields: string[] | '*') {
+export function fields(fields: string[] | '*'): BuilderOperator {
   if (Array.isArray(fields)) {
     const fieldsString = fields.join(",").replace(/\s/g, '')
 
-    return (builder: Builder): Builder => {
+    return builder => {
       return {
         ...builder,
         queryFields: {
@@ -38,13 +57,13 @@ export function fields(fields: string[] | '*') {
     }
   }
 
-  return (builder: Builder) => builder;
+  return builder => builder;
 }
 
-export function exclude(exclude: string[]) {
+export function exclude(exclude: string[]): BuilderOperator {
   const fieldsString = exclude.join(",").replace(/\s/g, '')
 
-  return (builder: Builder): Builder => {
+  return builder => {
     return {
       ...builder,
       queryFields: {
@@ -55,20 +74,20 @@ export function exclude(exclude: string[]) {
   }
 }
 
-export function sort(field: string, direction?: 'asc' | 'desc') {
-  return (builder: Builder): Builder => {
+export function sort(field: string, direction: 'asc' | 'desc' = 'asc'): BuilderOperator {
+  return builder => {
     return {
       ...builder,
       queryFields: {
         ...builder.queryFields,
-        sort: `sort ${field} ${direction || "asc"}`
+        sort: `sort ${field} ${direction}`
       }
     }
   }
 }
 
-export function limit(limit: number) {
-  return (builder: Builder): Builder => {
+export function limit(limit: number): BuilderOperator {
+  return builder => {
     return {
       ...builder,
       queryFields: {
@@ -79,8 +98,8 @@ export function limit(limit: number) {
   }
 }
 
-export function offset(offset: number) {
-  return (builder: Builder): Builder => {
+export function offset(offset: number): BuilderOperator {
+  return builder => {
     return {
       ...builder,
       queryFields: {
@@ -91,8 +110,8 @@ export function offset(offset: number) {
   }
 }
 
-export function search(search: string) {
-  return (builder: Builder): Builder => {
+export function search(search: string): BuilderOperator {
+  return builder => {
     return {
       ...builder,
       queryFields: {
@@ -103,8 +122,8 @@ export function search(search: string) {
   }
 }
 
-export function where(key: string, op: string, value: string) {
-  return (builder: Builder): Builder => {
+export function where(key: string, op: string, value: string | number | boolean): BuilderOperator {
+  return builder => {
     return {
       ...builder,
       queryFields: {
@@ -115,14 +134,26 @@ export function where(key: string, op: string, value: string) {
   }
 }
 
-export function build(builder: Builder) {
-  const { where, ...rest } = builder.queryFields;
-  return Object.keys(builder.queryFields).length > 1 ||
-    builder.queryFields.where.length > 1
-      ? Object.values(rest).concat(where).join(";") + ";"
-      : "";
+export function pipe(...steps: BuilderOperator[]): Builder {
+  return steps.reduce<Builder>((output, f) => f(output), newBuilder())
 }
 
-export function multi(builders: Builder[]) {
-  return builders.map(b => `query ${b.queryEndpoint} "${b.queryName}" { ${build(b)} };`).join("");
+export function multi(...builders: Builder[]): Stringifiable {
+  return {
+    toApicalypseString() {
+      return toStringMulti(builders);
+    }
+  }
+}
+
+export function toStringMulti(builders: Builder[]) {
+  return builders.map(b => `query ${b.queryEndpoint} "${b.queryName}" { ${toStringSingle(b)} };`).join("");
+}
+
+function toStringSingle(builder: Builder) {
+  const { where, ...rest } = builder.queryFields;
+  return Object.keys(builder.queryFields).length > 0 ||
+  builder.queryFields.where.length > 0
+    ? Object.values(rest).concat(where).join(";") + ";"
+    : "";
 }
