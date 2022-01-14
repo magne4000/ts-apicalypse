@@ -61,15 +61,58 @@ describe('operators', function () {
         )
       )
     ).toEqual('where (a = "1" & b = 2);');
+
     expect(
       testOp<{a: '1' | '2', b: number}>(
         or(
           where('a', '=', '1'),
           // @ts-expect-error
-          where('b', '=', '2', WhereFlags.NUMBER)
+          where('b', '=', '2', WhereFlags.NUMBER),
         )
       )
     ).toEqual('where (a = "1" | b = 2);');
+
+    // TS operators validity check
+    testOp<{a: '1' | '2', b: number, c: boolean}>(
+      or(
+        // STRING
+        where('a', '=', '1'),
+        where('a', '!=', '1'),
+        where('a', '~', '1'),
+        // @ts-expect-error invalid operator
+        where('a', '>', '1'),
+        // @ts-expect-error invalid operator
+        where('a', '>=', '1'),
+        // @ts-expect-error invalid operator
+        where('a', '<', '1'),
+        // @ts-expect-error invalid operator
+        where('a', '<=', '1'),
+
+        // NUMBER
+        where('b', '=', 1),
+        where('b', '!=', 1),
+        // @ts-expect-error invalid operator
+        where('b', '~', 1),
+        where('b', '>', 1),
+        where('b', '>=', 1),
+        where('b', '<', 1),
+        where('b', '<=', 1),
+
+        // BOOLEAN
+        where('c', '=', true),
+        where('c', '!=', true),
+        // @ts-expect-error invalid operator
+        where('c', '~', true),
+        // @ts-expect-error invalid operator
+        where('c', '>', true),
+        // @ts-expect-error invalid operator
+        where('c', '>=', true),
+        // @ts-expect-error invalid operator
+        where('c', '<', true),
+        // @ts-expect-error invalid operator
+        where('c', '<=', true),
+      )
+    )
   });
 
   test('whereIn', function () {

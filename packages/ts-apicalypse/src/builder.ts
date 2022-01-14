@@ -1,4 +1,4 @@
-import { AllowedValues, Builder, BuilderOperator, Operators, Stringifiable, WhereFlags, WhereInFlags } from "./types";
+import { AllowedValues, Builder, BuilderOperator, GetOp, Stringifiable, WhereFlags, WhereInFlags } from "./types";
 
 export function query<T extends Record<any, any>>(queryEndpoint: string, queryName: string): BuilderOperator<T> {
   return builder => {
@@ -154,8 +154,7 @@ function encodeWhereInParam(values: unknown[], flag: WhereInFlags | WhereFlags) 
   throw new Error('WhereInFlags not specified');
 }
 
-// TODO ensure >,>=,<,<= are used only with numbers; ~ should also only be used with strings
-export function where<T extends Record<any, any>, K extends keyof T>(key: K, op: Operators, value: T[K] | AllowedValues, flag?: WhereFlags): BuilderOperator<T> {
+export function where<T extends Record<any, any>, K extends keyof T>(key: K, op: GetOp<T[K]>, value: T[K] | AllowedValues, flag?: WhereFlags): BuilderOperator<T> {
   return builder => {
     return {
       ...builder,

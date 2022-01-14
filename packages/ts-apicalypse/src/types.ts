@@ -21,8 +21,12 @@ export interface BuilderOperator<T> {
   (builder: Builder<T>): Builder<T>
 }
 
-export type Operators = '=' | '!=' | '>=' | '>' | '<=' | '<' | '~';
+export type StandardOperatos = '=' | '!=';
+export type StringOperators = StandardOperatos | '~';
+export type NumbersOperatos = StandardOperatos | '>=' | '>' | '<=' | '<';
 export type AllowedValues = true | false | null;
+
+export type GetOp<T> = T extends number ? NumbersOperatos : T extends string ? StringOperators : StandardOperatos;
 
 export enum WhereFlags {
   RAW = 0x1, // x = n
