@@ -53,7 +53,6 @@ describe('operators', function () {
 
     // TS
 
-    // TODO add where combination tests
     expect(
       testOp<{a: '1' | '2', b: number}>(
         and(
@@ -92,6 +91,20 @@ describe('operators', function () {
       // @ts-expect-error
       whereIn('a', ['3']),
     );
+  });
+
+  test('complex where', function () {
+    expect(
+      testOp<{a: '1' | '2', b: number}>(
+        and(
+          where('a', '=', '1'),
+          or(
+            where('b', '=', 2),
+            whereIn('b', [3]),
+          )
+        )
+      )
+    ).toEqual('where (a = "1" & (b = 2 | b = (3)));');
   });
 });
 

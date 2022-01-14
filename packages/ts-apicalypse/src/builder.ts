@@ -154,7 +154,6 @@ function encodeWhereInParam(values: unknown[], flag: WhereInFlags | WhereFlags) 
   throw new Error('WhereInFlags not specified');
 }
 
-// TODO properly combine multiple where/whereIn
 // TODO ensure >,>=,<,<= are used only with numbers; ~ should also only be used with strings
 export function where<T extends Record<any, any>, K extends keyof T>(key: K, op: Operators, value: T[K] | AllowedValues, flag?: WhereFlags): BuilderOperator<T> {
   return builder => {
