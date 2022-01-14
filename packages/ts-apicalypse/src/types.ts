@@ -44,3 +44,8 @@ export enum WhereInFlags {
   NOR = OR | 0x10, // !(...)
   EXACT = 0x80, // {...}
 }
+
+type MetaFlatKeyOf<T> = { [K in keyof T]: T[K] extends Record<string, any> ? keyof T[K] : void };
+type _FlatKeyOf<T, S = MetaFlatKeyOf<T>> =
+  { [K in Extract<keyof S, string>]: S[K] extends void ? K : (K | `${K}.${Extract<S[K], string>}` | `${K}.*`) };
+export type FlatKeyOf<T, S = _FlatKeyOf<T>> = S[keyof S];

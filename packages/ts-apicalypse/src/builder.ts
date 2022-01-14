@@ -1,4 +1,13 @@
-import { AllowedValues, Builder, BuilderOperator, GetOp, Stringifiable, WhereFlags, WhereInFlags } from "./types";
+import {
+  AllowedValues,
+  Builder,
+  BuilderOperator,
+  FlatKeyOf,
+  GetOp,
+  Stringifiable,
+  WhereFlags,
+  WhereInFlags
+} from "./types";
 
 export function query<T extends Record<any, any>>(queryEndpoint: string, queryName: string): BuilderOperator<T> {
   return builder => {
@@ -10,8 +19,8 @@ export function query<T extends Record<any, any>>(queryEndpoint: string, queryNa
   }
 }
 
-// TODO expander https://api-docs.igdb.com/?shell#expander
-export function fields<T extends Record<any, any>>(fields: (keyof T)[] | '*'): BuilderOperator<T> {
+// TODO type execute and narrow returned type
+export function fields<T extends Record<any, any>>(fields: (FlatKeyOf<T>)[] | '*'): BuilderOperator<T> {
   if (Array.isArray(fields)) {
     const fieldsString = fields.join(",").replace(/\s/g, '')
 

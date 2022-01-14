@@ -11,8 +11,16 @@ describe('operators', function () {
 
     // TS
 
-    expect(testOp<{ a: 1, b: 1, c: 1 }>(fields(['a', 'b', 'c']))).toEqual('fields a,b,c;');
-    expect(testOp<{ a: 1, b: 1, c: 1 }>(fields('*'))).toEqual('fields *;');
+    expect(
+      testOp<{ a: 1, b: 1, c: 1, d: { e: 1, f: 1 } }>(
+        fields(['a', 'b', 'c', 'd.*', 'd.f'])
+      )
+    ).toEqual('fields a,b,c,d.*,d.f;');
+    expect(
+      testOp<{ a: 1, b: 1, c: 1 }>(
+        fields('*')
+      )
+    ).toEqual('fields *;');
     expect(
       testOp<{ a: 1, b: 1, c: 1 }>(
         // @ts-expect-error
