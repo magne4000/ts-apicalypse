@@ -1,4 +1,4 @@
-import { Builder, BuilderOperator, Operators, Stringifiable } from "./types";
+import { AllowedValues, Builder, BuilderOperator, Operators, Stringifiable, WhereFlags, WhereInFlags } from "./types";
 
 export function query<T extends Record<any, any>>(queryEndpoint: string, queryName: string): BuilderOperator<T> {
   return builder => {
@@ -10,6 +10,7 @@ export function query<T extends Record<any, any>>(queryEndpoint: string, queryNa
   }
 }
 
+// TODO expander https://api-docs.igdb.com/?shell#expander
 export function fields<T extends Record<any, any>>(fields: (keyof T)[] | '*'): BuilderOperator<T> {
   if (Array.isArray(fields)) {
     const fieldsString = fields.join(",").replace(/\s/g, '')
@@ -92,23 +93,93 @@ export function search<T extends Record<any, any>>(search: string): BuilderOpera
       ...builder,
       queryFields: {
         ...builder.queryFields,
-        search: `search "${search.replace('"', '\\"')}"`
+        search: `search "${encodeString(search)}"`
       }
     }
   }
 }
 
-export function where<T extends Record<any, any>, K extends keyof T>(key: K, op: Operators, value: T[K]): BuilderOperator<T> {
+function encodeWhereParam(value: unknown, flag?: WhereFlags): string {
+  let v: unknown = null;
+
+  if (typeof value === 'boolean' || value === null) {
+    return String(value);
+  }
+
+  if (typeof flag === 'number') {
+    if ((flag & WhereFlags.STRING) === WhereFlags.STRING) {
+      v = `"${encodeString(value as string)}"`;
+    }
+    if ((flag & WhereFlags.STARTSWITH) === WhereFlags.STARTSWITH) {
+      v += '*';
+    }
+    if ((flag & WhereFlags.ENDSWITH) === WhereFlags.ENDSWITH) {
+      v = '*' + v;
+    }
+    if ((flag & WhereFlags.RAW) === WhereFlags.RAW) {
+      v = value;
+    }
+  }
+
+  if (typeof value === 'string' && v === null) {
+    v = `"${encodeString(value)}"`;
+  }
+
+  if (v === null) {
+    v = value;
+  }
+
+  return v as string;
+}
+
+function encodeWhereInParam(values: unknown[], flag: WhereInFlags | WhereFlags) {
+  const joined = values.map(v => encodeWhereParam(v, flag as WhereFlags)).join(',');
+
+  if ((flag & WhereInFlags.NAND) === WhereInFlags.NAND) {
+    return `![${joined}]`;
+  }
+  if ((flag & WhereInFlags.NOR) === WhereInFlags.NOR) {
+    return `!(${joined})`;
+  }
+  if ((flag & WhereInFlags.AND) === WhereInFlags.AND) {
+    return `[${joined}]`;
+  }
+  if ((flag & WhereInFlags.OR) === WhereInFlags.OR) {
+    return `(${joined})`;
+  }
+  if ((flag & WhereInFlags.EXACT) === WhereInFlags.EXACT) {
+    return `{${joined}}`;
+  }
+
+  throw new Error('WhereInFlags not specified');
+}
+
+// TODO properly combine multiple where/whereIn
+// TODO ensure >,>=,<,<= are used only with numbers; ~ should also only be used with strings
+export function where<T extends Record<any, any>, K extends keyof T>(key: K, op: Operators, value: T[K] | AllowedValues, flag?: WhereFlags): BuilderOperator<T> {
   return builder => {
     return {
       ...builder,
       queryFields: {
         ...builder.queryFields,
-        where: [...builder.queryFields.where, `where ${key} ${op} ${value}`]
+        where: [...builder.queryFields.where, `${key} ${op} ${encodeWhereParam(value, flag)}`]
       }
     }
   }
 }
+
+export function whereIn<T extends Record<any, any>, K extends keyof T>(key: K, values: T[K][], flag: WhereInFlags | WhereFlags = WhereInFlags.OR): BuilderOperator<T> {
+  return builder => {
+    return {
+      ...builder,
+      queryFields: {
+        ...builder.queryFields,
+        where: [...builder.queryFields.where, `${key} = ${encodeWhereInParam(values, flag)}`]
+      }
+    }
+  }
+}
+
 
 export function pipe<T extends Record<any, any> = any>(...steps: BuilderOperator<T>[]): Builder<T> {
   return steps.reduce<Builder<T>>((output, f) => f(output), newBuilder())
@@ -139,8 +210,11 @@ function toStringMulti<T>(builders: Builder<T>[]) {
 
 function toStringSingle<T>(builder: Builder<T>) {
   const { where, ...rest } = builder.queryFields;
-  return Object.keys(builder.queryFields).length > 0 ||
-  builder.queryFields.where.length > 0
-    ? Object.values(rest).concat(where).join(";") + ";"
-    : "";
+  const w = where.length > 0 ? "where " + where.join(" & ") + ";" : "";
+  const r = Object.keys(rest).length > 0 ? Object.values(rest).join(";") + ";" : "";
+  return r + w;
+}
+
+function encodeString(v: string) {
+  return v.replace(/"/g, '\\"');
 }

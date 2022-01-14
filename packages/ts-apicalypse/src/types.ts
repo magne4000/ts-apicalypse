@@ -25,6 +25,21 @@ export interface BuilderOperator<T> {
 
 type Strip<T extends string> = T extends ` ${infer R}` ? Strip<R> : T extends `${infer R} ` ? Strip<R> : T;
 export type Operators = '=' | '!=' | '>=' | '>' | '<=' | '<' | '~';
-type Numbers = '0' | '1' | '2' | '3' | '4' | '5' | '6' | '7' | '8' | '9';
-type CombinationOperators = '&' | '|';
-type AllowedValues = 'true' | 'false' | 'null';
+export type AllowedValues = true | false | null;
+
+export enum WhereFlags {
+  RAW = 0x1, // x = n
+  NUMBER = RAW, // x = n
+  STRING = 0x2, // x = "n"
+  STARTSWITH = STRING | 0x4, // x = "n"*
+  ENDSWITH = STRING | 0x8, // x = *"n"
+  CONTAINS = STARTSWITH | ENDSWITH, // x = *"n"*
+}
+
+export enum WhereInFlags {
+  AND = 0x20, // [...]
+  NAND = AND | 0x10, // ![...]
+  OR = 0x40, // (...)
+  NOR = OR | 0x10, // !(...)
+  EXACT = 0x80, // {...}
+}

@@ -1,5 +1,5 @@
-import { exclude, fields, limit, multi, offset, pipe, query, search, sort, where } from "./builder";
-import { BuilderOperator } from "./types";
+import { exclude, fields, limit, multi, offset, pipe, query, search, sort, where, whereIn } from "./builder";
+import { BuilderOperator, WhereFlags, WhereInFlags } from "./types";
 
 function testOp<T = any>(...opd: BuilderOperator<T>[]) {
   return pipe<T>(...opd).toApicalypseString();
@@ -49,18 +49,38 @@ describe('operators', function () {
   });
 
   test('where', function () {
-    expect(testOp(where('a', '=', '1'))).toEqual('where a = 1;');
+    expect(testOp(where('a', '=', '1'))).toEqual('where a = "1";');
 
     // TS
 
-    expect(testOp<{a: '1' | '2', b: number}>(where('a', '=', '1'), where('b', '=', 2))).toEqual('where a = 1;where b = 2;');
+    // TODO add where combination tests
+    expect(testOp<{a: '1' | '2', b: number}>(where('a', '=', '1'), where('b', '=', 2))).toEqual('where a = "1" & b = 2;');
     expect(
       testOp<{a: '1' | '2', b: number}>(
         where('a', '=', '1'),
         // @ts-expect-error
-        where('b', '=', '2')
+        where('b', '=', '2', WhereFlags.NUMBER)
       )
-    ).toEqual('where a = 1;where b = 2;');
+    ).toEqual('where a = "1" & b = 2;');
+  });
+
+  test('whereIn', function () {
+    expect(testOp(whereIn('a', [1,2]))).toEqual('where a = (1,2);');
+
+    // TS
+
+    expect(
+      testOp<{a: '1' | '2', b: number}>(
+        whereIn('a', ['1', '2'], WhereFlags.STRING | WhereInFlags.AND),
+        whereIn('b', [2, 4], WhereInFlags.EXACT)
+      )
+    ).toEqual('where a = ["1","2"] & b = {2,4};');
+    testOp<{a: '1' | '2', b: number}>(
+      // @ts-expect-error
+      whereIn('a', [1, '2']),
+      // @ts-expect-error
+      whereIn('a', ['3']),
+    );
   });
 });
 
