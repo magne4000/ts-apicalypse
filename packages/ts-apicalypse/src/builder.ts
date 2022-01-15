@@ -6,22 +6,10 @@ import {
   FlatKeyOf,
   GetOp,
   PickFlat,
-  Stringifiable,
   WhereFlags,
   WhereInFlags
 } from "./types";
 
-export function query<T extends Record<any, any>>(queryEndpoint: string, queryName: string): BuilderOperator<T, T> {
-  return builder => {
-    return {
-      ...builder,
-      queryEndpoint,
-      queryName
-    }
-  }
-}
-
-// TODO type execute and narrow returned type
 export function fields<T extends Record<any, any>, K extends FlatKeyOf<T>[] | '*'>(fields: K): BuilderOperatorNarrow<T, PickFlat<T, K>> {
   if (Array.isArray(fields)) {
     const fieldsString = fields.join(",").replace(/\s/g, '')
@@ -214,15 +202,7 @@ export function or<T extends Record<any, any>, R>(...operators: BuilderOperator<
   return groupWhere('|', ...operators);
 }
 
-export function multi<T extends Record<any, any>>(...builders: Builder<T>[]): Stringifiable {
-  return {
-    toApicalypseString() {
-      return toStringMulti(builders);
-    }
-  }
-}
-
-function toStringMulti<T>(builders: Builder<T>[]) {
+export function toStringMulti<T>(builders: Builder<T>[]) {
   return builders.map(b => `query ${b.queryEndpoint} "${b.queryName}" { ${toStringSingle(b)} };`).join("");
 }
 

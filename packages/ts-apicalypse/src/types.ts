@@ -20,8 +20,21 @@ export interface Builder<T> extends Stringifiable {
   queryName?: string;
 }
 
+export interface NamedBuilder<T, N extends string> extends Builder<T> {
+  queryName: N;
+}
+
 export interface Executor<T> {
-  execute(): AxiosPromise<T>
+  execute(): AxiosPromise<T[]>
+}
+
+export type ExecutorMultiMono<T extends NamedBuilder<any, any>> = {
+  name: T["queryName"],
+  result: T extends NamedBuilder<infer S, any> ? S[] : never
+};
+
+export interface ExecutorMulti<T extends Builder<any>[]> {
+  execute(url: string): AxiosPromise<T extends (infer S)[] ? ExecutorMultiMono<S extends NamedBuilder<any, any> ? S : never>[] : never>
 }
 
 export interface BuilderOperator<T, R> {

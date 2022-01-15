@@ -1,6 +1,6 @@
-import { and, exclude, fields, limit, multi, offset, or, query, search, sort, where, whereIn } from "./builder";
+import { and, exclude, fields, limit, offset, or, search, sort, where, whereIn } from "./builder";
 import { BuilderOperator, Executor, WhereFlags, WhereInFlags } from "./types";
-import { request } from "./index";
+import { multi, query, request } from "./index";
 
 function testOp<T = any>(...opd: BuilderOperator<T, T>[]) {
   // @ts-ignore
@@ -37,9 +37,9 @@ describe('operators', function () {
 
     type InferBuilder<X> = X extends Executor<infer A> ? A : never;
     // no error
-    const y: InferBuilder<typeof x> = { a: 1, b: 1 };
+    const _y: InferBuilder<typeof x> = { a: 1, b: 1 };
     // @ts-expect-error object may only specify known properties
-    const z: InferBuilder<typeof x> = { a: 1, b: 1, c: 1 };
+    const _z: InferBuilder<typeof x> = { a: 1, b: 1, c: 1 };
   });
 
   test('exclude', function () {
@@ -178,14 +178,12 @@ describe('multi', function () {
   test('build a valid query', function () {
     const now = new Date().getTime();
     const test = multi(
-      request().pipe(
-        query("games", "latest-games"),
+      query("games", "latest-games").pipe(
         fields(["name"]),
         sort("created_at", "desc"),
         where("created_at", "<",  now),
       ),
-      request().pipe(
-        query("games", "coming-soon"),
+      query("games", "coming-soon").pipe(
         fields(["name"]),
         sort("created_at", "asc"),
         where("created_at", ">",  now),
@@ -198,28 +196,30 @@ describe('multi', function () {
 
     // TS
 
-    multi<{
-      name: string,
-      created_at: number
-    }>(
-      request<{
+    const x = multi(
+      query<{
         name: string,
         created_at: number
-      }>().pipe(
-        query("games", "latest-games"),
+      }, 'latest-games'>("games", "latest-games").pipe(
         fields(["name", "created_at"]),
         sort("created_at", "desc"),
         where("created_at", "<",  now),
       ),
-      request<{
+      query<{
         name: string,
         created_at: number
-      }>().pipe(
-        query("games", "coming-soon"),
+      }, 'coming-soon'>("games", "coming-soon").pipe(
         fields(["name"]),
         sort("created_at", "asc"),
         where("created_at", ">",  now),
       )
-    )
+    );
+
+    /*x.execute('').then(y => {
+      const h = y.data[0];
+      if (isNamed(h, 'latest-games')) {
+        h.result[0].created_at
+      }
+    })*/
   });
 });
