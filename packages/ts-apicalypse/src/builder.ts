@@ -2,8 +2,10 @@ import {
   AllowedValues,
   Builder,
   BuilderOperator,
+  BuilderOperatorNarrow,
   FlatKeyOf,
-  GetOp, PickFlat,
+  GetOp,
+  PickFlat,
   Stringifiable,
   WhereFlags,
   WhereInFlags
@@ -20,11 +22,11 @@ export function query<T extends Record<any, any>>(queryEndpoint: string, queryNa
 }
 
 // TODO type execute and narrow returned type
-export function fields<T extends Record<any, any>, K extends FlatKeyOf<T>[] | '*'>(fields: K): BuilderOperator<T, PickFlat<T, K>> {
+export function fields<T extends Record<any, any>, K extends FlatKeyOf<T>[] | '*'>(fields: K): BuilderOperatorNarrow<T, PickFlat<T, K>> {
   if (Array.isArray(fields)) {
     const fieldsString = fields.join(",").replace(/\s/g, '')
 
-    return builder => {
+    return (builder => {
       return {
         ...builder,
         queryFields: {
@@ -32,10 +34,10 @@ export function fields<T extends Record<any, any>, K extends FlatKeyOf<T>[] | '*
           fields: `fields ${fieldsString}`
         }
       }
-    }
+    }) as BuilderOperatorNarrow<T, PickFlat<T, K>>;
   }
 
-  return builder => {
+  return (builder => {
     return {
       ...builder,
       queryFields: {
@@ -43,7 +45,7 @@ export function fields<T extends Record<any, any>, K extends FlatKeyOf<T>[] | '*
         fields: `fields *`
       }
     }
-  }
+  }) as BuilderOperatorNarrow<T, PickFlat<T, K>>;
 }
 
 export function exclude<T extends Record<any, any>>(exclude: (keyof T)[]): BuilderOperator<T, T> {

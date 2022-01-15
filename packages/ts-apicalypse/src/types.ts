@@ -1,4 +1,5 @@
 import type { DeepPick, DefaultGrammar, DeepPickPath } from "ts-deep-pick";
+import { AxiosPromise } from "axios";
 
 export interface Stringifiable {
   toApicalypseString(): string;
@@ -20,10 +21,15 @@ export interface Builder<T> extends Stringifiable {
 }
 
 export interface Executor<T> {
-  execute(): Promise<T>
+  execute(): AxiosPromise<T>
 }
 
 export interface BuilderOperator<T, R> {
+  (builder: Builder<T>): Builder<R>
+}
+
+export interface BuilderOperatorNarrow<T, R> {
+  __narrow: true
   (builder: Builder<T>): Builder<R>
 }
 
