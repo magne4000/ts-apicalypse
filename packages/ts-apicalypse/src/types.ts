@@ -1,3 +1,5 @@
+import type { DeepPick, DefaultGrammar, DeepPickPath } from "ts-deep-pick";
+
 export interface Stringifiable {
   toApicalypseString(): string;
 }
@@ -17,8 +19,8 @@ export interface Builder<T> extends Stringifiable {
   queryName?: string;
 }
 
-export interface BuilderOperator<T> {
-  (builder: Builder<T>): Builder<T>
+export interface BuilderOperator<T, R = T> {
+  (builder: Builder<T>): Builder<R>
 }
 
 export type StandardOperatos = '=' | '!=';
@@ -49,3 +51,48 @@ type MetaFlatKeyOf<T> = { [K in keyof T]: T[K] extends Record<string, any> ? key
 type _FlatKeyOf<T, S = MetaFlatKeyOf<T>> =
   { [K in Extract<keyof S, string>]: S[K] extends void ? K : (K | `${K}.${Extract<S[K], string>}` | `${K}.*`) };
 export type FlatKeyOf<T, S = _FlatKeyOf<T>> = S[keyof S];
+
+interface G extends DefaultGrammar {
+  array: never; // disable
+  omit: never; // disable
+  mutate: never; // disable
+}
+
+export type ComputeRaw<A extends any> = {[K in keyof A]: A[K]} & unknown
+
+type _PickAndCastByValue<Base, Condition> = {
+  [Key in keyof Base]: Base[Key] extends Condition ? number[] : never
+};
+type ExcludeNeverProps<T> =
+  { [K in keyof T]: T[K] extends never ? never : K }[keyof T]
+type PickAndCastByValue<Base, Condition, S = _PickAndCastByValue<Base, Condition>> = Pick<S, ExcludeNeverProps<S>>;
+
+type PickByValue<Base, Condition> = Pick<Base, {
+  [Key in keyof Base]: Base[Key] extends Condition ? Key : never
+}[keyof Base]>;
+
+type _PickFlat<T, K extends DeepPickPath<T, G>> = DeepPick<T, K, G>;
+type _CastDeep<T> = T extends `${infer A}.*` ? A : T;
+
+type _CastFlatKeyOf<T, K> =
+  Extract<_CastDeep<Exclude<K, keyof PickByValue<T, Record<any, any>[]>>>, DeepPickPath<T, G>>;
+
+type _CastFlatKeyOf2<T, K> =
+  Extract<K, DeepPickPath<T, G>>;
+
+export type PickFlat<T, K extends FlatKeyOf<T>[] | '*'> =
+  K extends '*' ? DeepPick<T, K, G> :
+  K extends FlatKeyOf<T>[] ?
+    ComputeRaw<
+      _PickFlat<T, _CastFlatKeyOf<T, K[keyof K]>> &
+      _PickFlat<PickAndCastByValue<T, Record<any, any>[]>, _CastFlatKeyOf2<_PickAndCastByValue<T, Record<any, any>[]>, K[keyof K]>>
+    > :
+  K extends DeepPickPath<T, G> ? DeepPick<T, K, G> : never;
+
+
+type DEMO = { a: 1, b: 3, c: { d: 3 }[] };
+type X = PickFlat<DEMO, ['a', 'c.*']>
+type X2 = PickFlat<DEMO, ['a', 'c']>
+type Y = _PickFlat<DEMO, 'a' | 'b' | 'c'>
+type F = _CastDeep<'c.*' | 'd'>;
+type Z = DeepPick<DEMO, 'c', G>

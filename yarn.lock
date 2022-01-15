@@ -3630,8 +3630,18 @@ __metadata:
   dependencies:
     "@types/jest": ^27.4.0
     axios: ^0.24.0
+    ts-deep-pick: ^0.2.2
   languageName: unknown
   linkType: soft
+
+"ts-deep-pick@npm:^0.2.2":
+  version: 0.2.2
+  resolution: "ts-deep-pick@npm:0.2.2"
+  dependencies:
+    ts-typetools: ^0.6.1
+  checksum: 0a28f910fb32337063ce6d86d77dc277cad88df7fb9058d69a8ff31bb5ceb1228ccb492df1980b632d1e631c45f52983e7519b85a914fc343bf1ea5c38b36e56
+  languageName: node
+  linkType: hard
 
 "ts-jest@npm:^27.1.2":
   version: 27.1.2
@@ -3664,6 +3674,13 @@ __metadata:
   bin:
     ts-jest: cli.js
   checksum: 2e7275f8a3545ec1340b37c458ace9244b5903e86861eb108beffff97d433f296c1254f76a41b573b1fe6245110b21bb62150bb88d55159f1dc7a929886535cb
+  languageName: node
+  linkType: hard
+
+"ts-typetools@npm:^0.6.1":
+  version: 0.6.1
+  resolution: "ts-typetools@npm:0.6.1"
+  checksum: 179e68ea3214067ff7f9bda9ad4dfea3c089f7f1297efeb0a6b2a9535ce615cb5a227e3dafac71e15a890664190712b187aa0216047c05dcb194cdbac58b9fcd
   languageName: node
   linkType: hard
 

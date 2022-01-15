@@ -1,8 +1,9 @@
-import { and, exclude, fields, limit, multi, offset, or, pipe, query, search, sort, where, whereIn } from "./builder";
+import { and, exclude, fields, limit, multi, offset, or, request, query, search, sort, where, whereIn } from "./builder";
 import { BuilderOperator, WhereFlags, WhereInFlags } from "./types";
 
 function testOp<T = any>(...opd: BuilderOperator<T>[]) {
-  return pipe<T>(...opd).toApicalypseString();
+  // @ts-ignore
+  return request<T>().pipe(...opd).toApicalypseString();
 }
 
 describe('operators', function () {
@@ -21,12 +22,15 @@ describe('operators', function () {
         fields('*')
       )
     ).toEqual('fields *;');
-    expect(
-      testOp<{ a: 1, b: 1, c: 1 }>(
-        // @ts-expect-error
-        fields(['d'])
-      )
-    ).toEqual('fields d;');
+
+    request<{ a: 1, b: 1, c: 1 }>().pipe(
+      // @ts-expect-error
+      fields(['d']),
+    );
+
+    const x = request<{ a: 1, b: 1, c: 1 }>().pipe(
+      fields(['a', 'b']),
+    );
   });
 
   test('exclude', function () {
@@ -163,13 +167,13 @@ describe('multi', function () {
   test('build a valid query', function () {
     const now = new Date().getTime();
     const test = multi(
-      pipe(
+      request().pipe(
         query("games", "latest-games"),
         fields(["name"]),
         sort("created_at", "desc"),
         where("created_at", "<",  now),
       ),
-      pipe(
+      request().pipe(
         query("games", "coming-soon"),
         fields(["name"]),
         sort("created_at", "asc"),
@@ -187,13 +191,19 @@ describe('multi', function () {
       name: string,
       created_at: number
     }>(
-      pipe(
+      request<{
+        name: string,
+        created_at: number
+      }>().pipe(
         query("games", "latest-games"),
-        fields(["name"]),
+        fields(["name", "created_at"]),
         sort("created_at", "desc"),
         where("created_at", "<",  now),
       ),
-      pipe(
+      request<{
+        name: string,
+        created_at: number
+      }>().pipe(
         query("games", "coming-soon"),
         fields(["name"]),
         sort("created_at", "asc"),

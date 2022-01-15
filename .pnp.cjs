@@ -4549,9 +4549,20 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
           "packageDependencies": [
             ["ts-apicalypse", "workspace:packages/ts-apicalypse"],
             ["@types/jest", "npm:27.4.0"],
-            ["axios", "npm:0.24.0"]
+            ["axios", "npm:0.24.0"],
+            ["ts-deep-pick", "npm:0.2.2"]
           ],
           "linkType": "SOFT",
+        }]
+      ]],
+      ["ts-deep-pick", [
+        ["npm:0.2.2", {
+          "packageLocation": "./.yarn/cache/ts-deep-pick-npm-0.2.2-536709c49b-0a28f910fb.zip/node_modules/ts-deep-pick/",
+          "packageDependencies": [
+            ["ts-deep-pick", "npm:0.2.2"],
+            ["ts-typetools", "npm:0.6.1"]
+          ],
+          "linkType": "HARD",
         }]
       ]],
       ["ts-jest", [
@@ -4596,6 +4607,15 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
             "esbuild",
             "jest",
             "typescript"
+          ],
+          "linkType": "HARD",
+        }]
+      ]],
+      ["ts-typetools", [
+        ["npm:0.6.1", {
+          "packageLocation": "./.yarn/cache/ts-typetools-npm-0.6.1-7d0522ce3a-179e68ea32.zip/node_modules/ts-typetools/",
+          "packageDependencies": [
+            ["ts-typetools", "npm:0.6.1"]
           ],
           "linkType": "HARD",
         }]

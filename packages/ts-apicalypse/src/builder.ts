@@ -3,7 +3,7 @@ import {
   Builder,
   BuilderOperator,
   FlatKeyOf,
-  GetOp,
+  GetOp, PickFlat,
   Stringifiable,
   WhereFlags,
   WhereInFlags
@@ -20,7 +20,7 @@ export function query<T extends Record<any, any>>(queryEndpoint: string, queryNa
 }
 
 // TODO type execute and narrow returned type
-export function fields<T extends Record<any, any>>(fields: (FlatKeyOf<T>)[] | '*'): BuilderOperator<T> {
+export function fields<T extends Record<any, any>, K extends FlatKeyOf<T>[] | '*'>(fields: K): BuilderOperator<T, PickFlat<T, K>> {
   if (Array.isArray(fields)) {
     const fieldsString = fields.join(",").replace(/\s/g, '')
 
@@ -212,15 +212,87 @@ export function or<T extends Record<any, any>>(...operators: BuilderOperator<T>[
   return groupWhere('|', ...operators);
 }
 
-export function pipe<T extends Record<any, any> = any>(...steps: BuilderOperator<T>[]): Builder<T> {
-  return steps.reduce<Builder<T>>((output, f) => f(output), newBuilder())
-}
-
-export function multi<T extends Record<any, any> = any>(...builders: Builder<T>[]): Stringifiable {
+export function multi<T extends Record<any, any>>(...builders: Builder<T>[]): Stringifiable {
   return {
     toApicalypseString() {
       return toStringMulti(builders);
     }
+  }
+}
+
+export function request<T>() {
+  function pipe<A>(fn1: BuilderOperator<T, A>): Builder<A>;
+  function pipe<A, B>(fn1: BuilderOperator<T, A>, fn2: BuilderOperator<A, B>): Builder<B>;
+  function pipe<A, B, C>(fn1: BuilderOperator<T, A>, fn2: BuilderOperator<A, B>, fn3: BuilderOperator<B, C>): Builder<C>;
+  function pipe<A, B, C, D>(
+    fn1: BuilderOperator<T, A>,
+    fn2: BuilderOperator<A, B>,
+    fn3: BuilderOperator<B, C>,
+    fn4: BuilderOperator<C, D>
+  ): Builder<D>;
+  function pipe<A, B, C, D, E>(
+    fn1: BuilderOperator<T, A>,
+    fn2: BuilderOperator<A, B>,
+    fn3: BuilderOperator<B, C>,
+    fn4: BuilderOperator<C, D>,
+    fn5: BuilderOperator<D, E>
+  ): Builder<E>;
+  function pipe<A, B, C, D, E, F>(
+    fn1: BuilderOperator<T, A>,
+    fn2: BuilderOperator<A, B>,
+    fn3: BuilderOperator<B, C>,
+    fn4: BuilderOperator<C, D>,
+    fn5: BuilderOperator<D, E>,
+    fn6: BuilderOperator<E, F>
+  ): Builder<F>;
+  function pipe<A, B, C, D, E, F, G>(
+    fn1: BuilderOperator<T, A>,
+    fn2: BuilderOperator<A, B>,
+    fn3: BuilderOperator<B, C>,
+    fn4: BuilderOperator<C, D>,
+    fn5: BuilderOperator<D, E>,
+    fn6: BuilderOperator<E, F>,
+    fn7: BuilderOperator<F, G>
+  ): Builder<G>;
+  function pipe<A, B, C, D, E, F, G, H>(
+    fn1: BuilderOperator<T, A>,
+    fn2: BuilderOperator<A, B>,
+    fn3: BuilderOperator<B, C>,
+    fn4: BuilderOperator<C, D>,
+    fn5: BuilderOperator<D, E>,
+    fn6: BuilderOperator<E, F>,
+    fn7: BuilderOperator<F, G>,
+    fn8: BuilderOperator<G, H>
+  ): Builder<H>;
+  function pipe<A, B, C, D, E, F, G, H, I>(
+    fn1: BuilderOperator<T, A>,
+    fn2: BuilderOperator<A, B>,
+    fn3: BuilderOperator<B, C>,
+    fn4: BuilderOperator<C, D>,
+    fn5: BuilderOperator<D, E>,
+    fn6: BuilderOperator<E, F>,
+    fn7: BuilderOperator<F, G>,
+    fn8: BuilderOperator<G, H>,
+    fn9: BuilderOperator<H, I>
+  ): Builder<I>;
+  function pipe<A, B, C, D, E, F, G, H, I>(
+    fn1: BuilderOperator<T, A>,
+    fn2: BuilderOperator<A, B>,
+    fn3: BuilderOperator<B, C>,
+    fn4: BuilderOperator<C, D>,
+    fn5: BuilderOperator<D, E>,
+    fn6: BuilderOperator<E, F>,
+    fn7: BuilderOperator<F, G>,
+    fn8: BuilderOperator<G, H>,
+    fn9: BuilderOperator<H, I>,
+    ...fns: BuilderOperator<any, any>[]
+  ): Builder<unknown>;
+  function pipe(...steps: BuilderOperator<any, any>[]): Builder<any> {
+    return steps.reduce((output, f) => f(output), newBuilder())
+  }
+
+  return {
+    pipe,
   }
 }
 
