@@ -58,7 +58,9 @@ interface G extends DefaultGrammar {
   mutate: never; // disable
 }
 
-export type ComputeRaw<A extends any> = {[K in keyof A]: A[K]} & unknown
+type ComputeRaw<A extends any> = {[K in keyof A]: A[K]} & unknown
+
+type RA = Record<any, any>[];
 
 type _PickAndCastByValue<Base, Condition> = {
   [Key in keyof Base]: Base[Key] extends Condition ? number[] : never
@@ -75,33 +77,29 @@ type PickByValue<Base, Condition> = Pick<Base, {
   [Key in keyof Base]: Base[Key] extends Condition ? Key : never
 }[keyof Base]>;
 
-type _PickFlat<T, K extends DeepPickPath<T, G>> = DeepPick<T, K, G>;
+type DeepPickG<T, K extends DeepPickPath<T, G>> = DeepPick<T, K, G>;
 type _CastDeep<T> = T extends `${infer A}.*` ? A : T;
 
-type _CastFlatKeyOf<T, K> =
-  Extract<_CastDeep<Exclude<K, keyof PickByValue<T, Record<any, any>[]>>>, DeepPickPath<T, G>>;
+type _EnsureDeepPickPath2<T, K> =
+  Extract<_CastDeep<Exclude<K, keyof PickByValue<T, RA>>>, DeepPickPath<T, G>>;
 
-type _CastFlatKeyOf2<T, K> =
+type _EnsureDeepPickPath<T, K> =
   Extract<K, DeepPickPath<T, G>>;
 
 export type PickFlat<T, K extends FlatKeyOf<T>[] | '*'> =
   K extends '*' ?
-    ComputeRaw<
-      OmitByValue<T, Record<any, any>[]> &
-      _PickFlat<PickAndCastByValue<T, Record<any, any>[]>, _CastFlatKeyOf2<_PickAndCastByValue<T, Record<any, any>[]>, K[keyof K]>>
-    > :
+    ComputeRaw<OmitByValue<T, RA> & PickAndCastByValue<T, RA>> :
   K extends FlatKeyOf<T>[] ?
     ComputeRaw<
-      _PickFlat<T, _CastFlatKeyOf<T, K[keyof K]>> &
-      _PickFlat<PickAndCastByValue<T, Record<any, any>[]>, _CastFlatKeyOf2<_PickAndCastByValue<T, Record<any, any>[]>, K[keyof K]>>
+      DeepPickG<T, _EnsureDeepPickPath2<T, K[keyof K]>> &
+      DeepPickG<PickAndCastByValue<T, RA>, _EnsureDeepPickPath<_PickAndCastByValue<T, RA>, K[keyof K]>>
     > :
-  K extends DeepPickPath<T, G> ? DeepPick<T, K, G> : never;
+    never;
 
 
 type DEMO = { a: 1, b: 3, c: { d: 3 }[] };
 type X = PickFlat<DEMO, ['a', 'c.*']>
 type X2 = PickFlat<DEMO, ['a', 'c']>
 type X3 = PickFlat<DEMO, '*'>
-type Y = _PickFlat<DEMO, 'a' | 'b' | 'c'>
 type F = _CastDeep<'c.*' | 'd'>;
 type Z = DeepPick<DEMO, 'c', G>
