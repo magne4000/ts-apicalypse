@@ -218,6 +218,11 @@ describe('multi', function () {
       )
     );
 
+    sub().pipe(
+      // @ts-expect-error first parameter should be a NamedBuilder
+      fields(["name"]),
+    );
+
     /*x.execute('').then(y => {
       const h = y.data[0];
       if (isNamed(h, 'latest-games')) {
