@@ -67,6 +67,10 @@ type ExcludeNeverProps<T> =
   { [K in keyof T]: T[K] extends never ? never : K }[keyof T]
 type PickAndCastByValue<Base, Condition, S = _PickAndCastByValue<Base, Condition>> = Pick<S, ExcludeNeverProps<S>>;
 
+type OmitByValue<Base, Condition> = Pick<Base, {
+  [Key in keyof Base]: Base[Key] extends Condition ? never : Key
+}[keyof Base]>;
+
 type PickByValue<Base, Condition> = Pick<Base, {
   [Key in keyof Base]: Base[Key] extends Condition ? Key : never
 }[keyof Base]>;
@@ -81,7 +85,11 @@ type _CastFlatKeyOf2<T, K> =
   Extract<K, DeepPickPath<T, G>>;
 
 export type PickFlat<T, K extends FlatKeyOf<T>[] | '*'> =
-  K extends '*' ? DeepPick<T, K, G> :
+  K extends '*' ?
+    ComputeRaw<
+      OmitByValue<T, Record<any, any>[]> &
+      _PickFlat<PickAndCastByValue<T, Record<any, any>[]>, _CastFlatKeyOf2<_PickAndCastByValue<T, Record<any, any>[]>, K[keyof K]>>
+    > :
   K extends FlatKeyOf<T>[] ?
     ComputeRaw<
       _PickFlat<T, _CastFlatKeyOf<T, K[keyof K]>> &
@@ -93,6 +101,7 @@ export type PickFlat<T, K extends FlatKeyOf<T>[] | '*'> =
 type DEMO = { a: 1, b: 3, c: { d: 3 }[] };
 type X = PickFlat<DEMO, ['a', 'c.*']>
 type X2 = PickFlat<DEMO, ['a', 'c']>
+type X3 = PickFlat<DEMO, '*'>
 type Y = _PickFlat<DEMO, 'a' | 'b' | 'c'>
 type F = _CastDeep<'c.*' | 'd'>;
 type Z = DeepPick<DEMO, 'c', G>
