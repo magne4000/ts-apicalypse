@@ -19,6 +19,10 @@ export interface Builder<T> extends Stringifiable {
   queryName?: string;
 }
 
+export interface Executor<T> {
+  execute(): Promise<T>
+}
+
 export interface BuilderOperator<T, R> {
   (builder: Builder<T>): Builder<R>
 }

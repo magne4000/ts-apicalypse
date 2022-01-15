@@ -1,5 +1,6 @@
-import { and, exclude, fields, limit, multi, offset, or, request, query, search, sort, where, whereIn } from "./builder";
-import { Builder, BuilderOperator, WhereFlags, WhereInFlags } from "./types";
+import { and, exclude, fields, limit, multi, offset, or, query, search, sort, where, whereIn } from "./builder";
+import { BuilderOperator, Executor, WhereFlags, WhereInFlags } from "./types";
+import { request } from "./index";
 
 function testOp<T = any>(...opd: BuilderOperator<T, T>[]) {
   // @ts-ignore
@@ -34,7 +35,7 @@ describe('operators', function () {
       sort('c')
     );
 
-    type InferBuilder<X> = X extends Builder<infer A> ? A : never;
+    type InferBuilder<X> = X extends Executor<infer A> ? A : never;
     // no error
     const y: InferBuilder<typeof x> = { a: 1, b: 1 };
     // @ts-expect-error object may only specify known properties

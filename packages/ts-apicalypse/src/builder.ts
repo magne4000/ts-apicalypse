@@ -220,109 +220,11 @@ export function multi<T extends Record<any, any>>(...builders: Builder<T>[]): St
   }
 }
 
-export function request<T>() {
-  function pipe(): Builder<T>;
-  function pipe<A>(
-    fn1: BuilderOperator<T, A>,
-  ): Builder<A>;
-  function pipe<A, B>(
-    fn1: BuilderOperator<T, A>,
-    fn2: BuilderOperator<T, B>,
-  ): Builder<B extends T ? A extends T ? T : A : B>;
-  function pipe<A, B, C>(
-    fn1: BuilderOperator<T, A>,
-    fn2: BuilderOperator<T, B>,
-    fn3: BuilderOperator<T, C>
-  ): Builder<C extends T ? B extends T ? A extends T ? T : A : B : C>;
-  function pipe<A, B, C, D>(
-    fn1: BuilderOperator<T, A>,
-    fn2: BuilderOperator<T, B>,
-    fn3: BuilderOperator<T, C>,
-    fn4: BuilderOperator<T, D>
-  ): Builder<D extends T ? C extends T ? B extends T ? A extends T ? T : A : B : C : D>;
-  function pipe<A, B, C, D, E>(
-    fn1: BuilderOperator<T, A>,
-    fn2: BuilderOperator<T, B>,
-    fn3: BuilderOperator<T, C>,
-    fn4: BuilderOperator<T, D>,
-    fn5: BuilderOperator<T, E>
-  ): Builder<E extends T ? D extends T ? C extends T ? B extends T ? A extends T ? T : A : B : C : D : E>;
-  function pipe<A, B, C, D, E, F>(
-    fn1: BuilderOperator<T, A>,
-    fn2: BuilderOperator<T, B>,
-    fn3: BuilderOperator<T, C>,
-    fn4: BuilderOperator<T, D>,
-    fn5: BuilderOperator<T, E>,
-    fn6: BuilderOperator<T, F>
-  ): Builder<F extends T ? E extends T ? D extends T ? C extends T ? B extends T ? A extends T ? T : A : B : C : D : E : F>;
-  function pipe<A, B, C, D, E, F, G>(
-    fn1: BuilderOperator<T, A>,
-    fn2: BuilderOperator<T, B>,
-    fn3: BuilderOperator<T, C>,
-    fn4: BuilderOperator<T, D>,
-    fn5: BuilderOperator<T, E>,
-    fn6: BuilderOperator<T, F>,
-    fn7: BuilderOperator<T, G>
-  ): Builder<G extends T ? F extends T ? E extends T ? D extends T ? C extends T ? B extends T ? A extends T ? T : A : B : C : D : E : F : G>;
-  function pipe<A, B, C, D, E, F, G, H>(
-    fn1: BuilderOperator<T, A>,
-    fn2: BuilderOperator<T, B>,
-    fn3: BuilderOperator<T, C>,
-    fn4: BuilderOperator<T, D>,
-    fn5: BuilderOperator<T, E>,
-    fn6: BuilderOperator<T, F>,
-    fn7: BuilderOperator<T, G>,
-    fn8: BuilderOperator<T, H>
-  ): Builder<H extends T ? G extends T ? F extends T ? E extends T ? D extends T ? C extends T ? B extends T ? A extends T ? T : A : B : C : D : E : F : G : H>;
-  function pipe<A, B, C, D, E, F, G, H, I>(
-    fn1: BuilderOperator<T, A>,
-    fn2: BuilderOperator<T, B>,
-    fn3: BuilderOperator<T, C>,
-    fn4: BuilderOperator<T, D>,
-    fn5: BuilderOperator<T, E>,
-    fn6: BuilderOperator<T, F>,
-    fn7: BuilderOperator<T, G>,
-    fn8: BuilderOperator<T, H>,
-    fn9: BuilderOperator<T, H>
-  ): Builder<I extends T ? H extends T ? G extends T ? F extends T ? E extends T ? D extends T ? C extends T ? B extends T ? A extends T ? T : A : B : C : D : E : F : G : H : I>;
-  function pipe<A, B, C, D, E, F, G, H, I>(
-    fn1: BuilderOperator<T, A>,
-    fn2: BuilderOperator<T, B>,
-    fn3: BuilderOperator<T, C>,
-    fn4: BuilderOperator<T, D>,
-    fn5: BuilderOperator<T, E>,
-    fn6: BuilderOperator<T, F>,
-    fn7: BuilderOperator<T, G>,
-    fn8: BuilderOperator<T, H>,
-    fn9: BuilderOperator<T, H>,
-    ...fns: BuilderOperator<T, any>[]
-  ): Builder<unknown>;
-
-  function pipe(...steps: BuilderOperator<T, any>[]): Builder<any> {
-    return steps.reduce((output, f) => f(output), newBuilder())
-  }
-
-  return {
-    pipe,
-  }
-}
-
-function newBuilder<T>(): Builder<T> {
-  return {
-    queryFields: {
-      where: []
-    },
-    toApicalypseString() {
-      return toStringSingle(this);
-    }
-  }
-}
-
 function toStringMulti<T>(builders: Builder<T>[]) {
   return builders.map(b => `query ${b.queryEndpoint} "${b.queryName}" { ${toStringSingle(b)} };`).join("");
 }
 
-function toStringSingle<T>(builder: Builder<T>) {
+export function toStringSingle<T>(builder: Builder<T>) {
   const { where, ...rest } = builder.queryFields;
   const w = where.length > 0 ? "where " + where.join("") + ";" : "";
   const r = Object.keys(rest).length > 0 ? Object.values(rest).join(";") + ";" : "";
