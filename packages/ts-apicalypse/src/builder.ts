@@ -5,10 +5,21 @@ import {
   BuilderOperatorNarrow,
   FlatKeyOf,
   GetOp,
+  NamedBuilderOperator,
   PickFlat,
   WhereFlags,
   WhereInFlags
 } from "./types";
+
+export function query<T extends Record<any, any>, S extends string>(queryEndpoint: string, queryName: S): NamedBuilderOperator<T, S> {
+  return (builder => {
+    return {
+      ...builder,
+      queryEndpoint,
+      queryName
+    }
+  }) as NamedBuilderOperator<T, S>;
+}
 
 export function fields<T extends Record<any, any>, K extends FlatKeyOf<T>[] | '*'>(fields: K): BuilderOperatorNarrow<T, PickFlat<T, K>> {
   if (Array.isArray(fields)) {

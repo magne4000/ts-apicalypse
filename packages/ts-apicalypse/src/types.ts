@@ -1,5 +1,5 @@
 import type { DeepPick, DefaultGrammar, DeepPickPath } from "ts-deep-pick";
-import { AxiosPromise } from "axios";
+import type { AxiosPromise } from "axios";
 
 export interface Stringifiable {
   toApicalypseString(): string;
@@ -20,7 +20,8 @@ export interface Builder<T> extends Stringifiable {
   queryName?: string;
 }
 
-export interface NamedBuilder<T, N extends string> extends Builder<T> {
+export interface NamedBuilder<T, N extends string> extends Omit<Builder<T>, 'queryEndpoint' | 'queryName'> {
+  queryEndpoint: string;
   queryName: N;
 }
 
@@ -44,6 +45,10 @@ export interface BuilderOperator<T, R> {
 export interface BuilderOperatorNarrow<T, R> {
   __narrow: true
   (builder: Builder<T>): Builder<R>
+}
+
+export interface NamedBuilderOperator<T, N extends string> {
+  (builder: Builder<T>): NamedBuilder<T, N>
 }
 
 export type StandardOperators = '=' | '!=';

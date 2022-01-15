@@ -1,9 +1,8 @@
-import { and, exclude, fields, limit, offset, or, search, sort, where, whereIn } from "./builder";
+import { and, exclude, fields, limit, offset, or, query, search, sort, where, whereIn } from "./builder";
 import { BuilderOperator, Executor, WhereFlags, WhereInFlags } from "./types";
-import { multi, query, request } from "./index";
+import { multi, request, sub } from "./index";
 
 function testOp<T = any>(...opd: BuilderOperator<T, T>[]) {
-  // @ts-ignore
   return request<T>().pipe(...opd).toApicalypseString();
 }
 
@@ -178,12 +177,14 @@ describe('multi', function () {
   test('build a valid query', function () {
     const now = new Date().getTime();
     const test = multi(
-      query("games", "latest-games").pipe(
+      sub().pipe(
+        query("games", "latest-games"),
         fields(["name"]),
         sort("created_at", "desc"),
         where("created_at", "<",  now),
       ),
-      query("games", "coming-soon").pipe(
+      sub().pipe(
+        query("games", "coming-soon"),
         fields(["name"]),
         sort("created_at", "asc"),
         where("created_at", ">",  now),
@@ -197,18 +198,20 @@ describe('multi', function () {
     // TS
 
     const x = multi(
-      query<{
+      sub<{
         name: string,
         created_at: number
-      }, 'latest-games'>("games", "latest-games").pipe(
+      }>().pipe(
+        query("games", "latest-games"),
         fields(["name", "created_at"]),
         sort("created_at", "desc"),
         where("created_at", "<",  now),
       ),
-      query<{
+      sub<{
         name: string,
         created_at: number
-      }, 'coming-soon'>("games", "coming-soon").pipe(
+      }>().pipe(
+        query("games", "coming-soon"),
         fields(["name"]),
         sort("created_at", "asc"),
         where("created_at", ">",  now),

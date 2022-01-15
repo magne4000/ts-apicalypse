@@ -3,9 +3,11 @@ import {
   Builder,
   BuilderOperator,
   BuilderOperatorNarrow,
-  Executor, ExecutorMulti,
+  Executor,
+  ExecutorMulti,
   ExecutorMultiMono,
   NamedBuilder,
+  NamedBuilderOperator,
   Stringifiable
 } from "./types";
 import { toStringMulti, toStringSingle } from "./builder";
@@ -44,7 +46,7 @@ export function apicalypse<T>(builder: Stringifiable, options: Options = {}) {
 }
 
 export function request<T>(url?: string) {
-  function pipe<A>(...steps: (BuilderOperator<T, T> | BuilderOperatorNarrow<T, A>)[]): Executor<A> {
+  function pipe<A>(...steps: (BuilderOperator<T, T> | BuilderOperatorNarrow<T, A>)[]): Stringifiable & Executor<A> {
     const builder = steps.reduce((output, f) => f(output), newBuilder())
 
     return {
@@ -53,6 +55,10 @@ export function request<T>(url?: string) {
           throw new Error('endpoint url is undefined');
         }
         return apicalypse<A[]>(builder).execute(url);
+      },
+
+      toApicalypseString() {
+        return toStringSingle(builder);
       }
     }
   }
@@ -62,12 +68,9 @@ export function request<T>(url?: string) {
   }
 }
 
-export function query<T, S extends string>(queryEndpoint: string, queryName: S) {
-  function pipe<A>(...steps: (BuilderOperator<T, T> | BuilderOperatorNarrow<T, A>)[]): NamedBuilder<A, S> {
-    return steps.reduce((output, f) => f(output), newBuilder({
-      queryEndpoint,
-      queryName
-    })) as NamedBuilder<T, S>;
+export function sub<T>() {
+  function pipe<A, N extends string>(...steps: [NamedBuilderOperator<T, N>, ...(BuilderOperator<T, T> | BuilderOperatorNarrow<T, A>)[]]): NamedBuilder<A, N> {
+    return steps.reduce((output, f) => f(output), newBuilder()) as NamedBuilder<A, N>;
   }
 
   return {
@@ -90,12 +93,11 @@ export function multi<T extends Record<any, any>, B extends Builder<T>[]>(...bui
   }
 }
 
-function newBuilder<T>(copy?: Partial<Builder<T>>): Builder<T> {
+function newBuilder<T>(): Builder<T> {
   return {
     queryFields: {
       where: []
     },
-    ...copy,
     toApicalypseString() {
       return toStringSingle(this);
     }
