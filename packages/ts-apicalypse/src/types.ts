@@ -26,7 +26,7 @@ export interface NamedBuilder<T, N extends string> extends Omit<Builder<T>, 'que
 }
 
 export interface Executor<T> {
-  execute(): AxiosPromise<T[]>
+  execute(url: string): AxiosPromise<T[]>
 }
 
 export type ExecutorMultiMono<T extends NamedBuilder<any, any>> = {

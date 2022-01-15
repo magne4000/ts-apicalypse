@@ -45,16 +45,13 @@ export function apicalypse<T>(builder: Stringifiable, options: Options = {}) {
   }
 }
 
-export function request<T>(url?: string) {
+export function request<T>() {
   function pipe<A>(...steps: (BuilderOperator<T, T> | BuilderOperatorNarrow<T, A>)[]): Stringifiable & Executor<A> {
     const builder = steps.reduce((output, f) => f(output), newBuilder())
 
     return {
-      execute() {
-        if (!url) {
-          throw new Error('endpoint url is undefined');
-        }
-        return apicalypse<A[]>(builder).execute(url);
+      execute(url: string, options: Options = {}) {
+        return apicalypse<A[]>(builder, options).execute(url);
       },
 
       toApicalypseString() {
@@ -84,11 +81,8 @@ export function multi<T extends Record<any, any>, B extends Builder<T>[]>(...bui
       return toStringMulti(builders);
     },
 
-    execute(url: string) {
-      if (!url) {
-        throw new Error('endpoint url is undefined');
-      }
-      return apicalypse(this).execute(url) as any;
+    execute(url: string, options: Options = {}) {
+      return apicalypse(this, options).execute(url) as any;
     }
   }
 }
