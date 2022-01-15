@@ -99,11 +99,6 @@
     "skipLibCheck": true                                 /* Skip type checking all .d.ts files. */
   },
   "exclude": [
-    "packages/**/dist/**"
-  ],
-  "references": [
-    {
-      "path": "./packages/ts-apicalypse"
-    }
+    "*/dist/**"
   ]
 }
