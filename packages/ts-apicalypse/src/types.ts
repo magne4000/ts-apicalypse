@@ -19,16 +19,16 @@ export interface Builder<T> extends Stringifiable {
   queryName?: string;
 }
 
-export interface BuilderOperator<T, R = T> {
+export interface BuilderOperator<T, R> {
   (builder: Builder<T>): Builder<R>
 }
 
-export type StandardOperatos = '=' | '!=';
-export type StringOperators = StandardOperatos | '~';
-export type NumbersOperatos = StandardOperatos | '>=' | '>' | '<=' | '<';
+export type StandardOperators = '=' | '!=';
+export type StringOperators = StandardOperators | '~';
+export type NumbersOperatos = StandardOperators | '>=' | '>' | '<=' | '<';
 export type AllowedValues = true | false | null;
 
-export type GetOp<T> = T extends number ? NumbersOperatos : T extends string ? StringOperators : StandardOperatos;
+export type GetOp<T> = T extends number ? NumbersOperatos : T extends string ? StringOperators : StandardOperators;
 
 export enum WhereFlags {
   RAW = 0x1, // x = n

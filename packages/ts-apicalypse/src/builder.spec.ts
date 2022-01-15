@@ -1,7 +1,7 @@
 import { and, exclude, fields, limit, multi, offset, or, request, query, search, sort, where, whereIn } from "./builder";
-import { BuilderOperator, WhereFlags, WhereInFlags } from "./types";
+import { Builder, BuilderOperator, WhereFlags, WhereInFlags } from "./types";
 
-function testOp<T = any>(...opd: BuilderOperator<T>[]) {
+function testOp<T = any>(...opd: BuilderOperator<T, T>[]) {
   // @ts-ignore
   return request<T>().pipe(...opd).toApicalypseString();
 }
@@ -29,8 +29,16 @@ describe('operators', function () {
     );
 
     const x = request<{ a: 1, b: 1, c: 1 }>().pipe(
+      sort('c'),
       fields(['a', 'b']),
+      sort('c')
     );
+
+    type InferBuilder<X> = X extends Builder<infer A> ? A : never;
+    // no error
+    const y: InferBuilder<typeof x> = { a: 1, b: 1 };
+    // @ts-expect-error object may only specify known properties
+    const z: InferBuilder<typeof x> = { a: 1, b: 1, c: 1 };
   });
 
   test('exclude', function () {
@@ -80,9 +88,11 @@ describe('operators', function () {
           where('a', '=', '1'),
           // @ts-expect-error
           where('b', '=', '2', WhereFlags.NUMBER),
+          // @ts-expect-error
+          where('c', '=', '2', WhereFlags.NUMBER),
         )
       )
-    ).toEqual('where (a = "1" | b = 2);');
+    ).toEqual('where (a = "1" | b = 2 | c = 2);');
 
     // TS operators validity check
     testOp<{a: '1' | '2', b: number, c: boolean}>(

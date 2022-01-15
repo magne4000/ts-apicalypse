@@ -9,7 +9,7 @@ import {
   WhereInFlags
 } from "./types";
 
-export function query<T extends Record<any, any>>(queryEndpoint: string, queryName: string): BuilderOperator<T> {
+export function query<T extends Record<any, any>>(queryEndpoint: string, queryName: string): BuilderOperator<T, T> {
   return builder => {
     return {
       ...builder,
@@ -46,7 +46,7 @@ export function fields<T extends Record<any, any>, K extends FlatKeyOf<T>[] | '*
   }
 }
 
-export function exclude<T extends Record<any, any>>(exclude: (keyof T)[]): BuilderOperator<T> {
+export function exclude<T extends Record<any, any>>(exclude: (keyof T)[]): BuilderOperator<T, T> {
   const fieldsString = exclude.join(",").replace(/\s/g, '')
 
   return builder => {
@@ -60,7 +60,7 @@ export function exclude<T extends Record<any, any>>(exclude: (keyof T)[]): Build
   }
 }
 
-export function sort<T extends Record<any, any>>(field: keyof T, direction: 'asc' | 'desc' = 'asc'): BuilderOperator<T> {
+export function sort<T extends Record<any, any>>(field: keyof T, direction: 'asc' | 'desc' = 'asc'): BuilderOperator<T, T> {
   return builder => {
     return {
       ...builder,
@@ -72,7 +72,7 @@ export function sort<T extends Record<any, any>>(field: keyof T, direction: 'asc
   }
 }
 
-export function limit<T extends Record<any, any>>(limit: number): BuilderOperator<T> {
+export function limit<T extends Record<any, any>>(limit: number): BuilderOperator<T, T> {
   return builder => {
     return {
       ...builder,
@@ -84,7 +84,7 @@ export function limit<T extends Record<any, any>>(limit: number): BuilderOperato
   }
 }
 
-export function offset<T extends Record<any, any>>(offset: number): BuilderOperator<T> {
+export function offset<T extends Record<any, any>>(offset: number): BuilderOperator<T, T> {
   return builder => {
     return {
       ...builder,
@@ -96,7 +96,7 @@ export function offset<T extends Record<any, any>>(offset: number): BuilderOpera
   }
 }
 
-export function search<T extends Record<any, any>>(search: string): BuilderOperator<T> {
+export function search<T extends Record<any, any>>(search: string): BuilderOperator<T, T> {
   return builder => {
     return {
       ...builder,
@@ -163,7 +163,7 @@ function encodeWhereInParam(values: unknown[], flag: WhereInFlags | WhereFlags) 
   throw new Error('WhereInFlags not specified');
 }
 
-export function where<T extends Record<any, any>, K extends keyof T>(key: K, op: GetOp<T[K]>, value: T[K] | AllowedValues, flag?: WhereFlags): BuilderOperator<T> {
+export function where<T extends Record<any, any>, K extends keyof T>(key: K, op: GetOp<T[K]>, value: T[K] | AllowedValues, flag?: WhereFlags): BuilderOperator<T, T> {
   return builder => {
     return {
       ...builder,
@@ -175,7 +175,7 @@ export function where<T extends Record<any, any>, K extends keyof T>(key: K, op:
   }
 }
 
-export function whereIn<T extends Record<any, any>, K extends keyof T>(key: K, values: T[K][], flag: WhereInFlags | WhereFlags = WhereInFlags.OR): BuilderOperator<T> {
+export function whereIn<T extends Record<any, any>, K extends keyof T>(key: K, values: T[K][], flag: WhereInFlags | WhereFlags = WhereInFlags.OR): BuilderOperator<T, T> {
   return builder => {
     return {
       ...builder,
@@ -187,7 +187,7 @@ export function whereIn<T extends Record<any, any>, K extends keyof T>(key: K, v
   }
 }
 
-export function groupWhere<T extends Record<any, any>>(orAnd: string, ...operators: BuilderOperator<T>[]): BuilderOperator<T> {
+export function groupWhere<T extends Record<any, any>>(orAnd: string, ...operators: BuilderOperator<T, T>[]): BuilderOperator<T, T> {
   return builder => {
     const sub = operators.flatMap(op => [...op(builder).queryFields.where, ` ${orAnd} `]);
     if (sub.length === 0) return builder;
@@ -204,11 +204,11 @@ export function groupWhere<T extends Record<any, any>>(orAnd: string, ...operato
   }
 }
 
-export function and<T extends Record<any, any>>(...operators: BuilderOperator<T>[]): BuilderOperator<T> {
+export function and<T extends Record<any, any>>(...operators: BuilderOperator<T, T>[]): BuilderOperator<T, T> {
   return groupWhere('&', ...operators);
 }
 
-export function or<T extends Record<any, any>>(...operators: BuilderOperator<T>[]): BuilderOperator<T> {
+export function or<T extends Record<any, any>, R>(...operators: BuilderOperator<T, R>[]): BuilderOperator<T, R> {
   return groupWhere('|', ...operators);
 }
 
@@ -221,73 +221,84 @@ export function multi<T extends Record<any, any>>(...builders: Builder<T>[]): St
 }
 
 export function request<T>() {
-  function pipe<A>(fn1: BuilderOperator<T, A>): Builder<A>;
-  function pipe<A, B>(fn1: BuilderOperator<T, A>, fn2: BuilderOperator<A, B>): Builder<B>;
-  function pipe<A, B, C>(fn1: BuilderOperator<T, A>, fn2: BuilderOperator<A, B>, fn3: BuilderOperator<B, C>): Builder<C>;
+  function pipe(): Builder<T>;
+  function pipe<A>(
+    fn1: BuilderOperator<T, A>,
+  ): Builder<A>;
+  function pipe<A, B>(
+    fn1: BuilderOperator<T, A>,
+    fn2: BuilderOperator<T, B>,
+  ): Builder<B extends T ? A extends T ? T : A : B>;
+  function pipe<A, B, C>(
+    fn1: BuilderOperator<T, A>,
+    fn2: BuilderOperator<T, B>,
+    fn3: BuilderOperator<T, C>
+  ): Builder<C extends T ? B extends T ? A extends T ? T : A : B : C>;
   function pipe<A, B, C, D>(
     fn1: BuilderOperator<T, A>,
-    fn2: BuilderOperator<A, B>,
-    fn3: BuilderOperator<B, C>,
-    fn4: BuilderOperator<C, D>
-  ): Builder<D>;
+    fn2: BuilderOperator<T, B>,
+    fn3: BuilderOperator<T, C>,
+    fn4: BuilderOperator<T, D>
+  ): Builder<D extends T ? C extends T ? B extends T ? A extends T ? T : A : B : C : D>;
   function pipe<A, B, C, D, E>(
     fn1: BuilderOperator<T, A>,
-    fn2: BuilderOperator<A, B>,
-    fn3: BuilderOperator<B, C>,
-    fn4: BuilderOperator<C, D>,
-    fn5: BuilderOperator<D, E>
-  ): Builder<E>;
+    fn2: BuilderOperator<T, B>,
+    fn3: BuilderOperator<T, C>,
+    fn4: BuilderOperator<T, D>,
+    fn5: BuilderOperator<T, E>
+  ): Builder<E extends T ? D extends T ? C extends T ? B extends T ? A extends T ? T : A : B : C : D : E>;
   function pipe<A, B, C, D, E, F>(
     fn1: BuilderOperator<T, A>,
-    fn2: BuilderOperator<A, B>,
-    fn3: BuilderOperator<B, C>,
-    fn4: BuilderOperator<C, D>,
-    fn5: BuilderOperator<D, E>,
-    fn6: BuilderOperator<E, F>
-  ): Builder<F>;
+    fn2: BuilderOperator<T, B>,
+    fn3: BuilderOperator<T, C>,
+    fn4: BuilderOperator<T, D>,
+    fn5: BuilderOperator<T, E>,
+    fn6: BuilderOperator<T, F>
+  ): Builder<F extends T ? E extends T ? D extends T ? C extends T ? B extends T ? A extends T ? T : A : B : C : D : E : F>;
   function pipe<A, B, C, D, E, F, G>(
     fn1: BuilderOperator<T, A>,
-    fn2: BuilderOperator<A, B>,
-    fn3: BuilderOperator<B, C>,
-    fn4: BuilderOperator<C, D>,
-    fn5: BuilderOperator<D, E>,
-    fn6: BuilderOperator<E, F>,
-    fn7: BuilderOperator<F, G>
-  ): Builder<G>;
+    fn2: BuilderOperator<T, B>,
+    fn3: BuilderOperator<T, C>,
+    fn4: BuilderOperator<T, D>,
+    fn5: BuilderOperator<T, E>,
+    fn6: BuilderOperator<T, F>,
+    fn7: BuilderOperator<T, G>
+  ): Builder<G extends T ? F extends T ? E extends T ? D extends T ? C extends T ? B extends T ? A extends T ? T : A : B : C : D : E : F : G>;
   function pipe<A, B, C, D, E, F, G, H>(
     fn1: BuilderOperator<T, A>,
-    fn2: BuilderOperator<A, B>,
-    fn3: BuilderOperator<B, C>,
-    fn4: BuilderOperator<C, D>,
-    fn5: BuilderOperator<D, E>,
-    fn6: BuilderOperator<E, F>,
-    fn7: BuilderOperator<F, G>,
-    fn8: BuilderOperator<G, H>
-  ): Builder<H>;
+    fn2: BuilderOperator<T, B>,
+    fn3: BuilderOperator<T, C>,
+    fn4: BuilderOperator<T, D>,
+    fn5: BuilderOperator<T, E>,
+    fn6: BuilderOperator<T, F>,
+    fn7: BuilderOperator<T, G>,
+    fn8: BuilderOperator<T, H>
+  ): Builder<H extends T ? G extends T ? F extends T ? E extends T ? D extends T ? C extends T ? B extends T ? A extends T ? T : A : B : C : D : E : F : G : H>;
   function pipe<A, B, C, D, E, F, G, H, I>(
     fn1: BuilderOperator<T, A>,
-    fn2: BuilderOperator<A, B>,
-    fn3: BuilderOperator<B, C>,
-    fn4: BuilderOperator<C, D>,
-    fn5: BuilderOperator<D, E>,
-    fn6: BuilderOperator<E, F>,
-    fn7: BuilderOperator<F, G>,
-    fn8: BuilderOperator<G, H>,
-    fn9: BuilderOperator<H, I>
-  ): Builder<I>;
+    fn2: BuilderOperator<T, B>,
+    fn3: BuilderOperator<T, C>,
+    fn4: BuilderOperator<T, D>,
+    fn5: BuilderOperator<T, E>,
+    fn6: BuilderOperator<T, F>,
+    fn7: BuilderOperator<T, G>,
+    fn8: BuilderOperator<T, H>,
+    fn9: BuilderOperator<T, H>
+  ): Builder<I extends T ? H extends T ? G extends T ? F extends T ? E extends T ? D extends T ? C extends T ? B extends T ? A extends T ? T : A : B : C : D : E : F : G : H : I>;
   function pipe<A, B, C, D, E, F, G, H, I>(
     fn1: BuilderOperator<T, A>,
-    fn2: BuilderOperator<A, B>,
-    fn3: BuilderOperator<B, C>,
-    fn4: BuilderOperator<C, D>,
-    fn5: BuilderOperator<D, E>,
-    fn6: BuilderOperator<E, F>,
-    fn7: BuilderOperator<F, G>,
-    fn8: BuilderOperator<G, H>,
-    fn9: BuilderOperator<H, I>,
-    ...fns: BuilderOperator<any, any>[]
+    fn2: BuilderOperator<T, B>,
+    fn3: BuilderOperator<T, C>,
+    fn4: BuilderOperator<T, D>,
+    fn5: BuilderOperator<T, E>,
+    fn6: BuilderOperator<T, F>,
+    fn7: BuilderOperator<T, G>,
+    fn8: BuilderOperator<T, H>,
+    fn9: BuilderOperator<T, H>,
+    ...fns: BuilderOperator<T, any>[]
   ): Builder<unknown>;
-  function pipe(...steps: BuilderOperator<any, any>[]): Builder<any> {
+
+  function pipe(...steps: BuilderOperator<T, any>[]): Builder<any> {
     return steps.reduce((output, f) => f(output), newBuilder())
   }
 
