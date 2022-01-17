@@ -1,5 +1,5 @@
 import axios, { AxiosPromise } from 'axios';
-import {
+import type {
   Builder,
   BuilderOperator,
   BuilderOperatorNarrow,
@@ -13,7 +13,7 @@ import {
 } from "./types";
 import { query, toStringMulti, toStringSingle } from "./builder";
 
-export {
+export type {
   Builder,
   BuilderOperator,
   BuilderOperatorNarrow,
