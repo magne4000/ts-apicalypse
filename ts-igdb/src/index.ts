@@ -18,7 +18,7 @@ export type {
   WhereInFlags,
   NamedBuilderOperator,
 } from "ts-apicalypse";
-export { and, exclude, fields, groupWhere, limit, offset, or, search, sort, where, whereIn } from "ts-apicalypse";
+export { and, exclude, fields, limit, offset, or, search, sort, where, whereIn } from "ts-apicalypse";
 
 const BASE_URL = 'https://api.igdb.com/v4';
 const BASE_URL_MULTI = `${BASE_URL}/multiquery`;

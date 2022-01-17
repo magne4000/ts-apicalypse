@@ -6,6 +6,8 @@ function testOp<T = any>(...opd: BuilderOperator<T, T>[]) {
   return request<T>().pipe(...opd).toApicalypseString();
 }
 
+type InferBuilder<X> = X extends Executor<infer A> ? A : never;
+
 describe('operators', function () {
   test('fields', function () {
     expect(testOp(fields(['a', 'b', 'c']))).toEqual('fields a,b,c;');
@@ -34,15 +36,30 @@ describe('operators', function () {
       sort('c')
     );
 
-    type InferBuilder<X> = X extends Executor<infer A> ? A : never;
     // no error
-    const _y: InferBuilder<typeof x> = { a: 1, b: 1 };
+    const _x1: InferBuilder<typeof x> = { a: 1, b: 1 };
     // @ts-expect-error object may only specify known properties
-    const _z: InferBuilder<typeof x> = { a: 1, b: 1, c: 1 };
+    const _x2: InferBuilder<typeof x> = { a: 1, b: 1, c: 1 };
   });
 
   test('exclude', function () {
-    expect(testOp(exclude(['a', 'b', 'c']))).toEqual('exclude a,b,c;');
+    expect(
+      testOp<{ a: 1, b: 1, c: 1, d: { e: 1, f: 1 } }>(
+        fields('*'),
+        exclude(['a', 'b', 'c'])
+      )
+    ).toEqual('fields *; exclude a,b,c;');
+
+    // TS
+
+    const y = request<{ a: 1, b: 1, c: 1 }>().pipe(
+      fields('*'),
+      exclude(['b', 'c'])
+    )
+    // no error
+    const _y1: InferBuilder<typeof y> = { a: 1 };
+    // @ts-expect-error object may only specify known properties
+    const _y2: InferBuilder<typeof y> = { b: 1 };
   });
 
   test('limit & offest', function () {

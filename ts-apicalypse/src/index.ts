@@ -29,9 +29,9 @@ export type {
   WhereInFlags,
   NamedBuilderOperator,
 } from "./types";
-export { and, exclude, fields, groupWhere, limit, offset, or, search, sort, where, whereIn } from "./builder";
+export { and, exclude, fields, limit, offset, or, search, sort, where, whereIn } from "./builder";
 
-export function apicalypse<T>(builder: Stringifiable, options: Options = {}) {
+function apicalypse<T>(builder: Stringifiable, options: Options = {}) {
 
   function getAxiosRequestConfig(url: string) {
     const opts: Options = {
@@ -60,6 +60,21 @@ export function apicalypse<T>(builder: Stringifiable, options: Options = {}) {
   }
 }
 
+/**
+ * Prepare a request to an apicalypse endpoint.
+ *
+ * @example
+ * ```ts
+ * // MyType is optional but recommended, so that results are properly typed
+ * request<MyType>().pipe(
+ *   fields(["name"]),
+ *   sort("created_at", "asc"),
+ *   where("created_at", ">",  now),
+ * )
+ * .execute('http:...')
+ * .then(results => ...);
+ * ```
+ */
 export function request<T>() {
   function _pipe<A>(...steps: (BuilderOperator<T, T> | BuilderOperatorNarrow<T, A>)[]) {
     return steps.reduce((output, f) => f(output), newBuilder())
@@ -95,6 +110,34 @@ export function request<T>() {
   }
 }
 
+/**
+ * Prepare a multi-query request to an apicalypse endpoint.
+ *
+ * @example
+ * ```ts
+ * multi(
+ *   // MyType is optional but recommended, so that results are properly typed
+ *   request<MyType>()
+ *     .sub('endpoint', 'alias') // mandatory for multi requests
+ *     .pipe(
+ *       fields(["name"]),
+ *       sort("created_at", "asc"),
+ *       where("created_at", ">",  now),
+ *     ),
+ *   request<MyType>()
+ *     .sub('endpoint', 'alias2') // mandatory for multi requests
+ *     .pipe(
+ *       fields(["name"]),
+ *       sort("created_at", "asc"),
+ *       where("created_at", "<",  now),
+ *     )
+ * )
+ * .execute('http:...')
+ * .then(response => ...);
+ * ```
+ * @see {@link https://api-docs.igdb.com/?shell#multi-query}
+ * @param builders
+ */
 export function multi<T extends Record<any, any>, B extends Builder<T>[]>(...builders: B): Stringifiable & ExecutorMulti<B> {
   return {
     toApicalypseString() {
@@ -118,6 +161,40 @@ function newBuilder<T>(): Builder<T> {
   }
 }
 
+/**
+ * Narrow multi-query results types.
+ *
+ * @example
+ * ```ts
+ * interface MyType {
+ *   name: string,
+ *   created_at: number
+ * }
+ *
+ * multi(
+ *  request<MyType>().sub("games", "latest-games").pipe(
+ *    fields(["name"]),
+ *    sort("created_at", "desc"),
+ *    where("created_at", "<",  now),
+ *  ),
+ *  request<MyType>().sub("games", "coming-soon").pipe(
+ *    fields(["created_at"]),
+ *    sort("created_at", "desc"),
+ *    where("created_at", ">",  now),
+ *  )
+ * ).execute('http:...').then(response => {
+ *   for (const result of response.data) {
+ *     if (isNamed(result, 'latest-games')) {
+ *       result.name // result is of type `{ name: string }`
+ *     } else {
+ *       result.created_at  // result is of type `{ created_at: number }`
+ *     }
+ *   }
+ * });
+ * ```
+ * @param builder
+ * @param name
+ */
 export function isNamed<T extends NamedBuilder<any, string>, S extends string>(builder: ExecutorMultiMono<T>, name: S): builder is ExecutorMultiMono<Extract<T, NamedBuilder<any, S>>> {
   if (builder.name === name) {
     return true;
