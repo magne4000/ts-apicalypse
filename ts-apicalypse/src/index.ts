@@ -1,20 +1,35 @@
-import axios, { AxiosPromise, AxiosRequestConfig } from 'axios';
+import axios, { AxiosPromise } from 'axios';
 import {
   Builder,
   BuilderOperator,
   BuilderOperatorNarrow,
-  Executor,
   ExecutorMulti,
   ExecutorMultiMono,
   NamedBuilder,
-  NamedBuilderOperator,
+  Options,
+  Pipe,
+  PipeSub,
   Stringifiable
 } from "./types";
-import { toStringMulti, toStringSingle } from "./builder";
+import { query, toStringMulti, toStringSingle } from "./builder";
 
-interface Options extends AxiosRequestConfig {
-  queryMethod?: 'url' | 'body',
-}
+export {
+  Builder,
+  BuilderOperator,
+  BuilderOperatorNarrow,
+  ExecutorMulti,
+  ExecutorMultiMono,
+  NamedBuilder,
+  Options,
+  Pipe,
+  PipeSub,
+  Stringifiable,
+  Executor,
+  WhereFlags,
+  WhereInFlags,
+  NamedBuilderOperator,
+} from "./types";
+export { and, exclude, fields, groupWhere, limit, offset, or, search, sort, where, whereIn } from "./builder";
 
 export function apicalypse<T>(builder: Stringifiable, options: Options = {}) {
 
@@ -46,32 +61,37 @@ export function apicalypse<T>(builder: Stringifiable, options: Options = {}) {
 }
 
 export function request<T>() {
-  function pipe<A>(...steps: (BuilderOperator<T, T> | BuilderOperatorNarrow<T, A>)[]): Stringifiable & Executor<A> {
-    const builder = steps.reduce((output, f) => f(output), newBuilder())
+  function _pipe<A>(...steps: (BuilderOperator<T, T> | BuilderOperatorNarrow<T, A>)[]) {
+    return steps.reduce((output, f) => f(output), newBuilder())
+  }
+
+  const pipe: Pipe<T> = (...steps) => {
+    const builder = _pipe(...steps);
 
     return {
       execute(url: string, options: Options = {}) {
-        return apicalypse<A[]>(builder, options).execute(url);
+        return apicalypse(builder, options).execute(url) as any;
       },
 
       toApicalypseString() {
         return toStringSingle(builder);
-      }
+      },
+    }
+  }
+
+  const sub = <S extends string>(queryEndpoint: string, queryName: S) => {
+    const pipe: PipeSub<T, S> = (...steps) => {
+      return _pipe(query(queryEndpoint, queryName), ...steps) as NamedBuilder<T, S>;
+    };
+
+    return {
+      pipe,
     }
   }
 
   return {
     pipe,
-  }
-}
-
-export function sub<T>() {
-  function pipe<A, N extends string>(...steps: [NamedBuilderOperator<T, N>, ...(BuilderOperator<T, T> | BuilderOperatorNarrow<T, A>)[]]): NamedBuilder<A, N> {
-    return steps.reduce((output, f) => f(output), newBuilder()) as NamedBuilder<A, N>;
-  }
-
-  return {
-    pipe,
+    sub,
   }
 }
 

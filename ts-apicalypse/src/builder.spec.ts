@@ -1,6 +1,6 @@
-import { and, exclude, fields, limit, offset, or, query, search, sort, where, whereIn } from "./builder";
+import { and, exclude, fields, limit, offset, or, search, sort, where, whereIn } from "./builder";
 import { BuilderOperator, Executor, WhereFlags, WhereInFlags } from "./types";
-import { multi, request, sub } from "./index";
+import { isNamed, multi, request } from "./index";
 
 function testOp<T = any>(...opd: BuilderOperator<T, T>[]) {
   return request<T>().pipe(...opd).toApicalypseString();
@@ -177,14 +177,12 @@ describe('multi', function () {
   test('build a valid query', function () {
     const now = new Date().getTime();
     const test = multi(
-      sub().pipe(
-        query("games", "latest-games"),
+      request().sub("games", "latest-games").pipe(
         fields(["name"]),
         sort("created_at", "desc"),
         where("created_at", "<",  now),
       ),
-      sub().pipe(
-        query("games", "coming-soon"),
+      request().sub("games", "coming-soon").pipe(
         fields(["name"]),
         sort("created_at", "asc"),
         where("created_at", ">",  now),
@@ -198,36 +196,34 @@ describe('multi', function () {
     // TS
 
     const x = multi(
-      sub<{
+      request<{
         name: string,
         created_at: number
-      }>().pipe(
-        query("games", "latest-games"),
+      }>().sub("games", "latest-games").pipe(
         fields(["name", "created_at"]),
         sort("created_at", "desc"),
         where("created_at", "<",  now),
       ),
-      sub<{
+      request<{
         name: string,
         created_at: number
-      }>().pipe(
-        query("games", "coming-soon"),
+      }>().sub("games", "coming-soon").pipe(
         fields(["name"]),
         sort("created_at", "asc"),
         where("created_at", ">",  now),
       )
     );
 
-    sub().pipe(
-      // @ts-expect-error first parameter should be a NamedBuilder
-      fields(["name"]),
-    );
-
-    /*x.execute('').then(y => {
-      const h = y.data[0];
-      if (isNamed(h, 'latest-games')) {
-        h.result[0].created_at
-      }
-    })*/
+    function _() {
+      x.execute('').then(y => {
+        const h = y.data[0];
+        if (isNamed(h, 'latest-games')) {
+          h.result[0].created_at
+        } else {
+          // @ts-expect-error created_at is not available
+          h.result[0].created_at
+        }
+      })
+    }
   });
 });

@@ -1,5 +1,10 @@
 import type { DeepPick, DefaultGrammar, DeepPickPath } from "ts-deep-pick";
 import type { AxiosPromise } from "axios";
+import { AxiosRequestConfig } from "axios";
+
+export interface Options extends AxiosRequestConfig {
+  queryMethod?: 'url' | 'body',
+}
 
 export interface Stringifiable {
   toApicalypseString(): string;
@@ -25,8 +30,16 @@ export interface NamedBuilder<T, N extends string> extends Omit<Builder<T>, 'que
   queryName: N;
 }
 
+export interface Pipe<T> {
+  <A>(...steps: (BuilderOperator<T, T> | BuilderOperatorNarrow<T, A>)[]): Stringifiable & Executor<FallbackIfUnknown<A, T>>;
+}
+
+export type PipeSub<T, R extends string> = {
+  <A>(...steps: (BuilderOperator<T, T> | BuilderOperatorNarrow<T, A>)[]): NamedBuilder<FallbackIfUnknown<A, T>, R>;
+}
+
 export interface Executor<T> {
-  execute(url: string): AxiosPromise<T[]>
+  execute(url: string, options?: Options): AxiosPromise<T[]>
 }
 
 export type ExecutorMultiMono<T extends NamedBuilder<any, any>> = {
@@ -35,7 +48,7 @@ export type ExecutorMultiMono<T extends NamedBuilder<any, any>> = {
 };
 
 export interface ExecutorMulti<T extends Builder<any>[]> {
-  execute(url: string): AxiosPromise<T extends (infer S)[] ? ExecutorMultiMono<S extends NamedBuilder<any, any> ? S : never>[] : never>
+  execute(url: string, options?: Options): AxiosPromise<T extends (infer S)[] ? ExecutorMultiMono<S extends NamedBuilder<any, any> ? S : never>[] : never>
 }
 
 export interface BuilderOperator<T, R> {
@@ -74,6 +87,8 @@ export enum WhereInFlags {
   NOR = OR | 0x10, // !(...)
   EXACT = 0x80, // {...}
 }
+
+export type FallbackIfUnknown<T, F> = unknown extends T ? F : T;
 
 type MetaFlatKeyOf<T> = { [K in keyof T]: T[K] extends Record<string, any> ? keyof T[K] : void };
 type _FlatKeyOf<T, S = MetaFlatKeyOf<T>> =
