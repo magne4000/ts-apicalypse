@@ -1,21 +1,17 @@
 import { and, exclude, fields, limit, offset, or, search, sort, where, whereIn } from "./builder";
-import {
-  BuilderOperator,
-  Executor,
-  PickAndCastByValue,
-  PickByValue,
-  PickFlat,
-  R,
-  WhereFlags,
-  WhereInFlags
-} from "./types";
+import { BuilderOperator, PickAndCastByValue, PickByValue, PickFlat, R, WhereFlags, WhereInFlags } from "./types";
 import { isNamed, multi, request } from "./index";
+import { AxiosPromise } from "axios";
 
 function testOp<T extends R = any>(...opd: BuilderOperator<T, T>[]) {
   return request<T>().pipe(...opd).toApicalypseString();
 }
 
-type InferBuilder<X> = X extends Executor<infer A> ? A : never;
+function nocall<T extends () => any>(_: T): ReturnType<T> {
+  return undefined as unknown as ReturnType<T>;
+}
+
+type InferBuilder<X> = X extends AxiosPromise<infer A> ? A : never;
 
 describe('operators', function () {
   test('fields', function () {
@@ -41,22 +37,33 @@ describe('operators', function () {
 
 
 
-    const x = request<{ id: number, a: 1, b: 1, c: 1 }>().pipe(
+    const x = nocall(() => request<{ id: number, a: 1, b: 1, c: 1 }>().pipe(
       sort('c'),
       fields(['a', 'b']),
       sort('c')
-    );
+    ).execute(''));
 
     // no error
-    const _x1: InferBuilder<typeof x> = { id: 1, a: 1, b: 1 };
-    // @ts-expect-error object may only specify known properties
-    const _x2: InferBuilder<typeof x> = { id: 1, a: 1, b: 1, c: 1 };
+    const _x1: InferBuilder<typeof x> = [{ id: 1, a: 1, b: 1 }];
+    const _x2: InferBuilder<typeof x> = [{
+      id: 1,
+      a: 1,
+      b: 1,
+      // @ts-expect-error object may only specify known properties
+      c: 1
+    }];
 
-    const y = request<{ id: number, a: 1, b: 1, c: 1 }>().pipe(
+    const y = nocall(() => request<{ id: number, a: 1, b: 1, c: 1 }>().pipe(
       sort('c')
-    );
+    ).execute(''));
     // no error
-    const _y1: InferBuilder<typeof y> = { id: 1 };
+    const _y1: InferBuilder<typeof y> = [{ id: 1 }];
+
+    const z = nocall(() => request<{ id: number, a: 1, b: 1, c: 1 }, 'count'>().pipe().execute(''));
+    // no error
+    const _z1: InferBuilder<typeof z> = { count: 1 };
+    // @ts-expect-error
+    const _z2: InferBuilder<typeof z> = { id: 1 };
   });
 
   test('exclude', function () {
@@ -69,14 +76,17 @@ describe('operators', function () {
 
     // TS
 
-    const y = request<{ id: number, a: 1, b: 1, c: 1 }>().pipe(
+    const y = nocall(() => request<{ id: number, a: 1, b: 1, c: 1 }>().pipe(
       fields('*'),
       exclude(['b', 'c'])
-    )
+    ).execute(''))
     // no error
-    const _y1: InferBuilder<typeof y> = { id: 1, a: 1 };
-    // @ts-expect-error object may only specify known properties
-    const _y2: InferBuilder<typeof y> = { id: 1, b: 1 };
+    const _y1: InferBuilder<typeof y> = [{ id: 1, a: 1 }];
+    const _y2: InferBuilder<typeof y> = [{
+      id: 1,
+      // @ts-expect-error object may only specify known properties
+      b: 1
+    }];
   });
 
   test('limit & offest', function () {
@@ -247,20 +257,31 @@ describe('multi', function () {
         fields(["name"]),
         sort("created_at", "asc"),
         where("created_at", ">",  now),
-      )
+      ),
+      request<{
+        id: number,
+        name: string,
+        created_at: number
+      }, 'count'>().sub("games", "nb").pipe()
     );
 
-    function _() {
+    nocall(() => {
       x.execute('').then(y => {
         const h = y.data[0];
         if (isNamed(h, 'latest-games')) {
           h.result[0].created_at
+        } else if (isNamed(h, 'nb')) {
+          h.count
+          // @ts-expect-error no result
+          h.result
         } else {
           // @ts-expect-error created_at is not available
           h.result[0].created_at
+          // @ts-expect-error no count
+          h.count
         }
       })
-    }
+    });
   });
 });
 

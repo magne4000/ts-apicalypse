@@ -8,7 +8,8 @@ import type {
   NamedBuilder,
   Options,
   Pipe,
-  PipeSub, R,
+  PipeSub,
+  R,
   Stringifiable
 } from "./types";
 import { query, toStringMulti, toStringSingle } from "./builder";
@@ -77,12 +78,12 @@ function apicalypse<T>(builder: Stringifiable, options: Options = {}) {
  * .then(results => ...);
  * ```
  */
-export function request<T extends R>() {
-  function _pipe<A>(...steps: (BuilderOperator<T, T> | BuilderOperatorNarrow<T, A>)[]) {
+export function request<T extends R, mode extends 'result' | 'count' = 'result'>() {
+  function _pipe<A, B>(...steps: (BuilderOperator<T, T> | BuilderOperatorNarrow<T, A>)[]) {
     return steps.reduce((output, f) => f(output), newBuilder())
   }
 
-  const pipe: Pipe<T> = (...steps) => {
+  const pipe: Pipe<T, mode> = (...steps) => {
     const builder = _pipe(...steps);
 
     return {
@@ -97,8 +98,8 @@ export function request<T extends R>() {
   }
 
   const sub = <S extends string>(queryEndpoint: string, queryName: S) => {
-    const pipe: PipeSub<T, S> = (...steps) => {
-      return _pipe(query(queryEndpoint, queryName), ...steps) as NamedBuilder<T, S>;
+    const pipe: PipeSub<T, S, mode> = (...steps) => {
+      return _pipe(query(queryEndpoint, queryName), ...steps) as any;
     };
 
     return {

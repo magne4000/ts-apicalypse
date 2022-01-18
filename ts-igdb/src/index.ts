@@ -1,5 +1,5 @@
 import type { Builder, Options, Stringifiable } from "ts-apicalypse";
-import apicalypse from "ts-apicalypse";
+import { multi as multiA, request as requestA } from "ts-apicalypse";
 import type { ExecutorMulti, IgdbRequest, Routes } from "./types";
 
 export type {
@@ -28,7 +28,7 @@ function buildUrl(key: string) {
 }
 
 export function request<K extends keyof Routes>(key: K): IgdbRequest<K> {
-  const x = apicalypse.request<Routes[K]>();
+  const x = requestA<Routes[K]>();
 
   return {
     pipe(...steps) {
@@ -48,7 +48,7 @@ export function request<K extends keyof Routes>(key: K): IgdbRequest<K> {
 }
 
 export function multi<B extends Builder<any>[]>(...builders: B): Stringifiable & ExecutorMulti<B> {
-  const ex = apicalypse.multi(...builders);
+  const ex = multiA(...builders);
   return {
     ...ex,
     execute(options: Options = {}) {
@@ -56,5 +56,3 @@ export function multi<B extends Builder<any>[]>(...builders: B): Stringifiable &
     }
   }
 }
-
-const x = multi(request('platforms').alias('b').pipe());

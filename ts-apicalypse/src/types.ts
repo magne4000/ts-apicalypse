@@ -34,25 +34,39 @@ export interface NarrowBuilder<T> extends Builder<T> {
   __narrow: true
 }
 
-export interface Pipe<T extends R, ID extends string = 'id'> {
-  <A>(...steps: (BuilderOperator<T, T> | BuilderOperatorNarrow<T, A>)[]): Stringifiable & Executor<FallbackIfUnknown<A, Pick<T, ID>>>;
+export interface CountBuilder<T> extends Builder<T> {
+  __count: true
 }
 
-export type PipeSub<T extends R, Ret extends string, ID extends string = 'id'> = {
-  <A>(...steps: (BuilderOperator<T, T> | BuilderOperatorNarrow<T, A>)[]): NamedBuilder<FallbackIfUnknown<A, Pick<T, ID>>, Ret>;
+export interface Pipe<T extends R, mode extends 'result' | 'count' = 'result', ID extends string = 'id'> {
+  <A>(...steps: (BuilderOperator<T, T> | BuilderOperatorNarrow<T, A>)[]):
+    Stringifiable & Executor<FallbackIfUnknown<A, Pick<T, ID>>, mode>;
 }
 
-export interface Executor<T> {
-  execute(url: string, options?: Options): AxiosPromise<T[]>
+export type PipeSub<T extends R, Ret extends string, mode extends 'result' | 'count' = 'result', ID extends string = 'id'> = {
+  <A>(...steps: (BuilderOperator<T, T> | BuilderOperatorNarrow<T, A>)[]):
+    NamedBuilder<FallbackIfUnknown<A, Pick<T, ID>>, Ret> & (mode extends 'count' ? CountBuilder<any> : {});
+}
+
+export interface Executor<T, mode extends 'result' | 'count' = 'result'> {
+  execute(url: string, options?: Options): AxiosPromise<{
+    result: T[],
+    count: { count: number },
+  }[mode]>
 }
 
 export type ExecutorMultiMono<T extends NamedBuilder<any, any>> = {
   name: T["queryName"],
-  result: T extends NamedBuilder<infer S, any> ? S[] : never
-};
+} & (
+  T extends CountBuilder<any> ?
+  { count: number } :
+  { result: T extends NamedBuilder<infer S, any> ? S[] : never }
+);
 
 export interface ExecutorMulti<T extends Builder<any>[]> {
-  execute(url: string, options?: Options): AxiosPromise<T extends (infer S)[] ? ExecutorMultiMono<S extends NamedBuilder<any, any> ? S : never>[] : never>
+  execute(url: string, options?: Options):
+    AxiosPromise<T extends (infer S)[] ? ExecutorMultiMono<S extends NamedBuilder<any, any> ? S : never>[] : never>
+
 }
 
 export interface BuilderOperator<T, R> {
@@ -60,8 +74,11 @@ export interface BuilderOperator<T, R> {
 }
 
 export interface BuilderOperatorNarrow<T, R> {
-  __narrow: true
   (builder: Builder<T>): NarrowBuilder<R>
+}
+
+export interface BuilderOperatorCount<T> {
+  (builder: Builder<T>): CountBuilder<T>
 }
 
 export interface NamedBuilderOperator<T, N extends string> {
@@ -93,6 +110,7 @@ export enum WhereInFlags {
 }
 
 export type FallbackIfUnknown<T, F> = unknown extends T ? F : T;
+export type ValueIfUnknown<T, A, B> = unknown extends T ? A : B;
 
 export type R = { id?: any } & Record<string, any>
 
