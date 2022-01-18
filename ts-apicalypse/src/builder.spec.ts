@@ -11,7 +11,7 @@ import {
 } from "./types";
 import { isNamed, multi, request } from "./index";
 
-function testOp<T = any>(...opd: BuilderOperator<T, T>[]) {
+function testOp<T extends R = any>(...opd: BuilderOperator<T, T>[]) {
   return request<T>().pipe(...opd).toApicalypseString();
 }
 
@@ -24,36 +24,44 @@ describe('operators', function () {
     // TS
 
     expect(
-      testOp<{ a: 1, b: 1, c: 1, d: { id: number, e: 1, f: 1 } }>(
+      testOp<{ id: number, a: 1, b: 1, c: 1, d: { id: number, e: 1, f: 1 } }>(
         fields(['a', 'b', 'c', 'd.*', 'd.f'])
       )
     ).toEqual('fields a,b,c,d.*,d.f;');
     expect(
-      testOp<{ a: 1, b: 1, c: 1 }>(
+      testOp<{ id: number, a: 1, b: 1, c: 1 }>(
         fields('*')
       )
     ).toEqual('fields *;');
 
-    request<{ a: 1, b: 1, c: 1 }>().pipe(
+    request<{ id: number, a: 1, b: 1, c: 1 }>().pipe(
       // @ts-expect-error
       fields(['d']),
     );
 
-    const x = request<{ a: 1, b: 1, c: 1 }>().pipe(
+
+
+    const x = request<{ id: number, a: 1, b: 1, c: 1 }>().pipe(
       sort('c'),
       fields(['a', 'b']),
       sort('c')
     );
 
     // no error
-    const _x1: InferBuilder<typeof x> = { a: 1, b: 1 };
+    const _x1: InferBuilder<typeof x> = { id: 1, a: 1, b: 1 };
     // @ts-expect-error object may only specify known properties
-    const _x2: InferBuilder<typeof x> = { a: 1, b: 1, c: 1 };
+    const _x2: InferBuilder<typeof x> = { id: 1, a: 1, b: 1, c: 1 };
+
+    const y = request<{ id: number, a: 1, b: 1, c: 1 }>().pipe(
+      sort('c')
+    );
+    // no error
+    const _y1: InferBuilder<typeof y> = { id: 1 };
   });
 
   test('exclude', function () {
     expect(
-      testOp<{ a: 1, b: 1, c: 1, d: { e: 1, f: 1 } }>(
+      testOp<{ id: number, a: 1, b: 1, c: 1, d: { e: 1, f: 1 } }>(
         fields('*'),
         exclude(['a', 'b', 'c'])
       )
@@ -61,14 +69,14 @@ describe('operators', function () {
 
     // TS
 
-    const y = request<{ a: 1, b: 1, c: 1 }>().pipe(
+    const y = request<{ id: number, a: 1, b: 1, c: 1 }>().pipe(
       fields('*'),
       exclude(['b', 'c'])
     )
     // no error
-    const _y1: InferBuilder<typeof y> = { a: 1 };
+    const _y1: InferBuilder<typeof y> = { id: 1, a: 1 };
     // @ts-expect-error object may only specify known properties
-    const _y2: InferBuilder<typeof y> = { b: 1 };
+    const _y2: InferBuilder<typeof y> = { id: 1, b: 1 };
   });
 
   test('limit & offest', function () {
@@ -81,9 +89,9 @@ describe('operators', function () {
 
     // TS
 
-    expect(testOp<{ name: string }>(sort("name"))).toEqual('sort name asc;');
+    expect(testOp<{ id: number, name: string }>(sort("name"))).toEqual('sort name asc;');
     expect(
-      testOp<{ name: string }>(
+      testOp<{ id: number, name: string }>(
         // @ts-expect-error
         sort("b")
       )
@@ -100,7 +108,7 @@ describe('operators', function () {
     // TS
 
     expect(
-      testOp<{a: '1' | '2', b: number}>(
+      testOp<{ id: number, a: '1' | '2', b: number }>(
         and(
           where('a', '=', '1'),
           where('b', '=', 2),
@@ -109,7 +117,7 @@ describe('operators', function () {
     ).toEqual('where (a = "1" & b = 2);');
 
     expect(
-      testOp<{a: '1' | '2', b: number}>(
+      testOp<{ id: number, a: '1' | '2', b: number }>(
         or(
           where('a', '=', '1'),
           // @ts-expect-error
@@ -121,7 +129,7 @@ describe('operators', function () {
     ).toEqual('where (a = "1" | b = 2 | c = 2);');
 
     // TS operators validity check
-    testOp<{a: '1' | '2', b: number, c: boolean}>(
+    testOp<{ id: number, a: '1' | '2', b: number, c: boolean }>(
       or(
         // STRING
         where('a', '=', '1'),
@@ -169,14 +177,14 @@ describe('operators', function () {
     // TS
 
     expect(
-      testOp<{a: '1' | '2', b: number}>(
+      testOp<{ id: number, a: '1' | '2', b: number }>(
         and(
           whereIn('a', ['1', '2'], WhereFlags.STRING | WhereInFlags.AND),
           whereIn('b', [2, 4], WhereInFlags.EXACT),
         )
       )
     ).toEqual('where (a = ["1","2"] & b = {2,4});');
-    testOp<{a: '1' | '2', b: number}>(
+    testOp<{ id: number, a: '1' | '2', b: number }>(
       // @ts-expect-error
       whereIn('a', [1, '2']),
       // @ts-expect-error
@@ -186,7 +194,7 @@ describe('operators', function () {
 
   test('complex where', function () {
     expect(
-      testOp<{a: '1' | '2', b: number}>(
+      testOp<{ id: number, a: '1' | '2', b: number }>(
         and(
           where('a', '=', '1'),
           or(
@@ -223,6 +231,7 @@ describe('multi', function () {
 
     const x = multi(
       request<{
+        id: number,
         name: string,
         created_at: number
       }>().sub("games", "latest-games").pipe(
@@ -231,6 +240,7 @@ describe('multi', function () {
         where("created_at", "<",  now),
       ),
       request<{
+        id: number,
         name: string,
         created_at: number
       }>().sub("games", "coming-soon").pipe(
@@ -257,19 +267,19 @@ describe('multi', function () {
 describe.skip('types only', () => {
   type AssertEqual<T extends Expected, Expected> =
     Expected extends T ? true : Expected;
-  type DEMO = { a: 1, b: 3, c: { id: number, d: 3 }[], e: { id: number, f: 8 } };
+  type DEMO = { id: number, a: 1, b: 3, c: { id: number, d: 3 }[], e: { id: number, f: 8 } };
 
-  var _: AssertEqual<{ c: { id: number, d: 3 }[], e: { id: number, f: 8 } }, PickByValue<DEMO, R | R[]>>
-  var _: AssertEqual<{ c: number[], e: number }, PickAndCastByValue<DEMO, R | R[], 'id'>>
-  var _: AssertEqual<{ a: 1 }, PickFlat<DEMO, ['a']>> = true;
-  var _: AssertEqual<{ a: 1, b: 3 }, PickFlat<DEMO, ['a', 'b']>> = true;
-  var _: AssertEqual<{ c: { id: number, d: 3 }[] }, PickFlat<DEMO, ['c.*']>> = true;
-  var _: AssertEqual<{ a: 1, c: { id: number, d: 3 }[] }, PickFlat<DEMO, ['a', 'c.*']>> = true;
-  var _: AssertEqual<{ c: number[] }, PickFlat<DEMO, ['c']>> = true;
-  var _: AssertEqual<{ a: 1, c: number[] }, PickFlat<DEMO, ['a', 'c']>> = true;
-  var _: AssertEqual<{ e: { id: number, f: 8 } }, PickFlat<DEMO, ['e.*']>> = true;
-  var _: AssertEqual<{ a: 1, e: { id: number, f: 8 } }, PickFlat<DEMO, ['a', 'e.*']>> = true;
-  var _: AssertEqual<{ e: number }, PickFlat<DEMO, ['e']>> = true;
-  var _: AssertEqual<{ a: 1, e: number }, PickFlat<DEMO, ['a', 'e']>> = true;
-  var _: AssertEqual<{ a: 1, b: 3, c: number[], e: number }, PickFlat<DEMO, '*'>> = true;
+  var _: AssertEqual<{ c: { id: number, d: 3 }[], e: { id: number, f: 8 } }, PickByValue<DEMO, R | R[]>> = true;
+  var _: AssertEqual<{ c: number[], e: number }, PickAndCastByValue<DEMO, R | R[], 'id'>> = true;
+  var _: AssertEqual<{ id: number, a: 1 }, PickFlat<DEMO, ['a']>> = true;
+  var _: AssertEqual<{ id: number, a: 1, b: 3 }, PickFlat<DEMO, ['a', 'b']>> = true;
+  var _: AssertEqual<{ id: number, c: { id: number, d: 3 }[] }, PickFlat<DEMO, ['c.*']>> = true;
+  var _: AssertEqual<{ id: number, a: 1, c: { id: number, d: 3 }[] }, PickFlat<DEMO, ['a', 'c.*']>> = true;
+  var _: AssertEqual<{ id: number, c: number[] }, PickFlat<DEMO, ['c']>> = true;
+  var _: AssertEqual<{ id: number, a: 1, c: number[] }, PickFlat<DEMO, ['a', 'c']>> = true;
+  var _: AssertEqual<{ id: number, e: { id: number, f: 8 } }, PickFlat<DEMO, ['e.*']>> = true;
+  var _: AssertEqual<{ id: number, a: 1, e: { id: number, f: 8 } }, PickFlat<DEMO, ['a', 'e.*']>> = true;
+  var _: AssertEqual<{ id: number, e: number }, PickFlat<DEMO, ['e']>> = true;
+  var _: AssertEqual<{ id: number, a: 1, e: number }, PickFlat<DEMO, ['a', 'e']>> = true;
+  var _: AssertEqual<{ id: number, a: 1, b: 3, c: number[], e: number }, PickFlat<DEMO, '*'>> = true;
 });

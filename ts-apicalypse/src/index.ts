@@ -8,7 +8,7 @@ import type {
   NamedBuilder,
   Options,
   Pipe,
-  PipeSub,
+  PipeSub, R,
   Stringifiable
 } from "./types";
 import { query, toStringMulti, toStringSingle } from "./builder";
@@ -77,7 +77,7 @@ function apicalypse<T>(builder: Stringifiable, options: Options = {}) {
  * .then(results => ...);
  * ```
  */
-export function request<T>() {
+export function request<T extends R>() {
   function _pipe<A>(...steps: (BuilderOperator<T, T> | BuilderOperatorNarrow<T, A>)[]) {
     return steps.reduce((output, f) => f(output), newBuilder())
   }
@@ -140,7 +140,7 @@ export function request<T>() {
  * @see {@link https://api-docs.igdb.com/?shell#multi-query}
  * @param builders
  */
-export function multi<T extends Record<any, any>, B extends Builder<T>[]>(...builders: B): Stringifiable & ExecutorMulti<B> {
+export function multi<T extends R, B extends Builder<T>[]>(...builders: B): Stringifiable & ExecutorMulti<B> {
   return {
     toApicalypseString() {
       return toStringMulti(builders);

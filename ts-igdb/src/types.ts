@@ -10,7 +10,7 @@ import type {
   Stringifiable
 } from "ts-apicalypse";
 import type { proto } from "../proto/compiled";
-import type { FallbackIfUnknown } from "ts-apicalypse/dist/types";
+import type { FallbackIfUnknown, R } from "ts-apicalypse/dist/types";
 
 export interface Executor<T> {
   execute(options?: Options): AxiosPromise<T[]>
@@ -20,11 +20,11 @@ export interface ExecutorMulti<T extends Builder<any>[]> {
   execute(options?: Options): AxiosPromise<T extends (infer S)[] ? ExecutorMultiMono<S extends NamedBuilder<any, any> ? S : never>[] : never>
 }
 
-export interface Pipe<T> {
-  <A>(...steps: (BuilderOperator<T, T> | BuilderOperatorNarrow<T, A>)[]): Stringifiable & Executor<FallbackIfUnknown<A, T>>;
+export interface Pipe<T extends R, ID extends string = 'id'> {
+  <A>(...steps: (BuilderOperator<T, T> | BuilderOperatorNarrow<T, A>)[]): Stringifiable & Executor<FallbackIfUnknown<A, Pick<T, ID>>>
 }
 
-export type Sub<T> = <S extends string>(alias: S) => {
+export type Sub<T extends R> = <S extends string>(alias: S) => {
   pipe: PipeSub<T, S>;
 }
 

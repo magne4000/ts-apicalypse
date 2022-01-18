@@ -30,12 +30,16 @@ export interface NamedBuilder<T, N extends string> extends Omit<Builder<T>, 'que
   queryName: N;
 }
 
-export interface Pipe<T> {
-  <A>(...steps: (BuilderOperator<T, T> | BuilderOperatorNarrow<T, A>)[]): Stringifiable & Executor<FallbackIfUnknown<A, T>>;
+export interface NarrowBuilder<T> extends Builder<T> {
+  __narrow: true
 }
 
-export type PipeSub<T, R extends string> = {
-  <A>(...steps: (BuilderOperator<T, T> | BuilderOperatorNarrow<T, A>)[]): NamedBuilder<FallbackIfUnknown<A, T>, R>;
+export interface Pipe<T extends R, ID extends string = 'id'> {
+  <A>(...steps: (BuilderOperator<T, T> | BuilderOperatorNarrow<T, A>)[]): Stringifiable & Executor<FallbackIfUnknown<A, Pick<T, ID>>>;
+}
+
+export type PipeSub<T extends R, Ret extends string, ID extends string = 'id'> = {
+  <A>(...steps: (BuilderOperator<T, T> | BuilderOperatorNarrow<T, A>)[]): NamedBuilder<FallbackIfUnknown<A, Pick<T, ID>>, Ret>;
 }
 
 export interface Executor<T> {
@@ -57,7 +61,7 @@ export interface BuilderOperator<T, R> {
 
 export interface BuilderOperatorNarrow<T, R> {
   __narrow: true
-  (builder: Builder<T>): Builder<R>
+  (builder: Builder<T>): NarrowBuilder<R>
 }
 
 export interface NamedBuilderOperator<T, N extends string> {
@@ -90,7 +94,7 @@ export enum WhereInFlags {
 
 export type FallbackIfUnknown<T, F> = unknown extends T ? F : T;
 
-export type R = { id: number } & Record<string, any>
+export type R = { id?: any } & Record<string, any>
 
 type MetaFlatKeyOf<T> = { [K in keyof T]: T[K] extends R[] ? keyof T[K][number] : T[K] extends R ? keyof T[K] : void };
 type _FlatKeyOf<T, S = MetaFlatKeyOf<T>> =
@@ -131,12 +135,12 @@ type _EnsureDeepPickPath2<T, K> =
 type _EnsureDeepPickPath<T, K> =
   Extract<K, DeepPickPath<T, G>>;
 
-export type PickFlat<T, K extends FlatKeyOf<T>[] | '*', ID = 'id'> =
+export type PickFlat<T, K extends FlatKeyOf<T>[] | '*', ID extends string = 'id'> =
   K extends '*' ?
     ComputeRaw<OmitByValue<T, R | R[]> & PickAndCastByValue<T, R | R[], ID>> :
   K extends FlatKeyOf<T>[] ?
     ComputeRaw<
-      DeepPickG<T, _EnsureDeepPickPath2<T, K[number]>> &
-      DeepPickG<PickAndCastByValue<T, R | R[], 'id'>, _EnsureDeepPickPath<_PickAndCastByValue<T, R | R[], 'id'>, K[number]>>
+      DeepPickG<T, _EnsureDeepPickPath2<T, K[number] | ID>> &
+      DeepPickG<PickAndCastByValue<T, R | R[], ID>, _EnsureDeepPickPath<_PickAndCastByValue<T, R | R[], ID>, K[number] | ID>>
     > :
     never;
