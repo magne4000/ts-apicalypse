@@ -21,10 +21,14 @@ describe('response types', function () {
 
   test('games/count', async () => {
     const r1 = nocall(() => request('games').pipe(limit(2)).execute());
-    const r2 = nocall(() => multi(request('games').alias('alias').pipe(limit(1))).execute());
+    const r2 = nocall(() => request('games/count').pipe().execute());
+    const r3 = nocall(() => multi(request('games').alias('alias').pipe(limit(1))).execute());
+    const r4 = nocall(() => multi(request('games/count').alias('alias').pipe()).execute());
 
     var _: AssertEqual<Pick<proto.IGame, 'id'>[], typeof r1> = true;
-    var _: AssertEqual<{ name: 'alias', result: Pick<proto.IGame, 'id'>[] }[], typeof r2> = true;
+    var _: AssertEqual<{ count: number }, typeof r2> = true;
+    var _: AssertEqual<{ name: 'alias', result: Pick<proto.IGame, 'id'>[] }[], typeof r3> = true;
+    var _: AssertEqual<{ name: 'alias', count: number }[], typeof r4> = true;
 
     expect(1).toBe(1);
   });

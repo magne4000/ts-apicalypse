@@ -12,28 +12,37 @@ import type {
 import type { proto } from "../proto/compiled";
 import type { FallbackIfUnknown, R } from "ts-apicalypse/dist/types";
 
-export interface Executor<T> {
-  execute(options?: Options): AxiosPromise<T[]>
+export interface Executor<T, mode extends 'result' | 'count' = 'result'> {
+  execute(options?: Options): AxiosPromise<{
+    result: T[],
+    count: { count: number },
+  }[mode]>
 }
 
 export interface ExecutorMulti<T extends Builder<any>[]> {
   execute(options?: Options): AxiosPromise<T extends (infer S)[] ? ExecutorMultiMono<S extends NamedBuilder<any, any> ? S : never>[] : never>
 }
 
-export interface Pipe<T extends R, ID extends string = 'id'> {
-  <A>(...steps: (BuilderOperator<T, T> | BuilderOperatorNarrow<T, A>)[]): Stringifiable & Executor<FallbackIfUnknown<A, Pick<T, ID>>>
+export interface Pipe<T extends R, mode extends 'result' | 'count' = 'result', ID extends string = 'id'> {
+  <A>(...steps: (BuilderOperator<T, T> | BuilderOperatorNarrow<T, A>)[]): Stringifiable & Executor<FallbackIfUnknown<A, Pick<T, ID>>, mode>
 }
 
-export type Sub<T extends R> = <S extends string>(alias: S) => {
-  pipe: PipeSub<T, S>;
+export type Sub<T extends R, mode extends 'result' | 'count' = 'result'> = <S extends string>(alias: S) => {
+  pipe: PipeSub<T, S, mode>;
 }
 
-export interface IgdbRequest<K extends keyof Routes> {
-  pipe: Pipe<Routes[K]>;
-  alias: Sub<Routes[K]>;
+export interface IgdbRequest<K extends keyof Routes, mode extends 'result' | 'count' = 'result'> {
+  pipe: Pipe<Routes[K], mode>;
+  alias: Sub<Routes[K], mode>;
 }
 
-export interface Routes {
+export type InferMode<T extends string> = T extends `${string}/count` ? 'count' : 'result';
+
+export type Routes = RawRoutes & {
+  [K in keyof RawRoutes as `${K}/count`]: RawRoutes[K]
+};
+
+export interface RawRoutes {
   age_ratings: proto.IAgeRating;
   age_rating_content_descriptions: proto.IAgeRatingContentDescription;
   alternative_names: proto.IAlternativeName;

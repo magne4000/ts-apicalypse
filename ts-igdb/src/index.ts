@@ -1,6 +1,7 @@
 import type { Builder, Options, Stringifiable } from "ts-apicalypse";
 import { multi as multiA, request as requestA } from "ts-apicalypse";
 import type { ExecutorMulti, IgdbRequest, Routes } from "./types";
+import { InferMode } from "./types";
 
 export type {
   Builder,
@@ -27,8 +28,8 @@ function buildUrl(key: string) {
   return `${BASE_URL}/${key}`
 }
 
-export function request<K extends keyof Routes>(key: K): IgdbRequest<K> {
-  const x = requestA<Routes[K]>();
+export function request<K extends keyof Routes>(key: K): IgdbRequest<K, InferMode<K>> {
+  const x = requestA<Routes[K], InferMode<K>>();
 
   return {
     pipe(...steps) {
