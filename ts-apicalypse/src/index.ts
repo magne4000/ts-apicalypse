@@ -25,9 +25,11 @@ export type {
   PipeSub,
   Stringifiable,
   Executor,
+  NamedBuilderOperator,
+} from "./types";
+export {
   WhereFlags,
   WhereInFlags,
-  NamedBuilderOperator,
 } from "./types";
 export { and, exclude, fields, limit, offset, or, search, sort, where, whereIn } from "./builder";
 

@@ -90,7 +90,9 @@ export enum WhereInFlags {
 
 export type FallbackIfUnknown<T, F> = unknown extends T ? F : T;
 
-type MetaFlatKeyOf<T> = { [K in keyof T]: T[K] extends Record<string, any> ? keyof T[K] : void };
+export type R = { id: number } & Record<string, any>
+
+type MetaFlatKeyOf<T> = { [K in keyof T]: T[K] extends R[] ? keyof T[K][number] : T[K] extends R ? keyof T[K] : void };
 type _FlatKeyOf<T, S = MetaFlatKeyOf<T>> =
   { [K in Extract<keyof S, string>]: S[K] extends void ? K : (K | `${K}.${Extract<S[K], string>}` | `${K}.*`) };
 export type FlatKeyOf<T, S = _FlatKeyOf<T>> = S[keyof S];
@@ -103,46 +105,38 @@ interface G extends DefaultGrammar {
 
 type ComputeRaw<A extends any> = {[K in keyof A]: A[K]} & unknown
 
-type RA = Record<any, any>[];
+type TypeOfKey<T, K> = T extends (infer A)[] ? K extends keyof A ? A[K][] : never : K extends keyof T ? T[K] : never;
 
-type _PickAndCastByValue<Base, Condition> = {
-  [Key in keyof Base]: Base[Key] extends Condition ? number[] : never
+type _PickAndCastByValue<Base, Condition, Key> = {
+  [K in keyof Base]: Base[K] extends Condition ? TypeOfKey<Base[K], Key> : never
 };
 type ExcludeNeverProps<T> =
   { [K in keyof T]: T[K] extends never ? never : K }[keyof T]
-type PickAndCastByValue<Base, Condition, S = _PickAndCastByValue<Base, Condition>> = Pick<S, ExcludeNeverProps<S>>;
+export type PickAndCastByValue<Base, Condition, Key, S = _PickAndCastByValue<Base, Condition, Key>> = Pick<S, ExcludeNeverProps<S>>;
 
 type OmitByValue<Base, Condition> = Pick<Base, {
   [Key in keyof Base]: Base[Key] extends Condition ? never : Key
 }[keyof Base]>;
 
-type PickByValue<Base, Condition> = Pick<Base, {
+export type PickByValue<Base, Condition> = Pick<Base, {
   [Key in keyof Base]: Base[Key] extends Condition ? Key : never
 }[keyof Base]>;
 
-type DeepPickG<T, K extends DeepPickPath<T, G>> = DeepPick<T, K, G>;
-type _CastDeep<T> = T extends `${infer A}.*` ? A : T;
+type DeepPickG<T, K extends DeepPickPath<T, G>> = [K] extends [never] ? {}  : DeepPick<T, K, G>;
+type CastStar<T> = T extends `${infer A}.*` ? A : T;
 
 type _EnsureDeepPickPath2<T, K> =
-  Extract<_CastDeep<Exclude<K, keyof PickByValue<T, RA>>>, DeepPickPath<T, G>>;
+  Extract<CastStar<Exclude<K, keyof PickByValue<T, R | R[]>>>, DeepPickPath<T, G>>;
 
 type _EnsureDeepPickPath<T, K> =
   Extract<K, DeepPickPath<T, G>>;
 
-export type PickFlat<T, K extends FlatKeyOf<T>[] | '*'> =
+export type PickFlat<T, K extends FlatKeyOf<T>[] | '*', ID = 'id'> =
   K extends '*' ?
-    ComputeRaw<OmitByValue<T, RA> & PickAndCastByValue<T, RA>> :
+    ComputeRaw<OmitByValue<T, R | R[]> & PickAndCastByValue<T, R | R[], ID>> :
   K extends FlatKeyOf<T>[] ?
     ComputeRaw<
-      DeepPickG<T, _EnsureDeepPickPath2<T, K[keyof K]>> &
-      DeepPickG<PickAndCastByValue<T, RA>, _EnsureDeepPickPath<_PickAndCastByValue<T, RA>, K[keyof K]>>
+      DeepPickG<T, _EnsureDeepPickPath2<T, K[number]>> &
+      DeepPickG<PickAndCastByValue<T, R | R[], 'id'>, _EnsureDeepPickPath<_PickAndCastByValue<T, R | R[], 'id'>, K[number]>>
     > :
     never;
-
-
-type DEMO = { a: 1, b: 3, c: { d: 3 }[] };
-type X = PickFlat<DEMO, ['a', 'c.*']>
-type X2 = PickFlat<DEMO, ['a', 'c']>
-type X3 = PickFlat<DEMO, '*'>
-type F = _CastDeep<'c.*' | 'd'>;
-type Z = DeepPick<DEMO, 'c', G>

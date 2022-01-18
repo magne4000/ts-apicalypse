@@ -1,5 +1,14 @@
 import { and, exclude, fields, limit, offset, or, search, sort, where, whereIn } from "./builder";
-import { BuilderOperator, Executor, WhereFlags, WhereInFlags } from "./types";
+import {
+  BuilderOperator,
+  Executor,
+  PickAndCastByValue,
+  PickByValue,
+  PickFlat,
+  R,
+  WhereFlags,
+  WhereInFlags
+} from "./types";
 import { isNamed, multi, request } from "./index";
 
 function testOp<T = any>(...opd: BuilderOperator<T, T>[]) {
@@ -15,7 +24,7 @@ describe('operators', function () {
     // TS
 
     expect(
-      testOp<{ a: 1, b: 1, c: 1, d: { e: 1, f: 1 } }>(
+      testOp<{ a: 1, b: 1, c: 1, d: { id: number, e: 1, f: 1 } }>(
         fields(['a', 'b', 'c', 'd.*', 'd.f'])
       )
     ).toEqual('fields a,b,c,d.*,d.f;');
@@ -48,7 +57,7 @@ describe('operators', function () {
         fields('*'),
         exclude(['a', 'b', 'c'])
       )
-    ).toEqual('fields *; exclude a,b,c;');
+    ).toEqual('fields *;exclude a,b,c;');
 
     // TS
 
@@ -243,4 +252,24 @@ describe('multi', function () {
       })
     }
   });
+});
+
+describe.skip('types only', () => {
+  type AssertEqual<T extends Expected, Expected> =
+    Expected extends T ? true : Expected;
+  type DEMO = { a: 1, b: 3, c: { id: number, d: 3 }[], e: { id: number, f: 8 } };
+
+  var _: AssertEqual<{ c: { id: number, d: 3 }[], e: { id: number, f: 8 } }, PickByValue<DEMO, R | R[]>>
+  var _: AssertEqual<{ c: number[], e: number }, PickAndCastByValue<DEMO, R | R[], 'id'>>
+  var _: AssertEqual<{ a: 1 }, PickFlat<DEMO, ['a']>> = true;
+  var _: AssertEqual<{ a: 1, b: 3 }, PickFlat<DEMO, ['a', 'b']>> = true;
+  var _: AssertEqual<{ c: { id: number, d: 3 }[] }, PickFlat<DEMO, ['c.*']>> = true;
+  var _: AssertEqual<{ a: 1, c: { id: number, d: 3 }[] }, PickFlat<DEMO, ['a', 'c.*']>> = true;
+  var _: AssertEqual<{ c: number[] }, PickFlat<DEMO, ['c']>> = true;
+  var _: AssertEqual<{ a: 1, c: number[] }, PickFlat<DEMO, ['a', 'c']>> = true;
+  var _: AssertEqual<{ e: { id: number, f: 8 } }, PickFlat<DEMO, ['e.*']>> = true;
+  var _: AssertEqual<{ a: 1, e: { id: number, f: 8 } }, PickFlat<DEMO, ['a', 'e.*']>> = true;
+  var _: AssertEqual<{ e: number }, PickFlat<DEMO, ['e']>> = true;
+  var _: AssertEqual<{ a: 1, e: number }, PickFlat<DEMO, ['a', 'e']>> = true;
+  var _: AssertEqual<{ a: 1, b: 3, c: number[], e: number }, PickFlat<DEMO, '*'>> = true;
 });
