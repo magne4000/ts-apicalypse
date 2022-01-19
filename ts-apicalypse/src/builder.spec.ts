@@ -30,9 +30,11 @@ describe('operators', function () {
       )
     ).toEqual('fields *;');
 
-    request<{ id: number, a: 1, b: 1, c: 1 }>().pipe(
+    request<{ id: number, a: 1, b: 1, c: 1, d: { id: number, e: 1, f: 1 } }>().pipe(
       // @ts-expect-error
-      fields(['d']),
+      fields(['e']),
+      // @ts-expect-error
+      fields(['d.x']),
     );
 
 
@@ -269,12 +271,14 @@ describe('multi', function () {
       x.execute('').then(y => {
         const h = y.data[0];
         if (isNamed(h, 'latest-games')) {
+          h.result[0].name
           h.result[0].created_at
         } else if (isNamed(h, 'nb')) {
           h.count
           // @ts-expect-error no result
           h.result
-        } else {
+        } else if (isNamed(h, 'coming-soon')) {
+          h.result[0].name
           // @ts-expect-error created_at is not available
           h.result[0].created_at
           // @ts-expect-error no count
@@ -293,17 +297,17 @@ describe.skip('types only', () => {
 
   var _: AssertEqual<{ c: { id: number, d: 3 }[], e: { id: number, f: 8 } }, PickByValue<DEMO, R | R[]>> = true;
   var _: AssertEqual<{ c: number[], e: number }, PickAndCastByValue<DEMO, R | R[], 'id'>> = true;
-  var _: AssertEqual<{ id: number, a: 1 }, PickFlat<DEMO, ['a']>> = true;
-  var _: AssertEqual<{ id: number, a: 1, b: 3 }, PickFlat<DEMO, ['a', 'b']>> = true;
-  var _: AssertEqual<{ id: number, c: { id: number, d: 3 }[] }, PickFlat<DEMO, ['c.*']>> = true;
-  var _: AssertEqual<{ id: number, a: 1, c: { id: number, d: 3 }[] }, PickFlat<DEMO, ['a', 'c.*']>> = true;
-  var _: AssertEqual<{ id: number, c: number[] }, PickFlat<DEMO, ['c']>> = true;
-  var _: AssertEqual<{ id: number, a: 1, c: number[] }, PickFlat<DEMO, ['a', 'c']>> = true;
-  var _: AssertEqual<{ id: number, e: { id: number, f: 8 } }, PickFlat<DEMO, ['e.*']>> = true;
-  var _: AssertEqual<{ id: number, a: 1, e: { id: number, f: 8 } }, PickFlat<DEMO, ['a', 'e.*']>> = true;
-  var _: AssertEqual<{ id: number, e: number }, PickFlat<DEMO, ['e']>> = true;
-  var _: AssertEqual<{ id: number, a: 1, e: number }, PickFlat<DEMO, ['a', 'e']>> = true;
+  var _: AssertEqual<{ id: number, a: 1 }, PickFlat<DEMO, 'a'>> = true;
+  var _: AssertEqual<{ id: number, a: 1, b: 3 }, PickFlat<DEMO, 'a' | 'b'>> = true;
+  var _: AssertEqual<{ id: number, c: { id: number, d: 3 }[] }, PickFlat<DEMO, 'c.*'>> = true;
+  var _: AssertEqual<{ id: number, a: 1, c: { id: number, d: 3 }[] }, PickFlat<DEMO, 'a' | 'c.*'>> = true;
+  var _: AssertEqual<{ id: number, c: number[] }, PickFlat<DEMO, 'c'>> = true;
+  var _: AssertEqual<{ id: number, a: 1, c: number[] }, PickFlat<DEMO, 'a' | 'c'>> = true;
+  var _: AssertEqual<{ id: number, e: { id: number, f: 8 } }, PickFlat<DEMO, 'e.*'>> = true;
+  var _: AssertEqual<{ id: number, a: 1, e: { id: number, f: 8 } }, PickFlat<DEMO, 'a' | 'e.*'>> = true;
+  var _: AssertEqual<{ id: number, e: number }, PickFlat<DEMO, 'e'>> = true;
+  var _: AssertEqual<{ id: number, a: 1, e: number }, PickFlat<DEMO, 'a' | 'e'>> = true;
   var _: AssertEqual<{ id: number, a: 1, b: 3, c: number[], e: number }, PickFlat<DEMO, '*'>> = true;
   var _: AssertEqual<{ id?: number|null, a?: 1|null, b?: 3|null, c?: number[]|null, e?: number|null }, PickFlat<DEMO2, '*'>> = true;
-  var _: AssertEqual<{ c?: { id?: number|null, d?: 3|null }[]|null }, PickFlat<DEMO2, ['c.*']>> = true;
+  var _: AssertEqual<{ c?: { id?: number|null, d?: 3|null }[]|null }, PickFlat<DEMO2, 'c.*'>> = true;
 });

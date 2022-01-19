@@ -15,7 +15,7 @@
   },
   "devDependencies": {
     "@types/jest": "^27.4.0",
-    "ts-deep-pick": "^0.2.2",
+    "ts-toolbelt": "9.3.10",
     "typescript": "^4.5.4"
   }
 }

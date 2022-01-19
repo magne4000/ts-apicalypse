@@ -2,7 +2,6 @@ import { fields, limit } from "ts-apicalypse";
 import type { AxiosPromise } from "axios";
 import { proto } from "../proto/compiled";
 import { multi, request } from "./index";
-import { PickFlat } from "ts-apicalypse/dist/types";
 
 function nocall<T extends () => AxiosPromise<R>, R>(_: T): ReturnType<T> {
   return undefined as unknown as ReturnType<T>;

@@ -36,9 +36,11 @@ export function query<T extends Record<any, any>, S extends string>(queryEndpoin
  * @see {@link https://api-docs.igdb.com/?shell#fields}
  * @param fields
  */
-export function fields<T extends Record<any, any>, K extends FlatKeyOf<T>[] | '*'>(fields: K): BuilderOperatorNarrow<T, PickFlat<T, K>> {
-  if (Array.isArray(fields)) {
-    const fieldsString = fields.join(",").replace(/\s/g, '')
+export function fields<T extends Record<any, any>, K extends FlatKeyOf<T>>(fields: K[]): BuilderOperatorNarrow<T, PickFlat<T, K>>;
+export function fields<T extends Record<any, any>>(fields: '*'): BuilderOperatorNarrow<T, PickFlat<T, '*'>>;
+export function fields<T extends Record<any, any>, K extends string>(f: string | string[]): any {
+  if (Array.isArray(f)) {
+    const fieldsString = f.join(",").replace(/\s/g, '')
 
     return (builder => {
       return {
