@@ -110,13 +110,14 @@ export enum WhereInFlags {
 }
 
 export type FallbackIfUnknown<T, F> = unknown extends T ? F : T;
-export type ValueIfUnknown<T, A, B> = unknown extends T ? A : B;
+type ExcludeNullish<T> = Exclude<T, null | undefined>
+type ExtractNullish<T> = Extract<T, null | undefined>
 
 export type R = { id?: any } & Record<string, any>
 
-type MetaFlatKeyOf<T> = { [K in keyof T]: T[K] extends R[] ? keyof T[K][number] : T[K] extends R ? keyof T[K] : void };
+type MetaFlatKeyOf<T> = Required<{ [K in keyof T]: ExcludeNullish<T[K]> extends R[] ? keyof ExcludeNullish<T[K]>[number] : ExcludeNullish<T[K]> extends R ? keyof ExcludeNullish<T[K]> : false }>;
 type _FlatKeyOf<T, S = MetaFlatKeyOf<T>> =
-  { [K in Extract<keyof S, string>]: S[K] extends void ? K : (K | `${K}.${Extract<S[K], string>}` | `${K}.*`) };
+  Required<{ [K in Extract<keyof S, string>]: S[K] extends false ? K : (K | `${K}.${Extract<S[K], string>}` | `${K}.*`) }>;
 export type FlatKeyOf<T, S = _FlatKeyOf<T>> = S[keyof S];
 
 interface G extends DefaultGrammar {
@@ -127,21 +128,21 @@ interface G extends DefaultGrammar {
 
 type ComputeRaw<A extends any> = {[K in keyof A]: A[K]} & unknown
 
-type TypeOfKey<T, K> = T extends (infer A)[] ? K extends keyof A ? A[K][] : never : K extends keyof T ? T[K] : never;
+type TypeOfKey<T, K> = T extends number[] ? T : T extends (infer A)[] ? K extends keyof A ? ExcludeNullish<A[K]>[] : never : K extends keyof T ? ExcludeNullish<T[K]> : never;
 
 type _PickAndCastByValue<Base, Condition, Key> = {
-  [K in keyof Base]: Base[K] extends Condition ? TypeOfKey<Base[K], Key> : never
+  [K in keyof Base]: ExcludeNullish<Base[K]> extends Condition ? TypeOfKey<Base[K], Key> | ExtractNullish<Base[K]> : false
 };
-type ExcludeNeverProps<T> =
-  { [K in keyof T]: T[K] extends never ? never : K }[keyof T]
-export type PickAndCastByValue<Base, Condition, Key, S = _PickAndCastByValue<Base, Condition, Key>> = Pick<S, ExcludeNeverProps<S>>;
+type ExcludeFalseProps<T> =
+  { [K in keyof T]: Required<T>[K] extends false ? never : K }[keyof T]
+export type PickAndCastByValue<Base, Condition, Key, S = _PickAndCastByValue<Base, Condition, Key>> = Pick<S, ExcludeFalseProps<S>>;
 
 type OmitByValue<Base, Condition> = Pick<Base, {
-  [Key in keyof Base]: Base[Key] extends Condition ? never : Key
+  [Key in keyof Base]: ExcludeNullish<Base[Key]> extends Condition ? never : Key
 }[keyof Base]>;
 
 export type PickByValue<Base, Condition> = Pick<Base, {
-  [Key in keyof Base]: Base[Key] extends Condition ? Key : never
+  [Key in keyof Base]: ExcludeNullish<Base[Key]> extends Condition ? Key : never
 }[keyof Base]>;
 
 type DeepPickG<T, K extends DeepPickPath<T, G>> = [K] extends [never] ? {}  : DeepPick<T, K, G>;

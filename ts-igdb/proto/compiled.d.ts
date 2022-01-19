@@ -1664,15 +1664,7 @@ export namespace google {
 
     namespace protobuf {
 
-        interface ITimestamp {
-            seconds?: (number|null);
-            nanos?: (number|null);
-        }
+        type ITimestamp = number;
 
-        class Timestamp implements ITimestamp {
-            constructor(properties?: google.protobuf.ITimestamp);
-            public seconds: number;
-            public nanos: number;
-        }
     }
 }

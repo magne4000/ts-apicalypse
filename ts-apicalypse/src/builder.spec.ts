@@ -289,6 +289,7 @@ describe.skip('types only', () => {
   type AssertEqual<T extends Expected, Expected> =
     Expected extends T ? true : Expected;
   type DEMO = { id: number, a: 1, b: 3, c: { id: number, d: 3 }[], e: { id: number, f: 8 } };
+  type DEMO2 = { id?: number|null, a?: 1|null, b?: 3|null, c?: { id?: number|null, d?: 3|null }[]|null, e?: { id?: number|null, f?: 8|null }|null };
 
   var _: AssertEqual<{ c: { id: number, d: 3 }[], e: { id: number, f: 8 } }, PickByValue<DEMO, R | R[]>> = true;
   var _: AssertEqual<{ c: number[], e: number }, PickAndCastByValue<DEMO, R | R[], 'id'>> = true;
@@ -303,4 +304,6 @@ describe.skip('types only', () => {
   var _: AssertEqual<{ id: number, e: number }, PickFlat<DEMO, ['e']>> = true;
   var _: AssertEqual<{ id: number, a: 1, e: number }, PickFlat<DEMO, ['a', 'e']>> = true;
   var _: AssertEqual<{ id: number, a: 1, b: 3, c: number[], e: number }, PickFlat<DEMO, '*'>> = true;
+  var _: AssertEqual<{ id?: number|null, a?: 1|null, b?: 3|null, c?: number[]|null, e?: number|null }, PickFlat<DEMO2, '*'>> = true;
+  var _: AssertEqual<{ c?: { id?: number|null, d?: 3|null }[]|null }, PickFlat<DEMO2, ['c.*']>> = true;
 });

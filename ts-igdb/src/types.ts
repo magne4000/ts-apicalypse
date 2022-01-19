@@ -9,7 +9,7 @@ import type {
   PipeSub,
   Stringifiable
 } from "ts-apicalypse";
-import type { proto } from "../proto/compiled";
+import { google, proto } from "../proto/compiled";
 import type { FallbackIfUnknown, R } from "ts-apicalypse/dist/types";
 
 export interface Executor<T, mode extends 'result' | 'count' = 'result'> {
@@ -41,6 +41,12 @@ export type InferMode<T extends string> = T extends `${string}/count` ? 'count' 
 export type Routes = RawRoutes & {
   [K in keyof RawRoutes as `${K}/count`]: RawRoutes[K]
 };
+
+type Cast<T, X, R> = Extract<T, X> extends X ? Exclude<T, X> | R : T;
+
+type RawRouteCast<T> = {
+  [K in keyof T]: Cast<T[K], google.protobuf.ITimestamp, number>
+}
 
 export interface RawRoutes {
   age_ratings: proto.IAgeRating;
