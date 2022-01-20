@@ -2,6 +2,8 @@
 
 A Typescript client and request builder for [Apicalypse](https://apicalypse.io/).
 
+If you are searching for a lib with IGDB types baked-in, check [ts-igdb](https://github.com/magne4000/ts-apicalypse/tree/main/ts-igdb).
+
 ## Why?
 Long story short, [node Apicalypse client](https://www.npmjs.com/package/apicalypse) is good if you are writing
 Javascript only code. But if you need strong type checking and inference, it's not enough.
@@ -21,14 +23,14 @@ type DEMO = {
 
 ### Simple request
 ```ts
-import { request, fields, where } from 'ts-apicalypse';
+import { request, fields, exclude, where } from 'ts-apicalypse';
 
 const { data } = await request<DEMO>() // DEMO is the complete typing of the objects that can be returned by the endpoint
   .pipe(
     fields(['name']), // `fields` are type checked. Here valid fields would be 'id' | 'name' | 'games' | 'collection' |
                       // 'games.id' | 'games.name' | 'games.*' |
                       // 'collection.id' | 'collection.name' | 'collection.*' 
-    where('created_at', '<',  now), // Condition
+    where('created_at', '<',  now), // The prop, the operator and the value are type checked
   ).execute('https://...'); // Execute the query
 
 // Infered type of `data` is:
@@ -36,12 +38,9 @@ type Data = {
   id: number,   // always returned
   name: string  // requested via fields
 }
-```
 
-```ts
-import { request, fields, exclude } from 'ts-apicalypse';
-
-const { data } = await request<DEMO>() // DEMO is the complete typing of the objects that can be returned by the endpoint
+// another example using `exclude` operator
+const { data } = await request<DEMO>()
   .pipe(
     fields('*'),      // All fields...
     exclude(['name']) // ... except name
@@ -52,7 +51,7 @@ const { data } = await request<DEMO>() // DEMO is the complete typing of the obj
 ```ts
 import { request, fields, sort, limit, offset } from 'ts-apicalypse';
 
-const { data } = await request<DEMO>() // DEMO is the complete typing of the objects that can be returned by the endpoint
+const { data } = await request<DEMO>()
     .pipe(
       fields(['name', 'games', 'collection.*']),
       sort('created_at', '<'), // sort, asc by default
@@ -76,7 +75,7 @@ type Data = {
 ```ts
 import { request, fields, or, and, where, whereIn, WhereFlags, WhereInFlags } from 'ts-apicalypse';
 
-const { data } = await request<DEMO>() // DEMO is the complete typing of the objects that can be returned by the endpoint
+const { data } = await request<DEMO>()
   .pipe(
     fields('*'),
     // demo of possible combinations 
@@ -145,7 +144,7 @@ type Result = ({
   result: {...}[]
 })[]
 
-// you can then use `isNamed` helper to help you narrow those types
+// you can then use `isNamed` type-guard to help you narrow those types
 const result = data[0];
 if (isNamed(result, 'alias1')) {
   result.result...
