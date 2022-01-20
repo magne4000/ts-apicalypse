@@ -1,8 +1,5 @@
 import type { AxiosPromise, AxiosRequestConfig } from "axios";
-import { AutoPath } from "ts-toolbelt/out/Function/AutoPath";
-import { Split } from "ts-toolbelt/out/String/Split";
-import { Path } from "ts-toolbelt/out/Object/Path";
-import { A, U } from "ts-toolbelt";
+import { A, M } from "ts-toolbelt";
 
 export interface Options extends AxiosRequestConfig {
   queryMethod?: 'url' | 'body',
@@ -40,7 +37,7 @@ export interface CountBuilder<T> extends Builder<T> {
   __count: true
 }
 
-type PickWith<T, K extends keyof T, X> = Pick<T, K | (X extends keyof T ? X : never)>;
+type PickWith<T, K extends keyof T, X> = X extends keyof T ? Pick<T, K | X> : Pick<T, K>;
 
 export interface Pipe<T extends R, mode extends 'result' | 'count' = 'result', ID extends string = 'id'> {
   <A>(...steps: (BuilderOperator<T, T> | BuilderOperatorNarrow<T, A>)[]):
@@ -114,64 +111,41 @@ export enum WhereInFlags {
 }
 
 export type FallbackIfUnknown<T, F> = unknown extends T ? F : T;
-type ExcludeNullish<T> = Exclude<T, null | undefined>
-type ExtractNullish<T> = Extract<T, null | undefined>
 
 export type R = Record<string, any>
 
-type MetaFlatKeyOf<T> = Required<{ [K in keyof T]: ExcludeNullish<T[K]> extends R[] ? keyof ExcludeNullish<T[K]>[number] : ExcludeNullish<T[K]> extends R ? keyof ExcludeNullish<T[K]> : false }>;
-type _FlatKeyOf<T, S = MetaFlatKeyOf<T>> =
-  Required<{ [K in Extract<keyof S, string>]: S[K] extends false ? K : (K | `${K}.${Extract<S[K], string>}` | `${K}.*`) }>;
-export type FlatKeyOf<T, S = _FlatKeyOf<T>> = A.Compute<S[keyof S]>;
-//export type FlatKeyOf<T, P extends string> = AutoPath<T, P>;
-
-type TypeOfKey<T, K> = T extends number[] ? T : T extends (infer A)[] ? K extends keyof A ? ExcludeNullish<A[K]>[] : never : K extends keyof T ? ExcludeNullish<T[K]> : never;
-
-type _PickAndCastByValue<Base, Condition, Key> = {
-  [K in keyof Base]: ExcludeNullish<Base[K]> extends Condition ? TypeOfKey<Base[K], Key> | ExtractNullish<Base[K]> : false
+type MetaFlatKeyOf<T> = {
+  [K in keyof T & string]:
+    T[K] extends M.Primitive ? K :
+    Exclude<T[K], M.Primitive> extends (Array<infer I> | infer I) ? K | `${K}.${keyof I & string}` | `${K}.*` :
+    never
 };
-type ExcludeFalseProps<T> =
-  { [K in keyof T]: Required<T>[K] extends false ? never : K }[keyof T]
-export type PickAndCastByValue<Base, Condition, Key, S = _PickAndCastByValue<Base, Condition, Key>> = Pick<S, ExcludeFalseProps<S>>;
+type Values<T> = T[keyof T];
+export type FlatKeyOf<T> = Values<MetaFlatKeyOf<T>> & string;
 
-type OmitByValue<Base, Condition> = Pick<Base, {
-  [Key in keyof Base]: ExcludeNullish<Base[Key]> extends Condition ? never : Key
-}[keyof Base]>;
+export type PickFlat<T, K extends FlatKeyOf<T> | '*'> = DeepPick<T, K>
 
-export type PickByValue<Base, Condition> = Pick<Base, {
-  [Key in keyof Base]: ExcludeNullish<Base[Key]> extends Condition ? Key : never
-}[keyof Base]>;
+type OuterKeyCast<T, K extends string> = PickOuterKey<K> & UnionKeyOf<T>;
 
-type CastValuesToRefs<T, ID extends string = 'id'> = T extends object ? A.Compute<OmitByValue<T, R | R[]> & PickAndCastByValue<T, R | R[], ID>> : T;
+type UnionKeyOf<T> = T extends Array<infer T> ? keyof T : T extends infer T ? keyof T : never;
 
-export type PickFlat<T, K extends string, ID extends string = 'id'> =
-  U.Merge<K extends '*' ? CastValuesToRefs<T, ID> : ApicalypseDeepPick<T, K, ID>>;
-
-type AppendId<T, K extends keyof T, ID extends string = 'id'> = ID extends keyof T ? K | ID : K;
-type Over<T, K extends keyof T, K2, ID extends string = 'id'> = {
-  [A in K]: _ApicalypseDeepPick<T[A], K2, ID>
-}
-
-
-type ApicalypseDeepPick<T, K, ID extends string = 'id'> = _ApicalypseDeepPick<T, K, ID>;
-
-type _ApicalypseDeepPick<T, K, ID extends string = 'id'> =
-  T extends any[] ? _ApicalypseDeepPick<T[number], K, ID>[] :
-  K extends '*' ? CastValuesToRefs<T, ID> :
-  K extends keyof T ? CastValuesToRefs<PickWith<T, K, ID>, ID> :
-  K extends `${infer A}.${infer B}` ?
-    A extends keyof T ? Over<T, AppendId<T, A & keyof T, ID>, B, ID> :
-    never :
+type DeepPick<T, K extends FlatKeyOf<T> | '*'> =
+  T extends M.Primitive ? T :
+  T extends Array<infer I> ? DeepPick<I, Extract<K, FlatKeyOf<I> | '*'>>[] :
+  T extends object ?
+    OuterKeyCast<T, K> extends [never] ? number :
+    A.Compute<PickWith<InnerPick<T, K>, OuterKeyCast<T, K>, 'id'>> :
   never;
 
+type InnerPick<T, K extends FlatKeyOf<T> | '*'> = {
+  [key in keyof T]: DeepPick<T[key], Extract<InnerKey<Extract<key, string>, K>, UnionKeyOf<T[key]> | '*'>>;
+};
 
-declare function get<O extends object, P extends string>(
-  object: O, path: AutoPath<O, P>[]
-): Path<O, Split<P, '.'>>
+type PickOuterKey<K extends string> = K extends '*' ? string : KeyHead<K>;
+type KeyHead<K extends string> = K extends `${infer K}.${string}` ? K : K;
 
-declare const user: User
-
-type User = {
-  name: string
-  friends: User[]
-}
+type InnerKey<key extends string, K> = [
+  Extract<K, `${key}.${string}`>
+] extends [`${key}.${infer K}`]
+  ? K
+  : never;

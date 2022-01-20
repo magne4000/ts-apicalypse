@@ -1,7 +1,9 @@
 import { and, exclude, fields, limit, offset, or, search, sort, where, whereIn } from "./builder";
-import { BuilderOperator, PickAndCastByValue, PickByValue, PickFlat, R, WhereFlags, WhereInFlags } from "./types";
+import { BuilderOperator, FlatKeyOf, PickFlat, R, WhereFlags, WhereInFlags } from "./types";
 import { isNamed, multi, request } from "./index";
-import { AxiosPromise } from "axios";
+import type { AxiosPromise } from "axios";
+import type { proto } from "../test-data/compiled";
+import { A } from "ts-toolbelt";
 
 function testOp<T extends R = any>(...opd: BuilderOperator<T, T>[]) {
   return request<T>().pipe(...opd).toApicalypseString();
@@ -290,24 +292,26 @@ describe('multi', function () {
 });
 
 describe.skip('types only', () => {
-  type AssertEqual<T extends Expected, Expected> =
-    Expected extends T ? true : Expected;
   type DEMO = { id: number, a: 1, b: 3, c: { id: number, d: 3 }[], e: { id: number, f: 8 } };
   type DEMO2 = { id?: number|null, a?: 1|null, b?: 3|null, c?: { id?: number|null, d?: 3|null }[]|null, e?: { id?: number|null, f?: 8|null }|null };
 
-  var _: AssertEqual<{ c: { id: number, d: 3 }[], e: { id: number, f: 8 } }, PickByValue<DEMO, R | R[]>> = true;
-  var _: AssertEqual<{ c: number[], e: number }, PickAndCastByValue<DEMO, R | R[], 'id'>> = true;
-  var _: AssertEqual<{ id: number, a: 1 }, PickFlat<DEMO, 'a'>> = true;
-  var _: AssertEqual<{ id: number, a: 1, b: 3 }, PickFlat<DEMO, 'a' | 'b'>> = true;
-  var _: AssertEqual<{ id: number, c: { id: number, d: 3 }[] }, PickFlat<DEMO, 'c.*'>> = true;
-  var _: AssertEqual<{ id: number, a: 1, c: { id: number, d: 3 }[] }, PickFlat<DEMO, 'a' | 'c.*'>> = true;
-  var _: AssertEqual<{ id: number, c: number[] }, PickFlat<DEMO, 'c'>> = true;
-  var _: AssertEqual<{ id: number, a: 1, c: number[] }, PickFlat<DEMO, 'a' | 'c'>> = true;
-  var _: AssertEqual<{ id: number, e: { id: number, f: 8 } }, PickFlat<DEMO, 'e.*'>> = true;
-  var _: AssertEqual<{ id: number, a: 1, e: { id: number, f: 8 } }, PickFlat<DEMO, 'a' | 'e.*'>> = true;
-  var _: AssertEqual<{ id: number, e: number }, PickFlat<DEMO, 'e'>> = true;
-  var _: AssertEqual<{ id: number, a: 1, e: number }, PickFlat<DEMO, 'a' | 'e'>> = true;
-  var _: AssertEqual<{ id: number, a: 1, b: 3, c: number[], e: number }, PickFlat<DEMO, '*'>> = true;
-  var _: AssertEqual<{ id?: number|null, a?: 1|null, b?: 3|null, c?: number[]|null, e?: number|null }, PickFlat<DEMO2, '*'>> = true;
-  var _: AssertEqual<{ c?: { id?: number|null, d?: 3|null }[]|null }, PickFlat<DEMO2, 'c.*'>> = true;
+  var _: A.Is<'id' | 'a' | 'b' | 'c' | 'c.id' | 'c.d' | 'c.*' | 'e' | 'e.id' | 'e.f' | 'e.*', FlatKeyOf<DEMO>, 'equals'> = 1;
+  var _: A.Is<'id' | 'a' | 'b' | 'c' | 'c.id' | 'c.d' | 'c.*' | 'e' | 'e.id' | 'e.f' | 'e.*', FlatKeyOf<DEMO2>, 'equals'> = 1;
+  var _: A.Is<{ id: number, a: 1 }, PickFlat<DEMO, 'a'>, 'equals'> = 1;
+  var _: A.Is<{ id: number, a: 1, b: 3 }, PickFlat<DEMO, 'a' | 'b'>, 'equals'> = 1;
+  var _: A.Is<{ id: number, c: { id: number, d: 3 }[] }, PickFlat<DEMO, 'c.*'>, 'equals'> = 1;
+  var _: A.Is<{ id: number, a: 1, c: { id: number, d: 3 }[] }, PickFlat<DEMO, 'a' | 'c.*'>, 'equals'> = 1;
+  var _: A.Is<{ id: number, c: number[] }, PickFlat<DEMO, 'c'>, 'equals'> = 1;
+  var _: A.Is<{ id: number, a: 1, c: number[] }, PickFlat<DEMO, 'a' | 'c'>, 'equals'> = 1;
+  var _: A.Is<{ id: number, e: { id: number, f: 8 } }, PickFlat<DEMO, 'e.*'>, 'equals'> = 1;
+  var _: A.Is<{ id: number, a: 1, e: { id: number, f: 8 } }, PickFlat<DEMO, 'a' | 'e.*'>, 'equals'> = 1;
+  var _: A.Is<{ id: number, e: number }, PickFlat<DEMO, 'e'>, 'equals'> = 1;
+  var _: A.Is<{ id: number, a: 1, e: number }, PickFlat<DEMO, 'a' | 'e'>, 'equals'> = 1;
+  var _: A.Is<{ id: number, a: 1, b: 3, c: number[], e: number }, PickFlat<DEMO, '*'>, 'equals'> = 1;
+  var _: A.Is<{ id?: number|null, a?: 1|null, b?: 3|null, c?: number[]|null, e?: number|null }, PickFlat<DEMO2, '*'>, 'equals'> = 1;
+  var _: A.Is<{ c?: { id?: number|null, d?: 3|null }[]|null }, PickFlat<DEMO2, 'c.*'>, 'equals'> = 1;
+
+  // More complex types extracted from IGDB protobuf API
+  var _: A.Is<{ id?: (number|null), collection?: (number|null) }, PickFlat<proto.IGame, 'collection'>, 'equals'> = 1;
+  var _: A.Is<{ id?: (number|null), collection?: (Pick<proto.ICollection, 'id' | 'name'>|null) }, PickFlat<proto.IGame, 'collection.name'>, 'equals'> = 1;
 });
