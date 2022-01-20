@@ -67,7 +67,6 @@ export type ResultMultiMono<T extends NamedBuilder<any, any>> = {
 export interface ExecutorMulti<T extends Builder<any>[]> {
   execute(url: string, options?: Options):
     AxiosPromise<T extends (infer S)[] ? ResultMultiMono<S extends NamedBuilder<any, any> ? S : never>[] : never>
-
 }
 
 export interface BuilderOperator<T, R> {

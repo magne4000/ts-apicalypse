@@ -187,9 +187,9 @@ function newBuilder<T>(): Builder<T> {
  * ).execute('http:...').then(response => {
  *   for (const result of response.data) {
  *     if (isNamed(result, 'latest-games')) {
- *       result.name // result is of type `{ name: string }`
+ *       result.result.name // result is of type `{ name: string }`
  *     } else {
- *       result.created_at  // result is of type `{ created_at: number }`
+ *       result.result.created_at  // result is of type `{ created_at: number }`
  *     }
  *   }
  * });

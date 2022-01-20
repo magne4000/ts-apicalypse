@@ -1,7 +1,6 @@
 import type { Builder, Options, Stringifiable } from "ts-apicalypse";
 import { multi as multiA, request as requestA } from "ts-apicalypse";
-import type { ExecutorMulti, IgdbRequest, Routes } from "./types";
-import { InferMode } from "./types";
+import type { ExecutorMulti, IgdbRequest, InferMode, Routes } from "./types";
 
 export type {
   Builder,
