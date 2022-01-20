@@ -3,14 +3,14 @@ import type {
   Builder,
   BuilderOperator,
   BuilderOperatorNarrow,
-  ExecutorMultiMono,
+  ResultMultiMono,
   NamedBuilder,
   Options,
   PipeSub,
   Stringifiable
 } from "ts-apicalypse";
 import { google, proto } from "../proto/compiled";
-import type { FallbackIfUnknown, R } from "ts-apicalypse/dist/types";
+import type { FallbackIfUnknown } from "ts-apicalypse/dist/types";
 
 export interface Executor<T, mode extends 'result' | 'count' = 'result'> {
   execute(options?: Options): AxiosPromise<{
@@ -20,14 +20,14 @@ export interface Executor<T, mode extends 'result' | 'count' = 'result'> {
 }
 
 export interface ExecutorMulti<T extends Builder<any>[]> {
-  execute(options?: Options): AxiosPromise<T extends (infer S)[] ? ExecutorMultiMono<S extends NamedBuilder<any, any> ? S : never>[] : never>
+  execute(options?: Options): AxiosPromise<T extends (infer S)[] ? ResultMultiMono<S extends NamedBuilder<any, any> ? S : never>[] : never>
 }
 
-export interface Pipe<T extends R, mode extends 'result' | 'count' = 'result', ID extends string = 'id'> {
+export interface Pipe<T extends Record<any, any>, mode extends 'result' | 'count' = 'result', ID extends string = 'id'> {
   <A>(...steps: (BuilderOperator<T, T> | BuilderOperatorNarrow<T, A>)[]): Stringifiable & Executor<FallbackIfUnknown<A, Pick<T, ID>>, mode>
 }
 
-export type Sub<T extends R, mode extends 'result' | 'count' = 'result'> = <S extends string>(alias: S) => {
+export type Sub<T extends Record<any, any>, mode extends 'result' | 'count' = 'result'> = <S extends string>(alias: S) => {
   pipe: PipeSub<T, S, mode>;
 }
 

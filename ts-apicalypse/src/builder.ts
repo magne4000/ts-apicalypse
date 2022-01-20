@@ -39,7 +39,7 @@ export function query<T extends Record<any, any>, S extends string>(queryEndpoin
 // TODO try AutoPath-like with a single string like 'name, collection.*' instead of ['name', 'collection.*']
 export function fields<T extends Record<any, any>, K extends FlatKeyOf<T>>(fields: K[]): BuilderOperatorNarrow<T, PickFlat<T, K>>;
 export function fields<T extends Record<any, any>>(fields: '*'): BuilderOperatorNarrow<T, PickFlat<T, '*'>>;
-export function fields<T extends Record<any, any>, K extends string>(f: string | string[]): any {
+export function fields<T extends Record<any, any>, K extends FlatKeyOf<T>>(f: string | string[]): any {
   if (Array.isArray(f)) {
     const fieldsString = f.join(",").replace(/\s/g, '')
 

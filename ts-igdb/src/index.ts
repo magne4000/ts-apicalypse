@@ -8,7 +8,7 @@ export type {
   BuilderOperator,
   BuilderOperatorNarrow,
   ExecutorMulti,
-  ExecutorMultiMono,
+  ResultMultiMono,
   NamedBuilder,
   Options,
   Pipe,

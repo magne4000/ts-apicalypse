@@ -4,12 +4,11 @@ import type {
   BuilderOperator,
   BuilderOperatorNarrow,
   ExecutorMulti,
-  ExecutorMultiMono,
+  ResultMultiMono,
   NamedBuilder,
   Options,
   Pipe,
   PipeSub,
-  R,
   Stringifiable
 } from "./types";
 import { query, toStringMulti, toStringSingle } from "./builder";
@@ -19,7 +18,7 @@ export type {
   BuilderOperator,
   BuilderOperatorNarrow,
   ExecutorMulti,
-  ExecutorMultiMono,
+  ResultMultiMono,
   NamedBuilder,
   Options,
   Pipe,
@@ -78,7 +77,7 @@ function apicalypse<T>(builder: Stringifiable, options: Options = {}) {
  * .then(results => ...);
  * ```
  */
-export function request<T extends R, mode extends 'result' | 'count' = 'result'>() {
+export function request<T extends Record<any, any>, mode extends 'result' | 'count' = 'result'>() {
   function _pipe<A, B>(...steps: (BuilderOperator<T, T> | BuilderOperatorNarrow<T, A>)[]) {
     return steps.reduce((output, f) => f(output), newBuilder())
   }
@@ -141,7 +140,7 @@ export function request<T extends R, mode extends 'result' | 'count' = 'result'>
  * @see {@link https://api-docs.igdb.com/?shell#multi-query}
  * @param builders
  */
-export function multi<T extends R, B extends Builder<T>[]>(...builders: B): Stringifiable & ExecutorMulti<B> {
+export function multi<T extends Record<any, any>, B extends Builder<T>[]>(...builders: B): Stringifiable & ExecutorMulti<B> {
   return {
     toApicalypseString() {
       return toStringMulti(builders);
@@ -198,7 +197,7 @@ function newBuilder<T>(): Builder<T> {
  * @param builder
  * @param name
  */
-export function isNamed<T extends NamedBuilder<any, string>, S extends string>(builder: ExecutorMultiMono<T>, name: S): builder is ExecutorMultiMono<Extract<T, NamedBuilder<any, S>>> {
+export function isNamed<T extends NamedBuilder<any, string>, S extends string>(builder: ResultMultiMono<T>, name: S): builder is ResultMultiMono<Extract<T, NamedBuilder<any, S>>> {
   if (builder.name === name) {
     return true;
   }

@@ -39,14 +39,14 @@ export interface CountBuilder<T> extends Builder<T> {
 
 type PickWith<T, K extends keyof T, X> = X extends keyof T ? Pick<T, K | X> : Pick<T, K>;
 
-export interface Pipe<T extends R, mode extends 'result' | 'count' = 'result', ID extends string = 'id'> {
+export interface Pipe<T extends object, mode extends 'result' | 'count' = 'result'> {
   <A>(...steps: (BuilderOperator<T, T> | BuilderOperatorNarrow<T, A>)[]):
-    Stringifiable & Executor<FallbackIfUnknown<A, PickWith<T, never, ID>>, mode>;
+    Stringifiable & Executor<FallbackIfUnknown<A, PickWith<T, never, 'id'>>, mode>;
 }
 
-export type PipeSub<T extends R, Ret extends string, mode extends 'result' | 'count' = 'result', ID extends string = 'id'> = {
+export type PipeSub<T extends object, Ret extends string, mode extends 'result' | 'count' = 'result'> = {
   <A>(...steps: (BuilderOperator<T, T> | BuilderOperatorNarrow<T, A>)[]):
-    NamedBuilder<FallbackIfUnknown<A, PickWith<T, never, ID>>, Ret> & (mode extends 'count' ? CountBuilder<any> : {});
+    NamedBuilder<FallbackIfUnknown<A, PickWith<T, never, 'id'>>, Ret> & (mode extends 'count' ? CountBuilder<any> : {});
 }
 
 export interface Executor<T, mode extends 'result' | 'count' = 'result'> {
@@ -56,7 +56,7 @@ export interface Executor<T, mode extends 'result' | 'count' = 'result'> {
   }[mode]>
 }
 
-export type ExecutorMultiMono<T extends NamedBuilder<any, any>> = {
+export type ResultMultiMono<T extends NamedBuilder<any, any>> = {
   name: T["queryName"],
 } & (
   T extends CountBuilder<any> ?
@@ -66,7 +66,7 @@ export type ExecutorMultiMono<T extends NamedBuilder<any, any>> = {
 
 export interface ExecutorMulti<T extends Builder<any>[]> {
   execute(url: string, options?: Options):
-    AxiosPromise<T extends (infer S)[] ? ExecutorMultiMono<S extends NamedBuilder<any, any> ? S : never>[] : never>
+    AxiosPromise<T extends (infer S)[] ? ResultMultiMono<S extends NamedBuilder<any, any> ? S : never>[] : never>
 
 }
 
@@ -76,10 +76,6 @@ export interface BuilderOperator<T, R> {
 
 export interface BuilderOperatorNarrow<T, R> {
   (builder: Builder<T>): NarrowBuilder<R>
-}
-
-export interface BuilderOperatorCount<T> {
-  (builder: Builder<T>): CountBuilder<T>
 }
 
 export interface NamedBuilderOperator<T, N extends string> {
@@ -111,8 +107,6 @@ export enum WhereInFlags {
 }
 
 export type FallbackIfUnknown<T, F> = unknown extends T ? F : T;
-
-export type R = Record<string, any>
 
 type MetaFlatKeyOf<T> = {
   [K in keyof T & string]:

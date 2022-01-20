@@ -1,11 +1,11 @@
 import { and, exclude, fields, limit, offset, or, search, sort, where, whereIn } from "./builder";
-import { BuilderOperator, FlatKeyOf, PickFlat, R, WhereFlags, WhereInFlags } from "./types";
+import { BuilderOperator, FlatKeyOf, PickFlat, WhereFlags, WhereInFlags } from "./types";
 import { isNamed, multi, request } from "./index";
 import type { AxiosPromise } from "axios";
 import type { proto } from "../test-data/compiled";
 import { A } from "ts-toolbelt";
 
-function testOp<T extends R = any>(...opd: BuilderOperator<T, T>[]) {
+function testOp<T extends Record<any, any> = any>(...opd: BuilderOperator<T, T>[]) {
   return request<T>().pipe(...opd).toApicalypseString();
 }
 
@@ -309,9 +309,24 @@ describe.skip('types only', () => {
   var _: A.Is<{ id: number, a: 1, e: number }, PickFlat<DEMO, 'a' | 'e'>, 'equals'> = 1;
   var _: A.Is<{ id: number, a: 1, b: 3, c: number[], e: number }, PickFlat<DEMO, '*'>, 'equals'> = 1;
   var _: A.Is<{ id?: number|null, a?: 1|null, b?: 3|null, c?: number[]|null, e?: number|null }, PickFlat<DEMO2, '*'>, 'equals'> = 1;
-  var _: A.Is<{ c?: { id?: number|null, d?: 3|null }[]|null }, PickFlat<DEMO2, 'c.*'>, 'equals'> = 1;
+  var _: A.Is<{ id?: number|null, c?: { id?: number|null, d?: 3|null }[]|null }, PickFlat<DEMO2, 'c.*'>, 'equals'> = 1;
 
   // More complex types extracted from IGDB protobuf API
   var _: A.Is<{ id?: (number|null), collection?: (number|null) }, PickFlat<proto.IGame, 'collection'>, 'equals'> = 1;
   var _: A.Is<{ id?: (number|null), collection?: (Pick<proto.ICollection, 'id' | 'name'>|null) }, PickFlat<proto.IGame, 'collection.name'>, 'equals'> = 1;
+  var _: A.Is<{ id?: (number|null), collection?: {
+    id?: (number|null);
+    created_at?: (number|null);
+    games?: (number[]|null);
+    name?: (string|null);
+    slug?: (string|null);
+    updated_at?: (number|null);
+    url?: (string|null);
+    checksum?: (string|null);
+  } | null }, PickFlat<proto.IGame, 'collection.*'>, 'equals'> = 1;
+  var _: A.Is<
+    { id?: (number|null), name?: (string|null), collection?: (Pick<proto.ICollection, 'id' | 'name'>|null), age_ratings?: (Pick<proto.ICollection, 'id' | 'checksum'>)[]|null },
+    PickFlat<proto.IGame, 'name' | 'collection.name' | 'age_ratings.checksum'>,
+    'equals'
+  > = 1;
 });
