@@ -1,6 +1,5 @@
 {
   "name": "mono-ts-apicalypse",
-  "version": "0.1.0",
   "private": true,
   "workspaces": [
     "ts-apicalypse",
@@ -11,7 +10,7 @@
     "clean": "rimraf \"ts-apicalypse/dist\" \"ts-igdb/dist\" \"**/*.tsbuildinfo\"",
     "compile": "tsc -b ./tsconfig.build.json",
     "build": "npm run clean && npm run compile && npm run test",
-    "version": "npm version patch -ws --include-workspace-root",
+    "version": "npm version patch -ws",
     "publish": "npm run build && npm run version && npm publish -ws"
   },
   "devDependencies": {
