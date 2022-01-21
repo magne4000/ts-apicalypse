@@ -9,10 +9,6 @@
     "README.md"
   ],
   "scripts": {
-    "build": "tsc --build --clean && tsc --project ./tsconfig.build.json",
-    "prepublishOnly": "npm run build",
-    "preversion": "npm test",
-    "version": "npm run build && npm version patch -ws"
   },
   "dependencies": {
     "axios": "^0.24.0"
