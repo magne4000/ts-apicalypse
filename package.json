@@ -10,7 +10,7 @@
     "clean": "rimraf \"ts-apicalypse/dist\" \"ts-igdb/dist\" \"**/*.tsbuildinfo\"",
     "compile": "npm run clean && npm run -w ts-igdb precompile && tsc -b ./tsconfig.build.json",
     "build": "npm run compile && npm run test",
-    "version": "./scripts/version.sh",
+    "version": "./scripts/version.sh && npm install",
     "publish": "npm run build && npm run version && npm publish -ws"
   },
   "devDependencies": {

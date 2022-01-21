@@ -22,3 +22,5 @@ then
 else
     echo "Not pushing."
 fi
+
+exit 0
