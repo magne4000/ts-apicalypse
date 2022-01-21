@@ -7,7 +7,7 @@ All IGDB types are generated from [IGDB proto file](https://api.igdb.com/v4/igdb
 
 ### Simple request
 ```ts
-import { request, fields, exclude, where } from 'ts-apicalypse';
+import { request, fields, exclude, where } from 'ts-igdb';
 
 // type of `data` is automagically infered
 const { data } = await request('/games')  // Start building a request that will be executed on `/games` endpoint.
@@ -30,7 +30,7 @@ const { data } = await request('/games') // DEMO is the complete typing of the o
 
 ### Request nested fields
 ```ts
-import { request, fields, sort, limit, offset } from 'ts-apicalypse';
+import { request, fields, sort, limit, offset } from 'ts-igdb';
 
 // type of `data` is automagically infered
 const { data } = await request('/games')
@@ -44,7 +44,7 @@ const { data } = await request('/games')
 
 ### Request with complex conditions
 ```ts
-import { request, fields, or, and, where, whereIn, WhereFlags, WhereInFlags } from 'ts-apicalypse';
+import { request, fields, or, and, where, whereIn, WhereFlags, WhereInFlags } from 'ts-igdb';
 
 // type of `data` is automagically infered
 const { data } = await request('/external_games')
@@ -80,7 +80,7 @@ const { data } = await request('/external_games')
 ### Count query
 Most query will return requested fields as response data. But _count_ actually return data differently:
 ```ts
-import { request, fields, exclude } from 'ts-apicalypse';
+import { request, fields, exclude } from 'ts-igdb';
 
 // type of `data` is automagically infered
 const { data } = await request('games/count') // Here the query is tagged as a "count" query because it ends with `/count`
@@ -91,7 +91,7 @@ const { data } = await request('games/count') // Here the query is tagged as a "
 ### Multi-query request
 One can query multiple endpoints at once with a `multi` query
 ```ts
-import { request, multi, fields, isNamed } from 'ts-apicalypse';
+import { request, multi, fields, isNamed } from 'ts-igdb';
 
 // type of `data` is automagically infered
 const { data } = await multi(

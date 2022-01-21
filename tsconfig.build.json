@@ -1,0 +1,4 @@
+{
+  "files": [],
+  "references": [{ "path": "packages/ts-apicalypse" }, { "path": "packages/ts-igdb" }]
+}
