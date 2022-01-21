@@ -5,12 +5,32 @@ A Typescript client and request builder for [IGDB](https://api-docs.igdb.com/#ab
 ## Usage
 All IGDB types are generated from [IGDB proto file](https://api.igdb.com/v4/igdbapi.proto) and used to type this lib.
 
+### Auth
+Usually you'll want your IGDB queries to be authenticated. See the following example
+```ts
+import { twitchAccessToken, igdb } from 'ts-igdb-client';
+
+const twitchSecrets = {
+  client_id: '...',
+  client_secret: '...',
+}
+
+// generate a twitch access token
+const accessToken = await twitchAccessToken(twitchSecrets);
+
+// generate an IGDB client with twitch credentials
+const client = igdb(twitchSecrets.client_id, accessToken);
+
+// build and execute a query
+const { data } = await client.request(...).execute();
+```
+
 ### Simple request
 ```ts
-import { request, fields, exclude, where } from 'ts-igdb-client';
+import { fields, exclude, where } from 'ts-igdb-client';
 
 // type of `data` is automagically infered
-const { data } = await request('/games')  // Start building a request that will be executed on `/games` endpoint.
+const { data } = await client.request('/games')  // Start building a request that will be executed on `/games` endpoint.
                                           // Type validation and autocompletion support for all endpoints.
   .pipe(
     fields(['name']), // `fields` are type checked. Here valid fields would be 'id' | 'name' | 'games' | 'collection' | ... |
@@ -30,10 +50,10 @@ const { data } = await request('/games') // DEMO is the complete typing of the o
 
 ### Request nested fields
 ```ts
-import { request, fields, sort, limit, offset } from 'ts-igdb-client';
+import { fields, sort, limit, offset } from 'ts-igdb-client';
 
 // type of `data` is automagically infered
-const { data } = await request('/games')
+const { data } = await client.request('/games')
     .pipe(
       fields(['name', 'games', 'collection.*']),
       sort('created_at', '<'), // sort, asc by default
@@ -44,10 +64,10 @@ const { data } = await request('/games')
 
 ### Request with complex conditions
 ```ts
-import { request, fields, or, and, where, whereIn, WhereFlags, WhereInFlags } from 'ts-igdb-client';
+import { fields, or, and, where, whereIn, WhereFlags, WhereInFlags } from 'ts-igdb-client';
 
 // type of `data` is automagically infered
-const { data } = await request('/external_games')
+const { data } = await client.request('/external_games')
   .pipe(
     fields('*'),
     // demo of possible combinations 
@@ -80,10 +100,10 @@ const { data } = await request('/external_games')
 ### Count query
 Most query will return requested fields as response data. But _count_ actually return data differently:
 ```ts
-import { request, fields, exclude } from 'ts-igdb-client';
+import { fields, exclude } from 'ts-igdb-client';
 
 // type of `data` is automagically infered
-const { data } = await request('games/count') // Here the query is tagged as a "count" query because it ends with `/count`
+const { data } = await client.request('games/count') // Here the query is tagged as a "count" query because it ends with `/count`
   .pipe() // you can have no operators, or specify some conditions
   .execute();
 ```
@@ -91,11 +111,12 @@ const { data } = await request('games/count') // Here the query is tagged as a "
 ### Multi-query request
 One can query multiple endpoints at once with a `multi` query
 ```ts
-import { request, multi, fields, isNamed } from 'ts-igdb-client';
+import { request, client, fields, isNamed } from 'ts-igdb-client';
 
 // type of `data` is automagically infered
-const { data } = await multi(
+const { data } = await client.multi(
   // `alias` must be used inside `multi` to alias the queries
+  // you can use `request` directly imported from `ts-igdb-client` or `client.request`
   request('/games').alias("alias1").pipe(fields(['...'])),
   request('/games/count').alias("alias2").pipe(fields(['...'])),
   request('/external_games').alias("alias3").pipe(fields(['...'])),
