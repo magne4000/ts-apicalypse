@@ -9,8 +9,7 @@
   ],
   "scripts": {
     "proto-to-ts": "ts-node scripts/proto-to-ts.ts",
-    "build": "tsc --build --clean && tsc --project ./tsconfig.build.json",
-    "prepublishOnly": "npm run proto-to-ts && npm run build"
+    "prepublishOnly": "npm run proto-to-ts"
   },
   "devDependencies": {
     "@types/jest": "^27.4.0",

@@ -5,8 +5,5 @@
     "outDir": "./dist",
     "sourceMap": true
   },
-  "references": [{ "path": "../ts-apicalypse" }],
-  "include": [
-    "src"
-  ]
+  "references": [{ "path": "../ts-apicalypse" }]
 }

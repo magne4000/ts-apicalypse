@@ -1,4 +1,4 @@
 {
   "files": [],
-  "references": [{ "path": "packages/ts-apicalypse" }, { "path": "packages/ts-igdb" }]
+  "references": [{ "path": "ts-apicalypse/tsconfig.build.json" }, { "path": "ts-igdb/tsconfig.build.json" }]
 }
