@@ -1,7 +1,11 @@
 {
   "name": "ts-igdb",
+  "version": "0.1.0",
   "files": [
-    "dist", "src", "README.md", "proto/compiled.d.ts"
+    "dist",
+    "src",
+    "README.md",
+    "proto/compiled.d.ts"
   ],
   "scripts": {
     "proto-to-ts": "ts-node scripts/proto-to-ts.ts",
