@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-read -p "major/minor/patch " V
+read -p "major/minor/patch? " V
 
 if [ "$V" != "major" ] && [ "$V" != "minor" ] && [ "$V" != "patch" ];
 then
