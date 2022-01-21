@@ -14,11 +14,9 @@ export type {
   PipeSub,
   Stringifiable,
   Executor,
-  WhereFlags,
-  WhereInFlags,
   NamedBuilderOperator,
 } from "ts-apicalypse";
-export { and, exclude, fields, limit, offset, or, search, sort, where, whereIn } from "ts-apicalypse";
+export { and, exclude, fields, limit, offset, or, search, sort, where, whereIn, WhereFlags, WhereInFlags } from "ts-apicalypse";
 export { twitchAccessToken } from './twitch';
 
 const BASE_URL = 'https://api.igdb.com/v4';
