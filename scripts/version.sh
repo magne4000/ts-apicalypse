@@ -1,4 +1,6 @@
 #!/usr/bin/env bash
+set -e
+
 read -p "major/minor/patch? " V
 
 if [ "$V" != "major" ] && [ "$V" != "minor" ] && [ "$V" != "patch" ];
@@ -14,11 +16,11 @@ NEW_VERSION=$(npx -w ts-apicalypse -c 'echo "$npm_package_version"')
 
 git add ts-apicalypse ts-igdb
 git commit -m 'Bump version'
-git tag $NEW_VERSION
-echo "Bumped version to $NEW_VERSION"
+git tag "v$NEW_VERSION"
+echo "Bumped version to v$NEW_VERSION"
 
 # Prompt for pushing
-read -p "Push HEAD and tags to $NEW_VERSION? y/n " PUSH
+read -p "Push HEAD and tags to v$NEW_VERSION? y/n " PUSH
 if [ $PUSH = "y" ]
 then
     git push && git push --tags
