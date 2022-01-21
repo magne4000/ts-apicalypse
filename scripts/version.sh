@@ -9,7 +9,7 @@ then
     exit 1
 fi
 
-npm version $1 -ws
+npm version $V -ws
 NEW_VERSION=$(npx -w ts-apicalypse -c 'echo "$npm_package_version"')
 
 git add */package.json */package-lock.json
