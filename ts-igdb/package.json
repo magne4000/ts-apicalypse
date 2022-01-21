@@ -11,7 +11,7 @@
   ],
   "scripts": {
     "proto-to-ts": "ts-node scripts/proto-to-ts.ts",
-    "prepublishOnly": "npm run proto-to-ts"
+    "precompile": "npm run proto-to-ts"
   },
   "devDependencies": {
     "@types/jest": "^27.4.0",

@@ -8,9 +8,9 @@
   "scripts": {
     "test": "jest",
     "clean": "rimraf \"ts-apicalypse/dist\" \"ts-igdb/dist\" \"**/*.tsbuildinfo\"",
-    "compile": "tsc -b ./tsconfig.build.json",
-    "build": "npm run clean && npm run compile && npm run test",
-    "version": "npm version patch -ws",
+    "compile": "npm run clean && npm run -w ts-igdb precompile && tsc -b ./tsconfig.build.json",
+    "build": "npm run compile && npm run test",
+    "version": "./scripts/version.sh",
     "publish": "npm run build && npm run version && npm publish -ws"
   },
   "devDependencies": {
