@@ -1,6 +1,6 @@
 {
   "name": "ts-apicalypse",
-  "version": "0.1.4",
+  "version": "0.1.5",
   "description": "A Typescript client and request builder for Apicalypse",
   "author": "Joël Charles <joel.charles91@gmail.com>",
   "keywords": [
