@@ -1,6 +1,17 @@
 {
   "name": "ts-apicalypse",
   "version": "0.1.4",
+  "description": "A Typescript client and request builder for Apicalypse",
+  "author": "Joël Charles <joel.charles91@gmail.com>",
+  "keywords": [
+    "apicalypse"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/magne4000/ts-apicalypse.git"
+  },
+  "homepage": "https://github.com/magne4000/ts-apicalypse/tree/main/ts-apicalypse",
+  "license": "MIT",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "files": [

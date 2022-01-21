@@ -1,6 +1,17 @@
 {
   "name": "ts-igdb-client",
   "version": "0.1.4",
+  "description": "A Typescript client and request builder for IGDB using ts-apicalypse",
+  "author": "Joël Charles <joel.charles91@gmail.com>",
+  "keywords": [
+    "apicalypse",
+    "igdb"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/magne4000/ts-apicalypse.git"
+  },
+  "homepage": "https://github.com/magne4000/ts-apicalypse/tree/main/ts-igdb",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "files": [
