@@ -8,16 +8,15 @@
   "scripts": {
     "test": "jest",
     "clean": "rimraf \"ts-apicalypse/dist\" \"ts-igdb/dist\" \"**/*.tsbuildinfo\"",
-    "compile": "tsc -b ./tsconfig.build.json"
+    "compile": "tsc -b ./tsconfig.build.json",
+    "build": "npm run test && npm run clean && npm run compile",
+    "version": "npm version patch -ws"
   },
   "devDependencies": {
     "@types/jest": "^27.4.0",
+    "jest": "^27.4.7",
     "rimraf": "^3.0.2",
     "ts-jest": "^27.1.2",
-    "ts-toolbelt": "^9.6.0",
     "typescript": "^4.5.4"
-  },
-  "dependencies": {
-    "jest": "^27.4.7"
   }
 }
