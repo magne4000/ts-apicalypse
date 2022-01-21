@@ -2,7 +2,7 @@
 
 A Typescript client and request builder for [Apicalypse](https://apicalypse.io/).
 
-If you are searching for a lib with IGDB types baked-in, check [ts-igdb](https://github.com/magne4000/ts-apicalypse/tree/main/ts-igdb).
+If you are searching for a lib with IGDB types baked-in, check [ts-igdb-client](https://github.com/magne4000/ts-apicalypse/tree/main/ts-igdb).
 
 ## Why?
 Long story short, [node Apicalypse client](https://www.npmjs.com/package/apicalypse) is good if you are writing
