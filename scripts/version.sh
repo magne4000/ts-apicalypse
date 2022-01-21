@@ -9,7 +9,8 @@ then
     exit 1
 fi
 
-NEW_VERSION=$(npm version $1 -ws)
+npm version $1 -ws
+NEW_VERSION=$(npx -w ts-apicalypse -c 'echo "$npm_package_version"')
 
 git add */package.json */package-lock.json
 git commit -m 'Bump version'
