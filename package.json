@@ -9,8 +9,9 @@
     "test": "jest",
     "clean": "rimraf \"ts-apicalypse/dist\" \"ts-igdb/dist\" \"**/*.tsbuildinfo\"",
     "compile": "tsc -b ./tsconfig.build.json",
-    "build": "npm run test && npm run clean && npm run compile",
-    "version": "npm version patch -ws"
+    "build": "npm run clean && npm run compile && npm run test",
+    "version": "npm version patch -ws",
+    "publish": "npm run build && npm run version && npm publish -ws"
   },
   "devDependencies": {
     "@types/jest": "^27.4.0",

@@ -213,7 +213,7 @@ export namespace proto {
         id?: (number|null);
         akas?: (string[]|null);
         country_name?: (string|null);
-        created_at?: (google.protobuf.ITimestamp|null);
+        created_at?: (number|null);
         description?: (string|null);
         games?: (proto.IGame[]|null);
         gender?: (proto.GenderGenderEnum|null);
@@ -221,7 +221,7 @@ export namespace proto {
         name?: (string|null);
         slug?: (string|null);
         species?: (proto.CharacterSpeciesEnum|null);
-        updated_at?: (google.protobuf.ITimestamp|null);
+        updated_at?: (number|null);
         url?: (string|null);
         checksum?: (string|null);
     }
@@ -231,7 +231,7 @@ export namespace proto {
         public id: number;
         public akas: string[];
         public country_name: string;
-        public created_at?: (google.protobuf.ITimestamp|null);
+        public created_at?: (number|null);
         public description: string;
         public games: proto.IGame[];
         public gender: proto.GenderGenderEnum;
@@ -239,7 +239,7 @@ export namespace proto {
         public name: string;
         public slug: string;
         public species: proto.CharacterSpeciesEnum;
-        public updated_at?: (google.protobuf.ITimestamp|null);
+        public updated_at?: (number|null);
         public url: string;
         public checksum: string;
     }
@@ -302,11 +302,11 @@ export namespace proto {
 
     interface ICollection {
         id?: (number|null);
-        created_at?: (google.protobuf.ITimestamp|null);
+        created_at?: (number|null);
         games?: (proto.IGame[]|null);
         name?: (string|null);
         slug?: (string|null);
-        updated_at?: (google.protobuf.ITimestamp|null);
+        updated_at?: (number|null);
         url?: (string|null);
         checksum?: (string|null);
     }
@@ -314,11 +314,11 @@ export namespace proto {
     class Collection implements ICollection {
         constructor(properties?: proto.ICollection);
         public id: number;
-        public created_at?: (google.protobuf.ITimestamp|null);
+        public created_at?: (number|null);
         public games: proto.IGame[];
         public name: string;
         public slug: string;
-        public updated_at?: (google.protobuf.ITimestamp|null);
+        public updated_at?: (number|null);
         public url: string;
         public checksum: string;
     }
@@ -334,11 +334,11 @@ export namespace proto {
 
     interface ICompany {
         id?: (number|null);
-        change_date?: (google.protobuf.ITimestamp|null);
+        change_date?: (number|null);
         change_date_category?: (proto.DateFormatChangeDateCategoryEnum|null);
         changed_company_id?: (proto.ICompany|null);
         country?: (number|null);
-        created_at?: (google.protobuf.ITimestamp|null);
+        created_at?: (number|null);
         description?: (string|null);
         developed?: (proto.IGame[]|null);
         logo?: (proto.ICompanyLogo|null);
@@ -346,9 +346,9 @@ export namespace proto {
         parent?: (proto.ICompany|null);
         published?: (proto.IGame[]|null);
         slug?: (string|null);
-        start_date?: (google.protobuf.ITimestamp|null);
+        start_date?: (number|null);
         start_date_category?: (proto.DateFormatChangeDateCategoryEnum|null);
-        updated_at?: (google.protobuf.ITimestamp|null);
+        updated_at?: (number|null);
         url?: (string|null);
         websites?: (proto.ICompanyWebsite[]|null);
         checksum?: (string|null);
@@ -357,11 +357,11 @@ export namespace proto {
     class Company implements ICompany {
         constructor(properties?: proto.ICompany);
         public id: number;
-        public change_date?: (google.protobuf.ITimestamp|null);
+        public change_date?: (number|null);
         public change_date_category: proto.DateFormatChangeDateCategoryEnum;
         public changed_company_id?: (proto.ICompany|null);
         public country: number;
-        public created_at?: (google.protobuf.ITimestamp|null);
+        public created_at?: (number|null);
         public description: string;
         public developed: proto.IGame[];
         public logo?: (proto.ICompanyLogo|null);
@@ -369,9 +369,9 @@ export namespace proto {
         public parent?: (proto.ICompany|null);
         public published: proto.IGame[];
         public slug: string;
-        public start_date?: (google.protobuf.ITimestamp|null);
+        public start_date?: (number|null);
         public start_date_category: proto.DateFormatChangeDateCategoryEnum;
-        public updated_at?: (google.protobuf.ITimestamp|null);
+        public updated_at?: (number|null);
         public url: string;
         public websites: proto.ICompanyWebsite[];
         public checksum: string;
@@ -513,11 +513,11 @@ export namespace proto {
     interface IExternalGame {
         id?: (number|null);
         category?: (proto.ExternalGameCategoryEnum|null);
-        created_at?: (google.protobuf.ITimestamp|null);
+        created_at?: (number|null);
         game?: (proto.IGame|null);
         name?: (string|null);
         uid?: (string|null);
-        updated_at?: (google.protobuf.ITimestamp|null);
+        updated_at?: (number|null);
         url?: (string|null);
         year?: (number|null);
         media?: (proto.ExternalGameMediaEnum|null);
@@ -530,11 +530,11 @@ export namespace proto {
         constructor(properties?: proto.IExternalGame);
         public id: number;
         public category: proto.ExternalGameCategoryEnum;
-        public created_at?: (google.protobuf.ITimestamp|null);
+        public created_at?: (number|null);
         public game?: (proto.IGame|null);
         public name: string;
         public uid: string;
-        public updated_at?: (google.protobuf.ITimestamp|null);
+        public updated_at?: (number|null);
         public url: string;
         public year: number;
         public media: proto.ExternalGameMediaEnum;
@@ -576,11 +576,11 @@ export namespace proto {
 
     interface IFranchise {
         id?: (number|null);
-        created_at?: (google.protobuf.ITimestamp|null);
+        created_at?: (number|null);
         games?: (proto.IGame[]|null);
         name?: (string|null);
         slug?: (string|null);
-        updated_at?: (google.protobuf.ITimestamp|null);
+        updated_at?: (number|null);
         url?: (string|null);
         checksum?: (string|null);
     }
@@ -588,11 +588,11 @@ export namespace proto {
     class Franchise implements IFranchise {
         constructor(properties?: proto.IFranchise);
         public id: number;
-        public created_at?: (google.protobuf.ITimestamp|null);
+        public created_at?: (number|null);
         public games: proto.IGame[];
         public name: string;
         public slug: string;
-        public updated_at?: (google.protobuf.ITimestamp|null);
+        public updated_at?: (number|null);
         public url: string;
         public checksum: string;
     }
@@ -617,11 +617,11 @@ export namespace proto {
         category?: (proto.GameCategoryEnum|null);
         collection?: (proto.ICollection|null);
         cover?: (proto.ICover|null);
-        created_at?: (google.protobuf.ITimestamp|null);
+        created_at?: (number|null);
         dlcs?: (proto.IGame[]|null);
         expansions?: (proto.IGame[]|null);
         external_games?: (proto.IExternalGame[]|null);
-        first_release_date?: (google.protobuf.ITimestamp|null);
+        first_release_date?: (number|null);
         follows?: (number|null);
         franchise?: (proto.IFranchise|null);
         franchises?: (proto.IFranchise[]|null);
@@ -650,7 +650,7 @@ export namespace proto {
         themes?: (proto.ITheme[]|null);
         total_rating?: (number|null);
         total_rating_count?: (number|null);
-        updated_at?: (google.protobuf.ITimestamp|null);
+        updated_at?: (number|null);
         url?: (string|null);
         version_parent?: (proto.IGame|null);
         version_title?: (string|null);
@@ -676,11 +676,11 @@ export namespace proto {
         public category: proto.GameCategoryEnum;
         public collection?: (proto.ICollection|null);
         public cover?: (proto.ICover|null);
-        public created_at?: (google.protobuf.ITimestamp|null);
+        public created_at?: (number|null);
         public dlcs: proto.IGame[];
         public expansions: proto.IGame[];
         public external_games: proto.IExternalGame[];
-        public first_release_date?: (google.protobuf.ITimestamp|null);
+        public first_release_date?: (number|null);
         public follows: number;
         public franchise?: (proto.IFranchise|null);
         public franchises: proto.IFranchise[];
@@ -709,7 +709,7 @@ export namespace proto {
         public themes: proto.ITheme[];
         public total_rating: number;
         public total_rating_count: number;
-        public updated_at?: (google.protobuf.ITimestamp|null);
+        public updated_at?: (number|null);
         public url: string;
         public version_parent?: (proto.IGame|null);
         public version_title: string;
@@ -762,13 +762,13 @@ export namespace proto {
     interface IGameEngine {
         id?: (number|null);
         companies?: (proto.ICompany[]|null);
-        created_at?: (google.protobuf.ITimestamp|null);
+        created_at?: (number|null);
         description?: (string|null);
         logo?: (proto.IGameEngineLogo|null);
         name?: (string|null);
         platforms?: (proto.IPlatform[]|null);
         slug?: (string|null);
-        updated_at?: (google.protobuf.ITimestamp|null);
+        updated_at?: (number|null);
         url?: (string|null);
         checksum?: (string|null);
     }
@@ -777,13 +777,13 @@ export namespace proto {
         constructor(properties?: proto.IGameEngine);
         public id: number;
         public companies: proto.ICompany[];
-        public created_at?: (google.protobuf.ITimestamp|null);
+        public created_at?: (number|null);
         public description: string;
         public logo?: (proto.IGameEngineLogo|null);
         public name: string;
         public platforms: proto.IPlatform[];
         public slug: string;
-        public updated_at?: (google.protobuf.ITimestamp|null);
+        public updated_at?: (number|null);
         public url: string;
         public checksum: string;
     }
@@ -831,10 +831,10 @@ export namespace proto {
 
     interface IGameMode {
         id?: (number|null);
-        created_at?: (google.protobuf.ITimestamp|null);
+        created_at?: (number|null);
         name?: (string|null);
         slug?: (string|null);
-        updated_at?: (google.protobuf.ITimestamp|null);
+        updated_at?: (number|null);
         url?: (string|null);
         checksum?: (string|null);
     }
@@ -842,10 +842,10 @@ export namespace proto {
     class GameMode implements IGameMode {
         constructor(properties?: proto.IGameMode);
         public id: number;
-        public created_at?: (google.protobuf.ITimestamp|null);
+        public created_at?: (number|null);
         public name: string;
         public slug: string;
-        public updated_at?: (google.protobuf.ITimestamp|null);
+        public updated_at?: (number|null);
         public url: string;
         public checksum: string;
     }
@@ -861,11 +861,11 @@ export namespace proto {
 
     interface IGameVersion {
         id?: (number|null);
-        created_at?: (google.protobuf.ITimestamp|null);
+        created_at?: (number|null);
         features?: (proto.IGameVersionFeature[]|null);
         game?: (proto.IGame|null);
         games?: (proto.IGame[]|null);
-        updated_at?: (google.protobuf.ITimestamp|null);
+        updated_at?: (number|null);
         url?: (string|null);
         checksum?: (string|null);
     }
@@ -873,11 +873,11 @@ export namespace proto {
     class GameVersion implements IGameVersion {
         constructor(properties?: proto.IGameVersion);
         public id: number;
-        public created_at?: (google.protobuf.ITimestamp|null);
+        public created_at?: (number|null);
         public features: proto.IGameVersionFeature[];
         public game?: (proto.IGame|null);
         public games: proto.IGame[];
-        public updated_at?: (google.protobuf.ITimestamp|null);
+        public updated_at?: (number|null);
         public url: string;
         public checksum: string;
     }
@@ -988,10 +988,10 @@ export namespace proto {
 
     interface IGenre {
         id?: (number|null);
-        created_at?: (google.protobuf.ITimestamp|null);
+        created_at?: (number|null);
         name?: (string|null);
         slug?: (string|null);
-        updated_at?: (google.protobuf.ITimestamp|null);
+        updated_at?: (number|null);
         url?: (string|null);
         checksum?: (string|null);
     }
@@ -999,10 +999,10 @@ export namespace proto {
     class Genre implements IGenre {
         constructor(properties?: proto.IGenre);
         public id: number;
-        public created_at?: (google.protobuf.ITimestamp|null);
+        public created_at?: (number|null);
         public name: string;
         public slug: string;
-        public updated_at?: (google.protobuf.ITimestamp|null);
+        public updated_at?: (number|null);
         public url: string;
         public checksum: string;
     }
@@ -1019,13 +1019,13 @@ export namespace proto {
     interface IInvolvedCompany {
         id?: (number|null);
         company?: (proto.ICompany|null);
-        created_at?: (google.protobuf.ITimestamp|null);
+        created_at?: (number|null);
         developer?: (boolean|null);
         game?: (proto.IGame|null);
         porting?: (boolean|null);
         publisher?: (boolean|null);
         supporting?: (boolean|null);
-        updated_at?: (google.protobuf.ITimestamp|null);
+        updated_at?: (number|null);
         checksum?: (string|null);
     }
 
@@ -1033,13 +1033,13 @@ export namespace proto {
         constructor(properties?: proto.IInvolvedCompany);
         public id: number;
         public company?: (proto.ICompany|null);
-        public created_at?: (google.protobuf.ITimestamp|null);
+        public created_at?: (number|null);
         public developer: boolean;
         public game?: (proto.IGame|null);
         public porting: boolean;
         public publisher: boolean;
         public supporting: boolean;
-        public updated_at?: (google.protobuf.ITimestamp|null);
+        public updated_at?: (number|null);
         public checksum: string;
     }
 
@@ -1054,10 +1054,10 @@ export namespace proto {
 
     interface IKeyword {
         id?: (number|null);
-        created_at?: (google.protobuf.ITimestamp|null);
+        created_at?: (number|null);
         name?: (string|null);
         slug?: (string|null);
-        updated_at?: (google.protobuf.ITimestamp|null);
+        updated_at?: (number|null);
         url?: (string|null);
         checksum?: (string|null);
     }
@@ -1065,10 +1065,10 @@ export namespace proto {
     class Keyword implements IKeyword {
         constructor(properties?: proto.IKeyword);
         public id: number;
-        public created_at?: (google.protobuf.ITimestamp|null);
+        public created_at?: (number|null);
         public name: string;
         public slug: string;
-        public updated_at?: (google.protobuf.ITimestamp|null);
+        public updated_at?: (number|null);
         public url: string;
         public checksum: string;
     }
@@ -1133,14 +1133,14 @@ export namespace proto {
         abbreviation?: (string|null);
         alternative_name?: (string|null);
         category?: (proto.PlatformCategoryEnum|null);
-        created_at?: (google.protobuf.ITimestamp|null);
+        created_at?: (number|null);
         generation?: (number|null);
         name?: (string|null);
         platform_logo?: (proto.IPlatformLogo|null);
         platform_family?: (proto.IPlatformFamily|null);
         slug?: (string|null);
         summary?: (string|null);
-        updated_at?: (google.protobuf.ITimestamp|null);
+        updated_at?: (number|null);
         url?: (string|null);
         versions?: (proto.IPlatformVersion[]|null);
         websites?: (proto.IPlatformWebsite[]|null);
@@ -1153,14 +1153,14 @@ export namespace proto {
         public abbreviation: string;
         public alternative_name: string;
         public category: proto.PlatformCategoryEnum;
-        public created_at?: (google.protobuf.ITimestamp|null);
+        public created_at?: (number|null);
         public generation: number;
         public name: string;
         public platform_logo?: (proto.IPlatformLogo|null);
         public platform_family?: (proto.IPlatformFamily|null);
         public slug: string;
         public summary: string;
-        public updated_at?: (google.protobuf.ITimestamp|null);
+        public updated_at?: (number|null);
         public url: string;
         public versions: proto.IPlatformVersion[];
         public websites: proto.IPlatformWebsite[];
@@ -1331,13 +1331,13 @@ export namespace proto {
     interface IPlatformVersionReleaseDate {
         id?: (number|null);
         category?: (proto.DateFormatChangeDateCategoryEnum|null);
-        created_at?: (google.protobuf.ITimestamp|null);
-        date?: (google.protobuf.ITimestamp|null);
+        created_at?: (number|null);
+        date?: (number|null);
         human?: (string|null);
         m?: (number|null);
         platform_version?: (proto.IPlatformVersion|null);
         region?: (proto.RegionRegionEnum|null);
-        updated_at?: (google.protobuf.ITimestamp|null);
+        updated_at?: (number|null);
         y?: (number|null);
         checksum?: (string|null);
     }
@@ -1346,13 +1346,13 @@ export namespace proto {
         constructor(properties?: proto.IPlatformVersionReleaseDate);
         public id: number;
         public category: proto.DateFormatChangeDateCategoryEnum;
-        public created_at?: (google.protobuf.ITimestamp|null);
-        public date?: (google.protobuf.ITimestamp|null);
+        public created_at?: (number|null);
+        public date?: (number|null);
         public human: string;
         public m: number;
         public platform_version?: (proto.IPlatformVersion|null);
         public region: proto.RegionRegionEnum;
-        public updated_at?: (google.protobuf.ITimestamp|null);
+        public updated_at?: (number|null);
         public y: number;
         public checksum: string;
     }
@@ -1408,10 +1408,10 @@ export namespace proto {
 
     interface IPlayerPerspective {
         id?: (number|null);
-        created_at?: (google.protobuf.ITimestamp|null);
+        created_at?: (number|null);
         name?: (string|null);
         slug?: (string|null);
-        updated_at?: (google.protobuf.ITimestamp|null);
+        updated_at?: (number|null);
         url?: (string|null);
         checksum?: (string|null);
     }
@@ -1419,10 +1419,10 @@ export namespace proto {
     class PlayerPerspective implements IPlayerPerspective {
         constructor(properties?: proto.IPlayerPerspective);
         public id: number;
-        public created_at?: (google.protobuf.ITimestamp|null);
+        public created_at?: (number|null);
         public name: string;
         public slug: string;
-        public updated_at?: (google.protobuf.ITimestamp|null);
+        public updated_at?: (number|null);
         public url: string;
         public checksum: string;
     }
@@ -1439,14 +1439,14 @@ export namespace proto {
     interface IReleaseDate {
         id?: (number|null);
         category?: (proto.DateFormatChangeDateCategoryEnum|null);
-        created_at?: (google.protobuf.ITimestamp|null);
-        date?: (google.protobuf.ITimestamp|null);
+        created_at?: (number|null);
+        date?: (number|null);
         game?: (proto.IGame|null);
         human?: (string|null);
         m?: (number|null);
         platform?: (proto.IPlatform|null);
         region?: (proto.RegionRegionEnum|null);
-        updated_at?: (google.protobuf.ITimestamp|null);
+        updated_at?: (number|null);
         y?: (number|null);
         checksum?: (string|null);
     }
@@ -1455,14 +1455,14 @@ export namespace proto {
         constructor(properties?: proto.IReleaseDate);
         public id: number;
         public category: proto.DateFormatChangeDateCategoryEnum;
-        public created_at?: (google.protobuf.ITimestamp|null);
-        public date?: (google.protobuf.ITimestamp|null);
+        public created_at?: (number|null);
+        public date?: (number|null);
         public game?: (proto.IGame|null);
         public human: string;
         public m: number;
         public platform?: (proto.IPlatform|null);
         public region: proto.RegionRegionEnum;
-        public updated_at?: (google.protobuf.ITimestamp|null);
+        public updated_at?: (number|null);
         public y: number;
         public checksum: string;
     }
@@ -1520,7 +1520,7 @@ export namespace proto {
         game?: (proto.IGame|null);
         name?: (string|null);
         platform?: (proto.IPlatform|null);
-        published_at?: (google.protobuf.ITimestamp|null);
+        published_at?: (number|null);
         test_dummy?: (proto.ITestDummy|null);
         theme?: (proto.ITheme|null);
         checksum?: (string|null);
@@ -1537,7 +1537,7 @@ export namespace proto {
         public game?: (proto.IGame|null);
         public name: string;
         public platform?: (proto.IPlatform|null);
-        public published_at?: (google.protobuf.ITimestamp|null);
+        public published_at?: (number|null);
         public test_dummy?: (proto.ITestDummy|null);
         public theme?: (proto.ITheme|null);
         public checksum: string;
@@ -1555,7 +1555,7 @@ export namespace proto {
     interface ITestDummy {
         id?: (number|null);
         bool_value?: (boolean|null);
-        created_at?: (google.protobuf.ITimestamp|null);
+        created_at?: (number|null);
         enum_test?: (proto.TestDummyEnumTestEnum|null);
         float_value?: (number|null);
         game?: (proto.IGame|null);
@@ -1568,7 +1568,7 @@ export namespace proto {
         string_array?: (string[]|null);
         test_dummies?: (proto.ITestDummy[]|null);
         test_dummy?: (proto.ITestDummy|null);
-        updated_at?: (google.protobuf.ITimestamp|null);
+        updated_at?: (number|null);
         url?: (string|null);
         checksum?: (string|null);
     }
@@ -1577,7 +1577,7 @@ export namespace proto {
         constructor(properties?: proto.ITestDummy);
         public id: number;
         public bool_value: boolean;
-        public created_at?: (google.protobuf.ITimestamp|null);
+        public created_at?: (number|null);
         public enum_test: proto.TestDummyEnumTestEnum;
         public float_value: number;
         public game?: (proto.IGame|null);
@@ -1590,7 +1590,7 @@ export namespace proto {
         public string_array: string[];
         public test_dummies: proto.ITestDummy[];
         public test_dummy?: (proto.ITestDummy|null);
-        public updated_at?: (google.protobuf.ITimestamp|null);
+        public updated_at?: (number|null);
         public url: string;
         public checksum: string;
     }
@@ -1612,10 +1612,10 @@ export namespace proto {
 
     interface ITheme {
         id?: (number|null);
-        created_at?: (google.protobuf.ITimestamp|null);
+        created_at?: (number|null);
         name?: (string|null);
         slug?: (string|null);
-        updated_at?: (google.protobuf.ITimestamp|null);
+        updated_at?: (number|null);
         url?: (string|null);
         checksum?: (string|null);
     }
@@ -1623,10 +1623,10 @@ export namespace proto {
     class Theme implements ITheme {
         constructor(properties?: proto.ITheme);
         public id: number;
-        public created_at?: (google.protobuf.ITimestamp|null);
+        public created_at?: (number|null);
         public name: string;
         public slug: string;
-        public updated_at?: (google.protobuf.ITimestamp|null);
+        public updated_at?: (number|null);
         public url: string;
         public checksum: string;
     }
@@ -1664,7 +1664,15 @@ export namespace google {
 
     namespace protobuf {
 
-        type ITimestamp = number;
+        interface ITimestamp {
+            seconds?: (number|null);
+            nanos?: (number|null);
+        }
 
+        class Timestamp implements ITimestamp {
+            constructor(properties?: number);
+            public seconds: number;
+            public nanos: number;
+        }
     }
 }
