@@ -12,7 +12,7 @@ fi
 npm version $V -ws
 NEW_VERSION=$(npx -w ts-apicalypse -c 'echo "$npm_package_version"')
 
-git add {ts-apicalypse,ts-igdb}/{package,package-lock}.json
+git add ts-apicalypse ts-igdb
 git commit -m 'Bump version'
 git tag $NEW_VERSION
 echo "Bumped version to $NEW_VERSION"
