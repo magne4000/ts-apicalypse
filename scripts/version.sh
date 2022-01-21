@@ -1,5 +1,7 @@
 #!/usr/bin/env bash
-if [ "$1" != "major" ] && [ "$1" != "minor" ] && [ "$1" != "patch" ];
+read -p "major/minor/patch " V
+
+if [ "$V" != "major" ] && [ "$V" != "minor" ] && [ "$V" != "patch" ];
 then
     echo "Could not bump version!"
     echo "Usage: 'npm run version -- (major|minor|patch)'"
