@@ -38,6 +38,7 @@ function apicalypse<T>(builder: Stringifiable, options: Options = {}) {
   function getAxiosRequestConfig(url: string) {
     const opts: Options = {
       queryMethod: 'body',
+      method: 'post',
       ...options,
       url: url,
     };
