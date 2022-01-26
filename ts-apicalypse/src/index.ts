@@ -45,11 +45,11 @@ function apicalypse<T>(builder: Stringifiable, options: Options = {}) {
 
     const raw = builder.toApicalypseString();
 
-    if (options.queryMethod ===  'url') {
+    if (opts.queryMethod ===  'url') {
       opts.params = {
         apicalypse: encodeURIComponent(raw),
       };
-    } else if (options.queryMethod ===  'body') {
+    } else if (opts.queryMethod ===  'body') {
       opts.data = raw;
     }
 
