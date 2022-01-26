@@ -257,8 +257,8 @@ function encodeWhereInParam(values: unknown[], flag: WhereInFlags | WhereFlags) 
  *   where('ratings', '>=', 4), // ratings greater than or equal 4
  *   where('ratings', '<', 4),  // ratings less than 4
  *   where('ratings', '<=', 4), // ratings less than or equal 4
- *   where('name', '=', 'zelda'),   // name is zelda (canse sensitive)
- *   where('name', '~', 'zelda'),   // name is zelda (canse insensitive)
+ *   where('name', '=', 'zelda'),   // name is zelda (case sensitive)
+ *   where('name', '~', 'zelda'),   // name is zelda (case insensitive)
  *   where('name', '!=', 'zelda'),  // name is not zelda
  *   where('name', '=', 'zelda', WhereFlags.STARTSWITH),  // name starts with zelda (also works with ~)
  *   where('name', '=', 'zelda', WhereFlags.ENDSWITH),    // name ends with zelda (also works with ~)

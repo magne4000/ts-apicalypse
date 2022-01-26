@@ -41,7 +41,7 @@ const { data } = await client.request('/games')  // Start building a request tha
   ).execute(); // Execute the query
 
 // another example using `exclude` operator
-const { data } = await request('/games') // DEMO is the complete typing of the objects that can be returned by the endpoint
+const { data } = await request('/games')
   .pipe(
     fields('*'),      // All fields...
     exclude(['name']) // ... except name
@@ -76,8 +76,8 @@ const { data } = await client.request('/external_games')
       where('id', '>=', 4),
       where('id', '<', 4),
       where('id', '<=', 4),
-      where('name', '=', 'zelda'),   // name is zelda (canse sensitive)
-      where('name', '~', 'zelda'),   // name is zelda (canse insensitive)
+      where('name', '=', 'zelda'),   // name is zelda (case sensitive)
+      where('name', '~', 'zelda'),   // name is zelda (case insensitive)
       where('name', '!=', 'zelda'),  // name is not zelda
       where('name', '=', 'zelda', WhereFlags.STARTSWITH),  // name starts with zelda (also works with ~)
       where('name', '=', 'zelda', WhereFlags.ENDSWITH),    // name ends with zelda (also works with ~)

@@ -84,8 +84,8 @@ const { data } = await request<DEMO>()
       where('id', '>=', 4),
       where('id', '<', 4),
       where('id', '<=', 4),
-      where('name', '=', 'zelda'),   // name is zelda (canse sensitive)
-      where('name', '~', 'zelda'),   // name is zelda (canse insensitive)
+      where('name', '=', 'zelda'),   // name is zelda (case sensitive)
+      where('name', '~', 'zelda'),   // name is zelda (case insensitive)
       where('name', '!=', 'zelda'),  // name is not zelda
       where('name', '=', 'zelda', WhereFlags.STARTSWITH),  // name starts with zelda (also works with ~)
       where('name', '=', 'zelda', WhereFlags.ENDSWITH),    // name ends with zelda (also works with ~)
