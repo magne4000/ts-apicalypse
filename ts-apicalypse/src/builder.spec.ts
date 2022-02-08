@@ -1,5 +1,5 @@
 import { and, exclude, fields, limit, offset, or, search, sort, where, whereIn } from "./builder";
-import { BuilderOperator, FlatKeyOf, PickFlat, WhereFlags, WhereInFlags } from "./types";
+import { BuilderOperator, DeepPick, WhereFlags, WhereInFlags } from "./types";
 import { isNamed, multi, request } from "./index";
 import type { AxiosPromise } from "axios";
 import type { proto } from "../test-data/compiled";
@@ -292,28 +292,36 @@ describe('multi', function () {
 });
 
 describe.skip('types only', () => {
-  type DEMO = { id: number, a: 1, b: 3, c: { id: number, d: 3 }[], e: { id: number, f: 8 } };
-  type DEMO2 = { id?: number|null, a?: 1|null, b?: 3|null, c?: { id?: number|null, d?: 3|null }[]|null, e?: { id?: number|null, f?: 8|null }|null };
+  type DEMO = { id: number, a: 1, b: 3, c: { id: number, d: 3 }[], e: DEMO };
+  type DEMO2 = { id?: number|null, a?: 1|null, b?: 3|null, c?: { id?: number|null, d?: 3|null }[]|null, e?: DEMO2|null };
 
-  var _: A.Is<'id' | 'a' | 'b' | 'c' | 'c.id' | 'c.d' | 'c.*' | 'e' | 'e.id' | 'e.f' | 'e.*', FlatKeyOf<DEMO>, 'equals'> = 1;
-  var _: A.Is<'id' | 'a' | 'b' | 'c' | 'c.id' | 'c.d' | 'c.*' | 'e' | 'e.id' | 'e.f' | 'e.*', FlatKeyOf<DEMO2>, 'equals'> = 1;
-  var _: A.Is<{ id: number, a: 1 }, PickFlat<DEMO, 'a'>, 'equals'> = 1;
-  var _: A.Is<{ id: number, a: 1, b: 3 }, PickFlat<DEMO, 'a' | 'b'>, 'equals'> = 1;
-  var _: A.Is<{ id: number, c: { id: number, d: 3 }[] }, PickFlat<DEMO, 'c.*'>, 'equals'> = 1;
-  var _: A.Is<{ id: number, a: 1, c: { id: number, d: 3 }[] }, PickFlat<DEMO, 'a' | 'c.*'>, 'equals'> = 1;
-  var _: A.Is<{ id: number, c: number[] }, PickFlat<DEMO, 'c'>, 'equals'> = 1;
-  var _: A.Is<{ id: number, a: 1, c: number[] }, PickFlat<DEMO, 'a' | 'c'>, 'equals'> = 1;
-  var _: A.Is<{ id: number, e: { id: number, f: 8 } }, PickFlat<DEMO, 'e.*'>, 'equals'> = 1;
-  var _: A.Is<{ id: number, a: 1, e: { id: number, f: 8 } }, PickFlat<DEMO, 'a' | 'e.*'>, 'equals'> = 1;
-  var _: A.Is<{ id: number, e: number }, PickFlat<DEMO, 'e'>, 'equals'> = 1;
-  var _: A.Is<{ id: number, a: 1, e: number }, PickFlat<DEMO, 'a' | 'e'>, 'equals'> = 1;
-  var _: A.Is<{ id: number, a: 1, b: 3, c: number[], e: number }, PickFlat<DEMO, '*'>, 'equals'> = 1;
-  var _: A.Is<{ id?: number|null, a?: 1|null, b?: 3|null, c?: number[]|null, e?: number|null }, PickFlat<DEMO2, '*'>, 'equals'> = 1;
-  var _: A.Is<{ id?: number|null, c?: { id?: number|null, d?: 3|null }[]|null }, PickFlat<DEMO2, 'c.*'>, 'equals'> = 1;
+  var _: A.Is<{ id: number, a: 1 }, DeepPick<DEMO, 'a'>, 'equals'> = 1;
+  var _: A.Is<{ id: number, a: 1, b: 3 }, DeepPick<DEMO, 'a' | 'b'>, 'equals'> = 1;
+  var _: A.Is<{ id: number, c: { id: number, d: 3 }[] }, DeepPick<DEMO, 'c.*'>, 'equals'> = 1;
+  var _: A.Is<{ id: number, a: 1, c: { id: number, d: 3 }[] }, DeepPick<DEMO, 'a' | 'c.*'>, 'equals'> = 1;
+  var _: A.Is<{ id: number, c: number[] }, DeepPick<DEMO, 'c'>, 'equals'> = 1;
+  var _: A.Is<{ id: number, a: 1, c: number[] }, DeepPick<DEMO, 'a' | 'c'>, 'equals'> = 1;
+  var _: A.Is<{ id: number, e: { id: number, a: 1, b: 3, c: number[], e: number } }, DeepPick<DEMO, 'e.*'>, 'equals'> = 1;
+  var _: A.Is<{ id: number, a: 1, e: { id: number, a: 1, b: 3, c: number[], e: number } }, DeepPick<DEMO, 'a' | 'e.*'>, 'equals'> = 1;
+  var _: A.Is<{ id: number, e: number }, DeepPick<DEMO, 'e'>, 'equals'> = 1;
+  var _: A.Is<{ id: number, a: 1, e: number }, DeepPick<DEMO, 'a' | 'e'>, 'equals'> = 1;
+  var _: A.Is<{ id: number, a: 1, b: 3, c: number[], e: number }, DeepPick<DEMO, '*'>, 'equals'> = 1;
+  var _: A.Is<{ id?: number|null, a?: 1|null, b?: 3|null, c?: number[]|null, e?: number|null }, DeepPick<DEMO2, '*'>, 'equals'> = 1;
+  var _: A.Is<{ id?: number|null, c?: { id?: number|null, d?: 3|null }[]|null }, DeepPick<DEMO2, 'c.*'>, 'equals'> = 1;
+  var _: A.Is<{ id?: number|null, e?: { id?: number|null, a?: 1|null }|null }, DeepPick<DEMO2, 'e.a'>, 'equals'> = 1;
+  var _: A.Is<{ id?: number|null, e?: { id?: number|null, c?: number[]|null }|null }, DeepPick<DEMO2, 'e.c'>, 'equals'> = 1;
+  var _: A.Is<{ id?: number|null, e?: { id?: number|null, c?: { id?: number|null, d?: 3|null }[]|null }|null }, DeepPick<DEMO2, 'e.c.*'>, 'equals'> = 1;
+  var _: A.Is<{ id?: number|null, e?: { id?: number|null, c?: { id?: number|null, d?: 3|null }[]|null }|null }, DeepPick<DEMO2, 'e.c.d'>, 'equals'> = 1;
+
+  var _: A.Is<{ id: number, e: { id: number, e: number } }, DeepPick<DEMO, 'e.e'>, 'equals'> = 1;
+  var _: A.Is<{ id?: number|null, e?: { id?: number|null, e?: number|null }|null }, DeepPick<DEMO2, 'e.e'>, 'equals'> = 1;
+
+  var _: A.Is<{ id: number, e: { id: number, c: { id: number, d: 3 }[], e: { id: number, a: 1 } } }, DeepPick<DEMO, 'e.e.a' | 'e.c.d'>, 'equals'> = 1;
+  var _: A.Is<{ id?: number|null, e?: { id?: number|null, c?: { id?: number|null, d?: 3|null }[]|null, e?: { id?: number|null, a?: 1|null }|null }|null }, DeepPick<DEMO2, 'e.e.a' | 'e.c.d'>, 'equals'> = 1;
 
   // More complex types extracted from IGDB protobuf API
-  var _: A.Is<{ id?: (number|null), collection?: (number|null) }, PickFlat<proto.IGame, 'collection'>, 'equals'> = 1;
-  var _: A.Is<{ id?: (number|null), collection?: (Pick<proto.ICollection, 'id' | 'name'>|null) }, PickFlat<proto.IGame, 'collection.name'>, 'equals'> = 1;
+  var _: A.Is<{ id?: (number|null), collection?: (number|null) }, DeepPick<proto.IGame, 'collection'>, 'equals'> = 1;
+  var _: A.Is<{ id?: (number|null), collection?: (Pick<proto.ICollection, 'id' | 'name'>|null) }, DeepPick<proto.IGame, 'collection.name'>, 'equals'> = 1;
   var _: A.Is<{ id?: (number|null), collection?: {
     id?: (number|null);
     created_at?: (number|null);
@@ -323,10 +331,10 @@ describe.skip('types only', () => {
     updated_at?: (number|null);
     url?: (string|null);
     checksum?: (string|null);
-  } | null }, PickFlat<proto.IGame, 'collection.*'>, 'equals'> = 1;
+  } | null }, DeepPick<proto.IGame, 'collection.*'>, 'equals'> = 1;
   var _: A.Is<
     { id?: (number|null), name?: (string|null), collection?: (Pick<proto.ICollection, 'id' | 'name'>|null), age_ratings?: (Pick<proto.ICollection, 'id' | 'checksum'>)[]|null },
-    PickFlat<proto.IGame, 'name' | 'collection.name' | 'age_ratings.checksum'>,
+    DeepPick<proto.IGame, 'name' | 'collection.name' | 'age_ratings.checksum'>,
     'equals'
   > = 1;
 });

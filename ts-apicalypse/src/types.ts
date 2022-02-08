@@ -1,5 +1,5 @@
 import type { AxiosPromise, AxiosRequestConfig } from "axios";
-import { A, M } from "ts-toolbelt";
+import type { A, I, L, M, O, S, U } from "ts-toolbelt";
 
 export interface Options extends AxiosRequestConfig {
   queryMethod?: 'url' | 'body',
@@ -107,31 +107,20 @@ export enum WhereInFlags {
 
 export type FallbackIfUnknown<T, F> = unknown extends T ? F : T;
 
-type MetaFlatKeyOf<T> = {
-  [K in keyof T & string]:
-    T[K] extends M.Primitive ? K :
-    Exclude<T[K], M.Primitive> extends (Array<infer I> | infer I) ? K | `${K}.${keyof I & string}` | `${K}.*` :
-    never
-};
-type Values<T> = T[keyof T];
-export type FlatKeyOf<T> = Values<MetaFlatKeyOf<T>> & string;
-
-export type PickFlat<T, K extends FlatKeyOf<T> | '*'> = DeepPick<T, K>
-
 type OuterKeyCast<T, K extends string> = PickOuterKey<K> & UnionKeyOf<T>;
 
 type UnionKeyOf<T> = T extends Array<infer T> ? keyof T : T extends infer T ? keyof T : never;
 
-type DeepPick<T, K extends FlatKeyOf<T> | '*'> =
+export type DeepPick<T, P extends string> =
   T extends M.Primitive ? T :
-  T extends Array<infer I> ? DeepPick<I, Extract<K, FlatKeyOf<I> | '*'>>[] :
-  T extends object ?
-    OuterKeyCast<T, K> extends [never] ? number :
-    A.Compute<PickWith<InnerPick<T, K>, OuterKeyCast<T, K>, 'id'>> :
-  never;
+    T extends Array<infer I> ? DeepPick<I, P>[] :
+      T extends object ?
+        string extends P ? number :
+          PickWith<InnerPick<T, P>, OuterKeyCast<T, P>, 'id'> :
+        never;
 
-type InnerPick<T, K extends FlatKeyOf<T> | '*'> = {
-  [key in keyof T]: DeepPick<T[key], Extract<InnerKey<Extract<key, string>, K>, UnionKeyOf<T[key]> | '*'>>;
+type InnerPick<T, K extends string> = {
+  [key in keyof T]: DeepPick<T[key], InnerKey<Extract<key, string>, K>>;
 };
 
 type PickOuterKey<K extends string> = K extends '*' ? string : KeyHead<K>;
@@ -142,3 +131,74 @@ type InnerKey<key extends string, K> = [
 ] extends [`${key}.${infer K}`]
   ? K
   : never;
+
+
+
+// -- Custom Autopath equivalent compatible with Apicalypse syntax
+
+type FlatKey<O, K extends keyof O> = O[K] extends Array<infer I> ? I : O[K];
+type Flat<O> = O extends Array<infer I> ? I : O;
+
+type _ExcludePrimitiveKeys<O> = O extends M.Primitive ? Omit<O, keyof O> : O;
+
+type _Path<O, P extends L.List<A.Key>, It extends I.Iteration = I.IterationOf<0>> = {
+  0: _Path<Flat<A.At<_ExcludePrimitiveKeys<O>, P[I.Pos<It>]>>, P, I.Next<It>>
+  1: O
+}[A.Extends<I.Pos<It>, L.Length<P>>]
+
+export type Path<O extends any, P extends L.List<A.Key>> =
+  _Path<O, P> extends infer X
+    ? A.Cast<X, any>
+    : never
+
+type Index = number | string;
+
+type KeyToIndex<K extends A.Key, SP extends L.List<Index>> =
+  number extends K ? L.Head<SP> : K & Index;
+
+type MetaPath<O, D extends string, SP extends L.List<Index> = [], P extends L.List<Index> = []> = {
+  [K in keyof O]:
+  | Exclude<MetaPath<FlatKey<O, K>, D, L.Tail<SP>, [...P, KeyToIndex<K, SP>]>, string>
+  | S.Join<[...P, KeyToIndex<K, SP>], D>
+  | S.Join<[...P, '*'], D>;
+};
+
+type NextPath<OP> =
+// the next paths after property `K` are on sub objects
+// O[K] === K | {x: '${K}.x' | {y: '${K}.x.y' ...}}
+// So we access O[K] then we only keep the next paths
+// To do this, we can just exclude `string` out of it:
+// O[K] === {x: '${K}.x' | {y: '${K}.x.y' ...}}
+// To do this, we create a union of what we just got
+// This will yield a union of paths and meta paths
+// We exclude the next paths (meta) paths by excluding
+// `object`. Then we are left with the direct next path
+  U.Select<O.UnionOf<Exclude<OP, string> & {}>, string>;
+
+type CurrentPath<OP> =
+// Uses the reversed logic of NextPath to extract the
+// current path from the meta paths
+  U.Select<Exclude<OP, object>, string>;
+
+type ExecPath<A, SP extends L.List<Index>, Delimiter extends string> =
+// We go in the `MetaPath` of `O` to get the prop at `SP`
+// So we query what is going the `NextPath` at `O[...SP]`
+  NextPath<Path<MetaPath<A, Delimiter, SP>, SP>>;
+
+type HintPath<A, P extends string, SP extends L.List<Index>, Exec extends string, D extends string> = [Exec] extends [never] // if has not found paths
+  ? CurrentPath<Path<MetaPath<A, D, SP>, SP>> extends never // no current path
+  ? ExecPath<A, L.Pop<SP>, D> // display previous paths
+  : CurrentPath<Path<MetaPath<A, D, SP>, SP>> // display current path
+  : Exec | P; // display current + next
+
+type _AutoPath<A, P extends string, D extends string, SP extends L.List<Index> = S.Split<P, D>> =
+  HintPath<A, P, SP, ExecPath<A, SP, D>, D>;
+
+export type AutoPath<O extends any, P extends string, D extends string = '.'> =
+  _AutoPath<O, P, D>;
+
+export type AllAutoPath<O extends object, P extends L.List<string>> = {
+  [K in keyof P]: AutoPath<O, P[K] & string>
+}
+
+export type ChosenPaths<P extends [string, ...string[]]> = [string] extends P ? '*' : P[number];

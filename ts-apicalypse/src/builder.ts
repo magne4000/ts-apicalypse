@@ -1,12 +1,13 @@
 import {
+  AllAutoPath,
   AllowedValues,
   Builder,
   BuilderOperator,
   BuilderOperatorNarrow,
-  FlatKeyOf,
+  ChosenPaths,
+  DeepPick,
   GetOp,
   NamedBuilderOperator,
-  PickFlat,
   WhereFlags,
   WhereInFlags
 } from "./types";
@@ -34,11 +35,9 @@ export function query<T extends Record<any, any>, S extends string>(queryEndpoin
  * )
  * ```
  * @see {@link https://api-docs.igdb.com/?shell#fields}
- * @param fields
+ * @param f
  */
-export function fields<T extends Record<any, any>, K extends FlatKeyOf<T>>(fields: K[]): BuilderOperatorNarrow<T, PickFlat<T, K>>;
-export function fields<T extends Record<any, any>>(fields: '*'): BuilderOperatorNarrow<T, PickFlat<T, '*'>>;
-export function fields<T extends Record<any, any>, K extends FlatKeyOf<T>>(f: string | string[]): any {
+export function fields<T extends Record<any, any>, P extends [string, ...string[]]>(f: AllAutoPath<T, P> | '*'): BuilderOperatorNarrow<T, DeepPick<T, ChosenPaths<P>>> {
   if (Array.isArray(f)) {
     const fieldsString = f.join(",").replace(/\s/g, '')
 
@@ -50,7 +49,7 @@ export function fields<T extends Record<any, any>, K extends FlatKeyOf<T>>(f: st
           fields: `fields ${fieldsString}`
         }
       }
-    }) as BuilderOperatorNarrow<T, PickFlat<T, K>>;
+    }) as BuilderOperatorNarrow<T, DeepPick<T, ChosenPaths<P>>>;
   }
 
   return (builder => {
@@ -61,7 +60,7 @@ export function fields<T extends Record<any, any>, K extends FlatKeyOf<T>>(f: st
         fields: `fields *`
       }
     }
-  }) as BuilderOperatorNarrow<T, PickFlat<T, K>>;
+  }) as BuilderOperatorNarrow<T, DeepPick<T, ChosenPaths<P>>>;
 }
 
 /**
@@ -153,7 +152,7 @@ export function limit<T extends Record<any, any>>(limit: number): BuilderOperato
  * )
  * ```
  * @see {@link https://api-docs.igdb.com/?shell#pagination}
- * @param limit
+ * @param offset
  */
 export function offset<T extends Record<any, any>>(offset: number): BuilderOperator<T, T> {
   return builder => {
