@@ -11,8 +11,9 @@ then
     exit 1
 fi
 
-npm version $V -ws
+npm version $V -w ts-apicalypse
 NEW_VERSION=$(npx -w ts-apicalypse -c 'echo "$npm_package_version"')
+npm version $NEW_VERSION -w ts-igdb
 
 git add ts-apicalypse ts-igdb
 git commit -m 'Bump version'
