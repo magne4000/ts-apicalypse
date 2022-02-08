@@ -17,7 +17,7 @@ type DEMO = {
   id: number,
   name: string,
   games: { id: number, name: string }[],
-  collection: { id: number, name: string }
+  collection: { id: number, name: string, demo: DEMO }
 };
 ```
 
@@ -29,7 +29,8 @@ const { data } = await request<DEMO>() // DEMO is the complete typing of the obj
   .pipe(
     fields(['name']), // `fields` are type checked. Here valid fields would be 'id' | 'name' | 'games' | 'collection' |
                       // 'games.id' | 'games.name' | 'games.*' |
-                      // 'collection.id' | 'collection.name' | 'collection.*' 
+                      // 'collection.id' | 'collection.name' | 'collection.*'
+                      // or even deeply nested one like 'collection.demo.name' or 'collection.demo.games.*', etc.
     where('created_at', '<',  now), // The prop, the operator and the value are type checked
   ).execute('https://...'); // Execute the query
 
@@ -66,7 +67,8 @@ type Data = {
   games: number[] // requested via fields. No fields requested, so it's only an array of IDs
   collection: {   // requested via fields. All fields requested
     id: number,
-    name: string
+    name: string,
+    demo: number,
   }  
 }
 ```

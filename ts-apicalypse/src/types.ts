@@ -156,11 +156,11 @@ type Index = number | string;
 type KeyToIndex<K extends A.Key, SP extends L.List<Index>> =
   number extends K ? L.Head<SP> : K & Index;
 
-type MetaPath<O, D extends string, SP extends L.List<Index> = [], P extends L.List<Index> = []> = {
+type MetaPath<O, D extends string, St extends string, SP extends L.List<Index> = [], P extends L.List<Index> = []> = {
   [K in keyof O]:
-  | Exclude<MetaPath<FlatKey<O, K>, D, L.Tail<SP>, [...P, KeyToIndex<K, SP>]>, string>
+  | Exclude<MetaPath<FlatKey<O, K>, D, St, L.Tail<SP>, [...P, KeyToIndex<K, SP>]>, string>
   | S.Join<[...P, KeyToIndex<K, SP>], D>
-  | S.Join<[...P, '*'], D>;
+  | ([St] extends [never] ? never : S.Join<[...P, St], D>);
 };
 
 type NextPath<OP> =
@@ -180,25 +180,27 @@ type CurrentPath<OP> =
 // current path from the meta paths
   U.Select<Exclude<OP, object>, string>;
 
-type ExecPath<A, SP extends L.List<Index>, Delimiter extends string> =
+type ExecPath<A, SP extends L.List<Index>, D extends string, St extends string> =
 // We go in the `MetaPath` of `O` to get the prop at `SP`
 // So we query what is going the `NextPath` at `O[...SP]`
-  NextPath<Path<MetaPath<A, Delimiter, SP>, SP>>;
+  NextPath<Path<MetaPath<A, D, St, SP>, SP>>;
 
-type HintPath<A, P extends string, SP extends L.List<Index>, Exec extends string, D extends string> = [Exec] extends [never] // if has not found paths
-  ? CurrentPath<Path<MetaPath<A, D, SP>, SP>> extends never // no current path
-  ? ExecPath<A, L.Pop<SP>, D> // display previous paths
-  : CurrentPath<Path<MetaPath<A, D, SP>, SP>> // display current path
+type HintPath<A, P extends string, SP extends L.List<Index>, Exec extends string, D extends string, St extends string> = [Exec] extends [never] // if has not found paths
+  ? CurrentPath<Path<MetaPath<A, D, St, SP>, SP>> extends never // no current path
+  ? ExecPath<A, L.Pop<SP>, D, St> // display previous paths
+  : CurrentPath<Path<MetaPath<A, D, St, SP>, SP>> // display current path
   : Exec | P; // display current + next
 
-type _AutoPath<A, P extends string, D extends string, SP extends L.List<Index> = S.Split<P, D>> =
-  HintPath<A, P, SP, ExecPath<A, SP, D>, D>;
+type _AutoPath<A, P extends string, D extends string, St extends string, SP extends L.List<Index> = S.Split<P, D>> =
+  HintPath<A, P, SP, ExecPath<A, SP, D, St>, D, St>;
 
-export type AutoPath<O extends any, P extends string, D extends string = '.'> =
-  _AutoPath<O, P, D>;
+export type AutoPath<O extends any, P extends string, D extends string = '.', St extends string = '*'> =
+  _AutoPath<O, P, D, St>;
 
 export type AllAutoPath<O extends object, P extends L.List<string>> = {
   [K in keyof P]: AutoPath<O, P[K] & string>
 }
 
-export type ChosenPaths<P extends [string, ...string[]]> = [string] extends P ? '*' : P[number];
+export type NonEmptyStringList = [string, ...string[]];
+
+export type ChosenPaths<P extends NonEmptyStringList> = [string] extends P ? '*' : P[number];

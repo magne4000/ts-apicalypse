@@ -182,7 +182,27 @@ describe('operators', function () {
         // @ts-expect-error invalid operator
         where('c', '<=', true),
       )
-    )
+    );
+
+    // nested
+    testOp<{ id: number, a: '1' | '2', b: number, c: { id: number; d: { id: number; e: boolean, f: string }} }>(
+      or(
+        where('c.d.e', '=', true),
+        where('c.d.f', '~', 'test'),
+        where(
+          // @ts-expect-error invalid *
+          'c.d.*',
+          '~',
+          'test'
+        ),
+        where(
+          // @ts-expect-error invalid property
+          'c.d.a',
+          '~',
+          'test'
+        )
+      )
+    );
   });
 
   test('whereIn', function () {
@@ -203,6 +223,14 @@ describe('operators', function () {
       whereIn('a', [1, '2']),
       // @ts-expect-error
       whereIn('a', ['3']),
+    );
+
+    // nested
+    testOp<{ id: number, a: '1' | '2', b: number, c: { id: number; d: { id: number; e: boolean, f: string }} }>(
+      or(
+        whereIn('c.d.e', [true]),
+        whereIn('c.d.f', ['test', 'test2']),
+      )
     );
   });
 

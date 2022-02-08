@@ -1,6 +1,6 @@
 import {
   AllAutoPath,
-  AllowedValues,
+  AllowedValues, AutoPath,
   Builder,
   BuilderOperator,
   BuilderOperatorNarrow,
@@ -8,9 +8,11 @@ import {
   DeepPick,
   GetOp,
   NamedBuilderOperator,
+  NonEmptyStringList, Path,
   WhereFlags,
   WhereInFlags
 } from "./types";
+import { S } from "ts-toolbelt";
 
 export function query<T extends Record<any, any>, S extends string>(queryEndpoint: string, queryName: S): NamedBuilderOperator<T, S> {
   return (builder => {
@@ -37,7 +39,7 @@ export function query<T extends Record<any, any>, S extends string>(queryEndpoin
  * @see {@link https://api-docs.igdb.com/?shell#fields}
  * @param f
  */
-export function fields<T extends Record<any, any>, P extends [string, ...string[]]>(f: AllAutoPath<T, P> | '*'): BuilderOperatorNarrow<T, DeepPick<T, ChosenPaths<P>>> {
+export function fields<T extends Record<any, any>, P extends NonEmptyStringList>(f: AllAutoPath<T, P> | '*'): BuilderOperatorNarrow<T, DeepPick<T, ChosenPaths<P>>> {
   if (Array.isArray(f)) {
     const fieldsString = f.join(",").replace(/\s/g, '')
 
@@ -272,7 +274,7 @@ function encodeWhereInParam(values: unknown[], flag: WhereInFlags | WhereFlags) 
  * @param value
  * @param flag
  */
-export function where<T extends Record<any, any>, K extends keyof T>(key: K, op: GetOp<T[K]>, value: T[K] | AllowedValues, flag?: WhereFlags): BuilderOperator<T, T> {
+export function where<T extends Record<any, any>, P extends string>(key: AutoPath<T, P, '.', never>, op: GetOp<Path<T, S.Split<P, '.'>>>, value: Path<T, S.Split<P, '.'>> | AllowedValues, flag?: WhereFlags): BuilderOperator<T, T> {
   return builder => {
     return {
       ...builder,
@@ -303,7 +305,7 @@ export function where<T extends Record<any, any>, K extends keyof T>(key: K, op:
  * @param values
  * @param flag
  */
-export function whereIn<T extends Record<any, any>, K extends keyof T>(key: K, values: T[K][], flag: WhereInFlags | WhereFlags = WhereInFlags.OR): BuilderOperator<T, T> {
+export function whereIn<T extends Record<any, any>, P extends string>(key: AutoPath<T, P, '.', never>, values: Path<T, S.Split<P, '.'>>[], flag: WhereInFlags | WhereFlags = WhereInFlags.OR): BuilderOperator<T, T> {
   return builder => {
     return {
       ...builder,
