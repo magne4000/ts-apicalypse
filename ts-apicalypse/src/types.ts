@@ -136,8 +136,8 @@ type InnerKey<key extends string, K> = [
 
 // -- Custom Autopath equivalent compatible with Apicalypse syntax
 
-type FlatKey<O, K extends keyof O> = O[K] extends Array<infer I> ? I : O[K];
-type Flat<O> = O extends Array<infer I> ? I : O;
+type FlatKey<O, K extends keyof O> = Exclude<O[K], null | undefined> extends Array<infer I> ? I : O[K];
+type Flat<O> = Exclude<O, null | undefined> extends Array<infer I> ? I : O;
 
 type _ExcludePrimitiveKeys<O> = O extends M.Primitive ? Omit<O, keyof O> : O;
 
@@ -157,7 +157,7 @@ type KeyToIndex<K extends A.Key, SP extends L.List<Index>> =
   number extends K ? L.Head<SP> : K & Index;
 
 type MetaPath<O, D extends string, St extends string, SP extends L.List<Index> = [], P extends L.List<Index> = []> = {
-  [K in keyof O]:
+  [K in keyof Required<O>]:
   | Exclude<MetaPath<FlatKey<O, K>, D, St, L.Tail<SP>, [...P, KeyToIndex<K, SP>]>, string>
   | S.Join<[...P, KeyToIndex<K, SP>], D>
   | ([St] extends [never] ? never : S.Join<[...P, St], D>);

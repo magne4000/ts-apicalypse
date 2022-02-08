@@ -1,5 +1,5 @@
 import { and, exclude, fields, limit, offset, or, search, sort, where, whereIn } from "./builder";
-import { BuilderOperator, DeepPick, WhereFlags, WhereInFlags } from "./types";
+import { AutoPath, BuilderOperator, DeepPick, WhereFlags, WhereInFlags } from "./types";
 import { isNamed, multi, request } from "./index";
 import type { AxiosPromise } from "axios";
 import type { proto } from "../test-data/compiled";
@@ -322,6 +322,7 @@ describe('multi', function () {
 describe.skip('types only', () => {
   type DEMO = { id: number, a: 1, b: 3, c: { id: number, d: 3 }[], e: DEMO };
   type DEMO2 = { id?: number|null, a?: 1|null, b?: 3|null, c?: { id?: number|null, d?: 3|null }[]|null, e?: DEMO2|null };
+  type DEMO3 = { id?: number|null, a?: 1|null, b?: 3|null, c?: { id?: number|null, d?: string|null }[]|null };
 
   var _: A.Is<{ id: number, a: 1 }, DeepPick<DEMO, 'a'>, 'equals'> = 1;
   var _: A.Is<{ id: number, a: 1, b: 3 }, DeepPick<DEMO, 'a' | 'b'>, 'equals'> = 1;
@@ -340,6 +341,8 @@ describe.skip('types only', () => {
   var _: A.Is<{ id?: number|null, e?: { id?: number|null, c?: number[]|null }|null }, DeepPick<DEMO2, 'e.c'>, 'equals'> = 1;
   var _: A.Is<{ id?: number|null, e?: { id?: number|null, c?: { id?: number|null, d?: 3|null }[]|null }|null }, DeepPick<DEMO2, 'e.c.*'>, 'equals'> = 1;
   var _: A.Is<{ id?: number|null, e?: { id?: number|null, c?: { id?: number|null, d?: 3|null }[]|null }|null }, DeepPick<DEMO2, 'e.c.d'>, 'equals'> = 1;
+
+  var _: A.Is<'c.d' | 'c.*', AutoPath<DEMO3, 'c.d'>, 'equals'> = 1;
 
   var _: A.Is<{ id: number, e: { id: number, e: number } }, DeepPick<DEMO, 'e.e'>, 'equals'> = 1;
   var _: A.Is<{ id?: number|null, e?: { id?: number|null, e?: number|null }|null }, DeepPick<DEMO2, 'e.e'>, 'equals'> = 1;
