@@ -94,6 +94,7 @@ const { data } = await request<DEMO>()
       where('name', '=', 'zelda', WhereFlags.CONTAINS),    // name contains zelda (also works with ~)
       where('name', '=', null),  // no name
       where('name', '!=', null), // name exists
+      where('collection.demo.name', '=', 'zelda'), // nested types are also supported
       or(
         where('name', '=', 'zelda'),
         whereIn('name', ['mario', 'luigi']),
@@ -102,6 +103,7 @@ const { data } = await request<DEMO>()
         whereIn('games', [1, 2], WhereInFlags.NAND),  // Results whose games ids does not contain both 1 and 2, but can be 1 or 2
         whereIn('games', [1, 2], WhereInFlags.NOR),   // Results whose games ids does not contain 1 or does not contain 2
         whereIn('games', [1, 2], WhereInFlags.EXACT), // Results whose exclusive games ids are 1 and 2
+        whereIn('collection.demo.name', ['mario', 'luigi']), // nested types are also supported
       )
     )
   ).execute('https://...');

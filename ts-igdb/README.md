@@ -36,7 +36,7 @@ const { data } = await client.request('/games')  // Start building a request tha
     fields(['name']), // `fields` are type checked. Here valid fields would be 'id' | 'name' | 'games' | 'collection' | ... |
                       // 'games.id' | 'games.name' | ... | 'games.*' |
                       // 'collection.id' | 'collection.name' | ... | 'collection.*'
-                      // ...
+                      // or even deeply nested one like 'collection.games.name' or 'collection.games.*', etc.
     where('created_at', '<',  now), // The prop, the operator and the value are type checked
   ).execute(); // Execute the query
 
@@ -83,7 +83,8 @@ const { data } = await client.request('/external_games')
       where('name', '=', 'zelda', WhereFlags.ENDSWITH),    // name ends with zelda (also works with ~)
       where('name', '=', 'zelda', WhereFlags.CONTAINS),    // name contains zelda (also works with ~)
       where('name', '=', null),  // no name
-      where('name', '!=', null), // name exists
+      where('name', '!=', null), // name exists,
+      where('collection.games.name', '=', 'zelda'), // nested types are also supported
       or(
         where('name', '=', 'zelda'),
         whereIn('name', ['mario', 'luigi']),
@@ -91,7 +92,8 @@ const { data } = await client.request('/external_games')
         whereIn('games', [1, 2], WhereInFlags.OR),    // Results whose games ids includes 1 or 2
         whereIn('games', [1, 2], WhereInFlags.NAND),  // Results whose games ids does not contain both 1 and 2, but can be 1 or 2
         whereIn('games', [1, 2], WhereInFlags.NOR),   // Results whose games ids does not contain 1 or does not contain 2
-        whereIn('games', [1, 2], WhereInFlags.EXACT), // Results whose exclusive games ids are 1 and 2
+        whereIn('games', [1, 2], WhereInFlags.EXACT), // Results whose exclusive games ids are 1 and 2,
+        whereIn('collection.games.name', ['mario', 'luigi']), // nested types are also supported
       )
     )
   ).execute();

@@ -1,6 +1,7 @@
 import {
   AllAutoPath,
-  AllowedValues, AutoPath,
+  AllowedValues,
+  AutoPath,
   Builder,
   BuilderOperator,
   BuilderOperatorNarrow,
@@ -8,11 +9,12 @@ import {
   DeepPick,
   GetOp,
   NamedBuilderOperator,
-  NonEmptyStringList, Path,
+  NonEmptyStringList,
+  Path,
   WhereFlags,
   WhereInFlags
 } from "./types";
-import { S } from "ts-toolbelt";
+import type { S } from "ts-toolbelt";
 
 export function query<T extends Record<any, any>, S extends string>(queryEndpoint: string, queryName: S): NamedBuilderOperator<T, S> {
   return (builder => {
