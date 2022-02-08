@@ -14,6 +14,7 @@ fi
 npm version $V -w ts-apicalypse
 NEW_VERSION=$(npx -w ts-apicalypse -c 'echo "$npm_package_version"')
 npm version $NEW_VERSION -w ts-igdb
+npm install -w ts-igdb "ts-apicalypse@$NEW_VERSION" -S
 
 git add ts-apicalypse ts-igdb
 git commit -m 'Bump version'
