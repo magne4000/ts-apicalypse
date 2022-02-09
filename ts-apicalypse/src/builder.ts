@@ -227,14 +227,24 @@ function encodeWhereParam(value: unknown, flag?: WhereFlags): string {
   return v as string;
 }
 
+function getOp(flag: WhereInFlags | WhereFlags): '=' | '!=' {
+  if ((flag & WhereInFlags.NAND) === WhereInFlags.NAND) {
+    return '!=';
+  }
+  if ((flag & WhereInFlags.NOR) === WhereInFlags.NOR) {
+    return '!=';
+  }
+  return '='
+}
+
 function encodeWhereInParam(values: unknown[], flag: WhereInFlags | WhereFlags) {
   const joined = values.map(v => encodeWhereParam(v, flag as WhereFlags)).join(',');
 
   if ((flag & WhereInFlags.NAND) === WhereInFlags.NAND) {
-    return `![${joined}]`;
+    return `[${joined}]`;
   }
   if ((flag & WhereInFlags.NOR) === WhereInFlags.NOR) {
-    return `!(${joined})`;
+    return `(${joined})`;
   }
   if ((flag & WhereInFlags.AND) === WhereInFlags.AND) {
     return `[${joined}]`;
@@ -313,7 +323,7 @@ export function whereIn<T extends Record<any, any>, P extends string>(key: AutoP
       ...builder,
       queryFields: {
         ...builder.queryFields,
-        where: [`${key} = ${encodeWhereInParam(values, flag)}`]
+        where: [`${key} ${getOp(flag)} ${encodeWhereInParam(values, flag)}`]
       }
     }
   }
