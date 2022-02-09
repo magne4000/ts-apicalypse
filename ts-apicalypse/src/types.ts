@@ -123,6 +123,8 @@ type InnerPick<T, K extends string> = {
   [key in keyof T]: DeepPick<T[key], InnerKey<Extract<key, string>, K>>;
 };
 
+export type FlatPath<O extends any, P extends L.List<A.Key>, X = Path<O, P>> = X extends object ? number : X;
+
 type PickOuterKey<K extends string> = K extends '*' ? string : KeyHead<K>;
 type KeyHead<K extends string> = K extends `${infer K}.${string}` ? K : K;
 

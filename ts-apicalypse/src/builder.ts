@@ -7,6 +7,7 @@ import {
   BuilderOperatorNarrow,
   ChosenPaths,
   DeepPick,
+  FlatPath,
   GetOp,
   NamedBuilderOperator,
   NonEmptyStringList,
@@ -286,7 +287,7 @@ function encodeWhereInParam(values: unknown[], flag: WhereInFlags | WhereFlags) 
  * @param value
  * @param flag
  */
-export function where<T extends Record<any, any>, P extends string>(key: AutoPath<T, P, '.', never>, op: GetOp<Path<T, S.Split<P, '.'>>>, value: Path<T, S.Split<P, '.'>> | AllowedValues, flag?: WhereFlags): BuilderOperator<T, T> {
+export function where<T extends Record<any, any>, P extends string>(key: AutoPath<T, P, '.', never>, op: GetOp<Path<T, S.Split<P, '.'>>>, value: FlatPath<T, S.Split<P, '.'>> | AllowedValues, flag?: WhereFlags): BuilderOperator<T, T> {
   return builder => {
     return {
       ...builder,
@@ -317,7 +318,7 @@ export function where<T extends Record<any, any>, P extends string>(key: AutoPat
  * @param values
  * @param flag
  */
-export function whereIn<T extends Record<any, any>, P extends string>(key: AutoPath<T, P, '.', never>, values: Path<T, S.Split<P, '.'>>[], flag: WhereInFlags | WhereFlags = WhereInFlags.OR): BuilderOperator<T, T> {
+export function whereIn<T extends Record<any, any>, P extends string>(key: AutoPath<T, P, '.', never>, values: FlatPath<T, S.Split<P, '.'>>[], flag: WhereInFlags | WhereFlags = WhereInFlags.OR): BuilderOperator<T, T> {
   return builder => {
     return {
       ...builder,

@@ -189,6 +189,7 @@ describe('operators', function () {
       or(
         where('c.d.e', '=', true),
         where('c.d.f', '~', 'test'),
+        where('c.d', '=', 42),
         where(
           // @ts-expect-error invalid *
           'c.d.*',
@@ -207,6 +208,10 @@ describe('operators', function () {
 
   test('whereIn', function () {
     expect(testOp(whereIn('a', [1,2]))).toEqual('where a = (1,2);');
+    expect(testOp(whereIn('a', [1,2], WhereInFlags.EXACT))).toEqual('where a = {1,2};');
+    expect(testOp(whereIn('a', [1,2], WhereInFlags.AND))).toEqual('where a = [1,2];');
+    expect(testOp(whereIn('a', [1,2], WhereInFlags.NOR))).toEqual('where a != (1,2);');
+    expect(testOp(whereIn('a', [1,2], WhereInFlags.NAND))).toEqual('where a != [1,2];');
 
     // TS
 
@@ -230,6 +235,7 @@ describe('operators', function () {
       or(
         whereIn('c.d.e', [true]),
         whereIn('c.d.f', ['test', 'test2']),
+        whereIn('c.d', [1, 2]),
       )
     );
   });
