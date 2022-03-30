@@ -405,5 +405,5 @@ export function toStringSingle<T>(builder: Builder<T>) {
 }
 
 function encodeString(v: string) {
-  return v.replace(/"/g, '\\"');
+  return v.replace(/\\/g, '\\\\').replace(/"/g, '\\"');
 }
