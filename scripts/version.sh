@@ -1,6 +1,10 @@
 #!/usr/bin/env bash
 set -e
 
+folder=$(realpath $(dirname $0))
+
+echo $folder
+
 read -p "major/minor/patch? " V
 
 if [ "$V" != "major" ] && [ "$V" != "minor" ] && [ "$V" != "patch" ];
@@ -12,7 +16,7 @@ then
 fi
 
 npm version $V -w ts-apicalypse
-NEW_VERSION=$(npx -w ts-apicalypse -c 'echo "$npm_package_version"')
+NEW_VERSION=$(node "$folder/getversion.js")
 npm version $NEW_VERSION -w ts-igdb
 npm uninstall -w ts-igdb ts-apicalypse
 npm -ws install
