@@ -116,7 +116,7 @@ export function sort<T extends Record<any, any>>(field: keyof T, direction: 'asc
       ...builder,
       queryFields: {
         ...builder.queryFields,
-        sort: `sort ${field} ${direction}`
+        sort: `sort ${String(field)} ${direction}`
       }
     }
   }

@@ -148,7 +148,7 @@ export function multi<B extends Builder<any>[]>(...builders: B): Stringifiable &
  * @param accessToken
  */
 export function igdb(clientId: string, accessToken: string) {
-  const headers: Options['headers'] = {
+  const headers = {
     'client-id': clientId,
     'authorization': `Bearer ${accessToken}`,
   };
