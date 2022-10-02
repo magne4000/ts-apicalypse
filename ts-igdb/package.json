@@ -1,6 +1,6 @@
 {
   "name": "ts-igdb-client",
-  "version": "0.3.2",
+  "version": "0.3.3",
   "description": "A Typescript client and request builder for IGDB using ts-apicalypse",
   "author": "Joël Charles <joel.charles91@gmail.com>",
   "keywords": [
@@ -34,6 +34,6 @@
     "typescript": "^4.8.4"
   },
   "dependencies": {
-    "ts-apicalypse": "^0.3.2"
+    "ts-apicalypse": "^0.3.3"
   }
 }

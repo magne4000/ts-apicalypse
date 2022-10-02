@@ -107,6 +107,16 @@ function getFunctions(defaultHeaders: Record<string, string> = {}) {
           }
         });
       },
+      test<K extends keyof Routes>(key: K, id: number, entityId: number, options: Options = {}): AxiosPromise<typeof key extends undefined ? WebhooksRegister : WebhooksRegister[]> {
+        return axios.create()(buildUrl(`${key}/webhooks/test/${id}?entityId=${entityId}`), {
+          method: 'post',
+          ...options,
+          headers: {
+            ...options?.headers,
+            ...defaultHeaders
+          }
+        });
+      },
     }
   }
 }
