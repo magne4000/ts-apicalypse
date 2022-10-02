@@ -3,8 +3,6 @@ set -e
 
 folder=$(realpath $(dirname $0))
 
-echo $folder
-
 read -p "major/minor/patch? " V
 
 if [ "$V" != "major" ] && [ "$V" != "minor" ] && [ "$V" != "patch" ];
