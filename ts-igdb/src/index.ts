@@ -78,8 +78,8 @@ function getFunctions(defaultHeaders: Record<string, string> = {}) {
 
         return axios.create()(buildUrl(`${key}/webhooks`), {
           method: 'post',
-          ...options,
           data: encodedParams.toString(),
+          ...options,
           headers: {
             'content-type': 'application/x-www-form-urlencoded',
             ...options?.headers,
@@ -108,10 +108,14 @@ function getFunctions(defaultHeaders: Record<string, string> = {}) {
         });
       },
       test<K extends keyof Routes>(key: K, id: number, entityId: number, options: Options = {}): AxiosPromise<typeof key extends undefined ? WebhooksRegister : WebhooksRegister[]> {
-        return axios.create()(buildUrl(`${key}/webhooks/test/${id}?entityId=${entityId}`), {
+        const encodedParams = new URLSearchParams({entityId: String(entityId)});
+
+        return axios.create()(buildUrl(`${key}/webhooks/test/${id}`), {
           method: 'post',
+          data: encodedParams.toString(),
           ...options,
           headers: {
+            'content-type': 'application/x-www-form-urlencoded',
             ...options?.headers,
             ...defaultHeaders
           }
