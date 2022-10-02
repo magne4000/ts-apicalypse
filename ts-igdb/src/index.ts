@@ -107,19 +107,14 @@ function getFunctions(defaultHeaders: Record<string, string> = {}) {
           }
         });
       },
-      test<K extends keyof Routes>(key: K, id: number, entityId: number, options: Options = {}): AxiosPromise<typeof key extends undefined ? WebhooksRegister : WebhooksRegister[]> {
-        const encodedParams = new URLSearchParams({entityId: String(entityId)});
-
-        return axios.create()(buildUrl(`${key}/webhooks/test/${id}`), {
-          method: 'post',
-          data: encodedParams.toString(),
+      test<K extends keyof Routes>(key: K, id: number, entityId: number, options: Options = {}) {
+        return axios.post(buildUrl(`${key}/webhooks/test/${id}?entityId=${entityId}`), null, {
           ...options,
           headers: {
-            'content-type': 'application/x-www-form-urlencoded',
             ...options?.headers,
             ...defaultHeaders
           }
-        });
+        })
       },
     }
   }
