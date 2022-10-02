@@ -136,8 +136,8 @@ if (isNamed(result, 'alias1')) {
 ### Webhooks
 ```ts
 // Register a new webhook
-const { data } = await client.webhooks.register({
-  url: '',
+const { data } = await client.webhooks.register('games', {
+  url: 'https://...',
   method: 'create',
   secret: 'MySeCrEt',
 });
@@ -149,4 +149,7 @@ const { data } = await client.webhooks.get('someWebhookID');
 
 // Delete existing webhook
 const { data } = await client.webhooks.delete('someWebhookID');
+
+// Test webhook
+const { data } = await client.webhooks.test('games', 1234, 1337);
 ```
