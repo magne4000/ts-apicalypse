@@ -74,12 +74,14 @@ function getFunctions(defaultHeaders: Record<string, string> = {}) {
 
     webhooks: {
       register<K extends keyof Routes>(key: K, params: WebhooksRegisterOptions, options: Options = {}): AxiosPromise<WebhooksRegister> {
+        const encodedParams = new URLSearchParams(params as unknown as Record<string, string>);
+
         return axios.create()(buildUrl(`${key}/webhooks`), {
-          queryMethod: 'body',
           method: 'post',
           ...options,
-          data: JSON.stringify(params),
+          data: encodedParams.toString(),
           headers: {
+            'content-type': 'application/x-www-form-urlencoded',
             ...options?.headers,
             ...defaultHeaders
           }
