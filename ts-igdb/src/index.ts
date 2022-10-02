@@ -73,8 +73,8 @@ function getFunctions(defaultHeaders: Record<string, string> = {}) {
     },
 
     webhooks: {
-      register(params: WebhooksRegisterOptions, options: Options = {}): AxiosPromise<WebhooksRegister> {
-        return axios.create()(buildUrl('webhooks'), {
+      register<K extends keyof Routes>(key: K, params: WebhooksRegisterOptions, options: Options = {}): AxiosPromise<WebhooksRegister> {
+        return axios.create()(buildUrl(`${key}/webhooks`), {
           queryMethod: 'body',
           method: 'post',
           ...options,
