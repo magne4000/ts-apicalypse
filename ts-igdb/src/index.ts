@@ -87,7 +87,7 @@ function getFunctions(defaultHeaders: Record<string, string> = {}) {
           }
         });
       },
-      get(key?: string, options: Options = {}): AxiosPromise<typeof key extends undefined ? WebhooksRegister : WebhooksRegister[]> {
+      get(key?: string | number, options: Options = {}): AxiosPromise<WebhooksRegister[]> {
         return axios.create()(buildUrl(key ? `webhooks/${key}` : 'webhooks'), {
           method: 'get',
           ...options,
@@ -97,7 +97,7 @@ function getFunctions(defaultHeaders: Record<string, string> = {}) {
           }
         });
       },
-      delete(key: string, options: Options = {}): AxiosPromise<WebhooksRegister> {
+      delete(key: string | number, options: Options = {}): AxiosPromise<[WebhooksRegister]> {
         return axios.create()(buildUrl(`webhooks/${key}`), {
           method: 'delete',
           ...options,
@@ -107,7 +107,7 @@ function getFunctions(defaultHeaders: Record<string, string> = {}) {
           }
         });
       },
-      test<K extends keyof Routes>(key: K, id: number, entityId: number, options: Options = {}) {
+      test<K extends keyof Routes>(key: K, id: number | string, entityId: number | string, options: Options = {}) {
         return axios.post(buildUrl(`${key}/webhooks/test/${id}?entityId=${entityId}`), null, {
           ...options,
           headers: {
