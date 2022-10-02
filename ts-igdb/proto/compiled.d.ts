@@ -1,4 +1,4 @@
-// DO NOT EDIT! This is a generated file. Edit the JSDoc in src/*.js instead and run 'npm run types'.
+// DO NOT EDIT! This is a generated file. Edit the JSDoc in src/*.js instead and run 'npm run build:types'.
 
 export namespace proto {
 
@@ -9,6 +9,7 @@ export namespace proto {
     class Count implements ICount {
         constructor(properties?: proto.ICount);
         public count: number;
+        public static getTypeUrl(typeUrlPrefix?: string): string;
     }
 
     interface IMultiQueryResult {
@@ -22,6 +23,7 @@ export namespace proto {
         public name: string;
         public results: Uint8Array[];
         public count: number;
+        public static getTypeUrl(typeUrlPrefix?: string): string;
     }
 
     interface IMultiQueryResultArray {
@@ -31,6 +33,7 @@ export namespace proto {
     class MultiQueryResultArray implements IMultiQueryResultArray {
         constructor(properties?: proto.IMultiQueryResultArray);
         public result: proto.IMultiQueryResult[];
+        public static getTypeUrl(typeUrlPrefix?: string): string;
     }
 
     interface IAgeRatingResult {
@@ -40,6 +43,7 @@ export namespace proto {
     class AgeRatingResult implements IAgeRatingResult {
         constructor(properties?: proto.IAgeRatingResult);
         public ageratings: proto.IAgeRating[];
+        public static getTypeUrl(typeUrlPrefix?: string): string;
     }
 
     interface IAgeRating {
@@ -61,6 +65,7 @@ export namespace proto {
         public rating_cover_url: string;
         public synopsis: string;
         public checksum: string;
+        public static getTypeUrl(typeUrlPrefix?: string): string;
     }
 
     enum AgeRatingCategoryEnum {
@@ -123,6 +128,7 @@ export namespace proto {
     class AgeRatingContentDescriptionResult implements IAgeRatingContentDescriptionResult {
         constructor(properties?: proto.IAgeRatingContentDescriptionResult);
         public ageratingcontentdescriptions: proto.IAgeRatingContentDescription[];
+        public static getTypeUrl(typeUrlPrefix?: string): string;
     }
 
     interface IAgeRatingContentDescription {
@@ -138,6 +144,7 @@ export namespace proto {
         public category: proto.AgeRatingRatingEnum;
         public description: string;
         public checksum: string;
+        public static getTypeUrl(typeUrlPrefix?: string): string;
     }
 
     interface IAlternativeNameResult {
@@ -147,6 +154,7 @@ export namespace proto {
     class AlternativeNameResult implements IAlternativeNameResult {
         constructor(properties?: proto.IAlternativeNameResult);
         public alternativenames: proto.IAlternativeName[];
+        public static getTypeUrl(typeUrlPrefix?: string): string;
     }
 
     interface IAlternativeName {
@@ -164,6 +172,7 @@ export namespace proto {
         public game?: (proto.IGame|null);
         public name: string;
         public checksum: string;
+        public static getTypeUrl(typeUrlPrefix?: string): string;
     }
 
     interface IArtworkResult {
@@ -173,6 +182,7 @@ export namespace proto {
     class ArtworkResult implements IArtworkResult {
         constructor(properties?: proto.IArtworkResult);
         public artworks: proto.IArtwork[];
+        public static getTypeUrl(typeUrlPrefix?: string): string;
     }
 
     interface IArtwork {
@@ -198,6 +208,7 @@ export namespace proto {
         public url: string;
         public width: number;
         public checksum: string;
+        public static getTypeUrl(typeUrlPrefix?: string): string;
     }
 
     interface ICharacterResult {
@@ -207,6 +218,7 @@ export namespace proto {
     class CharacterResult implements ICharacterResult {
         constructor(properties?: proto.ICharacterResult);
         public characters: proto.ICharacter[];
+        public static getTypeUrl(typeUrlPrefix?: string): string;
     }
 
     interface ICharacter {
@@ -242,6 +254,7 @@ export namespace proto {
         public updated_at?: (number|null);
         public url: string;
         public checksum: string;
+        public static getTypeUrl(typeUrlPrefix?: string): string;
     }
 
     enum GenderGenderEnum {
@@ -266,6 +279,7 @@ export namespace proto {
     class CharacterMugShotResult implements ICharacterMugShotResult {
         constructor(properties?: proto.ICharacterMugShotResult);
         public charactermugshots: proto.ICharacterMugShot[];
+        public static getTypeUrl(typeUrlPrefix?: string): string;
     }
 
     interface ICharacterMugShot {
@@ -289,6 +303,7 @@ export namespace proto {
         public url: string;
         public width: number;
         public checksum: string;
+        public static getTypeUrl(typeUrlPrefix?: string): string;
     }
 
     interface ICollectionResult {
@@ -298,6 +313,7 @@ export namespace proto {
     class CollectionResult implements ICollectionResult {
         constructor(properties?: proto.ICollectionResult);
         public collections: proto.ICollection[];
+        public static getTypeUrl(typeUrlPrefix?: string): string;
     }
 
     interface ICollection {
@@ -321,6 +337,7 @@ export namespace proto {
         public updated_at?: (number|null);
         public url: string;
         public checksum: string;
+        public static getTypeUrl(typeUrlPrefix?: string): string;
     }
 
     interface ICompanyResult {
@@ -330,6 +347,7 @@ export namespace proto {
     class CompanyResult implements ICompanyResult {
         constructor(properties?: proto.ICompanyResult);
         public companies: proto.ICompany[];
+        public static getTypeUrl(typeUrlPrefix?: string): string;
     }
 
     interface ICompany {
@@ -375,6 +393,7 @@ export namespace proto {
         public url: string;
         public websites: proto.ICompanyWebsite[];
         public checksum: string;
+        public static getTypeUrl(typeUrlPrefix?: string): string;
     }
 
     enum DateFormatChangeDateCategoryEnum {
@@ -395,6 +414,7 @@ export namespace proto {
     class CompanyLogoResult implements ICompanyLogoResult {
         constructor(properties?: proto.ICompanyLogoResult);
         public companylogos: proto.ICompanyLogo[];
+        public static getTypeUrl(typeUrlPrefix?: string): string;
     }
 
     interface ICompanyLogo {
@@ -418,6 +438,7 @@ export namespace proto {
         public url: string;
         public width: number;
         public checksum: string;
+        public static getTypeUrl(typeUrlPrefix?: string): string;
     }
 
     interface ICompanyWebsiteResult {
@@ -427,6 +448,7 @@ export namespace proto {
     class CompanyWebsiteResult implements ICompanyWebsiteResult {
         constructor(properties?: proto.ICompanyWebsiteResult);
         public companywebsites: proto.ICompanyWebsite[];
+        public static getTypeUrl(typeUrlPrefix?: string): string;
     }
 
     interface ICompanyWebsite {
@@ -444,6 +466,7 @@ export namespace proto {
         public trusted: boolean;
         public url: string;
         public checksum: string;
+        public static getTypeUrl(typeUrlPrefix?: string): string;
     }
 
     enum WebsiteCategoryEnum {
@@ -474,6 +497,7 @@ export namespace proto {
     class CoverResult implements ICoverResult {
         constructor(properties?: proto.ICoverResult);
         public covers: proto.ICover[];
+        public static getTypeUrl(typeUrlPrefix?: string): string;
     }
 
     interface ICover {
@@ -499,6 +523,7 @@ export namespace proto {
         public url: string;
         public width: number;
         public checksum: string;
+        public static getTypeUrl(typeUrlPrefix?: string): string;
     }
 
     interface IExternalGameResult {
@@ -508,6 +533,7 @@ export namespace proto {
     class ExternalGameResult implements IExternalGameResult {
         constructor(properties?: proto.IExternalGameResult);
         public externalgames: proto.IExternalGame[];
+        public static getTypeUrl(typeUrlPrefix?: string): string;
     }
 
     interface IExternalGame {
@@ -541,6 +567,7 @@ export namespace proto {
         public platform?: (proto.IPlatform|null);
         public countries: number[];
         public checksum: string;
+        public static getTypeUrl(typeUrlPrefix?: string): string;
     }
 
     enum ExternalGameCategoryEnum {
@@ -572,6 +599,7 @@ export namespace proto {
     class FranchiseResult implements IFranchiseResult {
         constructor(properties?: proto.IFranchiseResult);
         public franchises: proto.IFranchise[];
+        public static getTypeUrl(typeUrlPrefix?: string): string;
     }
 
     interface IFranchise {
@@ -595,6 +623,7 @@ export namespace proto {
         public updated_at?: (number|null);
         public url: string;
         public checksum: string;
+        public static getTypeUrl(typeUrlPrefix?: string): string;
     }
 
     interface IGameResult {
@@ -604,6 +633,7 @@ export namespace proto {
     class GameResult implements IGameResult {
         constructor(properties?: proto.IGameResult);
         public games: proto.IGame[];
+        public static getTypeUrl(typeUrlPrefix?: string): string;
     }
 
     interface IGame {
@@ -721,6 +751,7 @@ export namespace proto {
         public expanded_games: proto.IGame[];
         public ports: proto.IGame[];
         public forks: proto.IGame[];
+        public static getTypeUrl(typeUrlPrefix?: string): string;
     }
 
     enum GameCategoryEnum {
@@ -757,6 +788,7 @@ export namespace proto {
     class GameEngineResult implements IGameEngineResult {
         constructor(properties?: proto.IGameEngineResult);
         public gameengines: proto.IGameEngine[];
+        public static getTypeUrl(typeUrlPrefix?: string): string;
     }
 
     interface IGameEngine {
@@ -786,6 +818,7 @@ export namespace proto {
         public updated_at?: (number|null);
         public url: string;
         public checksum: string;
+        public static getTypeUrl(typeUrlPrefix?: string): string;
     }
 
     interface IGameEngineLogoResult {
@@ -795,6 +828,7 @@ export namespace proto {
     class GameEngineLogoResult implements IGameEngineLogoResult {
         constructor(properties?: proto.IGameEngineLogoResult);
         public gameenginelogos: proto.IGameEngineLogo[];
+        public static getTypeUrl(typeUrlPrefix?: string): string;
     }
 
     interface IGameEngineLogo {
@@ -818,6 +852,7 @@ export namespace proto {
         public url: string;
         public width: number;
         public checksum: string;
+        public static getTypeUrl(typeUrlPrefix?: string): string;
     }
 
     interface IGameModeResult {
@@ -827,6 +862,7 @@ export namespace proto {
     class GameModeResult implements IGameModeResult {
         constructor(properties?: proto.IGameModeResult);
         public gamemodes: proto.IGameMode[];
+        public static getTypeUrl(typeUrlPrefix?: string): string;
     }
 
     interface IGameMode {
@@ -848,6 +884,7 @@ export namespace proto {
         public updated_at?: (number|null);
         public url: string;
         public checksum: string;
+        public static getTypeUrl(typeUrlPrefix?: string): string;
     }
 
     interface IGameVersionResult {
@@ -857,6 +894,7 @@ export namespace proto {
     class GameVersionResult implements IGameVersionResult {
         constructor(properties?: proto.IGameVersionResult);
         public gameversions: proto.IGameVersion[];
+        public static getTypeUrl(typeUrlPrefix?: string): string;
     }
 
     interface IGameVersion {
@@ -880,6 +918,7 @@ export namespace proto {
         public updated_at?: (number|null);
         public url: string;
         public checksum: string;
+        public static getTypeUrl(typeUrlPrefix?: string): string;
     }
 
     interface IGameVersionFeatureResult {
@@ -889,6 +928,7 @@ export namespace proto {
     class GameVersionFeatureResult implements IGameVersionFeatureResult {
         constructor(properties?: proto.IGameVersionFeatureResult);
         public gameversionfeatures: proto.IGameVersionFeature[];
+        public static getTypeUrl(typeUrlPrefix?: string): string;
     }
 
     interface IGameVersionFeature {
@@ -910,6 +950,7 @@ export namespace proto {
         public title: string;
         public values: proto.IGameVersionFeatureValue[];
         public checksum: string;
+        public static getTypeUrl(typeUrlPrefix?: string): string;
     }
 
     enum GameVersionFeatureCategoryEnum {
@@ -924,6 +965,7 @@ export namespace proto {
     class GameVersionFeatureValueResult implements IGameVersionFeatureValueResult {
         constructor(properties?: proto.IGameVersionFeatureValueResult);
         public gameversionfeaturevalues: proto.IGameVersionFeatureValue[];
+        public static getTypeUrl(typeUrlPrefix?: string): string;
     }
 
     interface IGameVersionFeatureValue {
@@ -943,6 +985,7 @@ export namespace proto {
         public included_feature: proto.GameVersionFeatureValueIncludedFeatureEnum;
         public note: string;
         public checksum: string;
+        public static getTypeUrl(typeUrlPrefix?: string): string;
     }
 
     enum GameVersionFeatureValueIncludedFeatureEnum {
@@ -958,6 +1001,7 @@ export namespace proto {
     class GameVideoResult implements IGameVideoResult {
         constructor(properties?: proto.IGameVideoResult);
         public gamevideos: proto.IGameVideo[];
+        public static getTypeUrl(typeUrlPrefix?: string): string;
     }
 
     interface IGameVideo {
@@ -975,6 +1019,7 @@ export namespace proto {
         public name: string;
         public video_id: string;
         public checksum: string;
+        public static getTypeUrl(typeUrlPrefix?: string): string;
     }
 
     interface IGenreResult {
@@ -984,6 +1029,7 @@ export namespace proto {
     class GenreResult implements IGenreResult {
         constructor(properties?: proto.IGenreResult);
         public genres: proto.IGenre[];
+        public static getTypeUrl(typeUrlPrefix?: string): string;
     }
 
     interface IGenre {
@@ -1005,6 +1051,7 @@ export namespace proto {
         public updated_at?: (number|null);
         public url: string;
         public checksum: string;
+        public static getTypeUrl(typeUrlPrefix?: string): string;
     }
 
     interface IInvolvedCompanyResult {
@@ -1014,6 +1061,7 @@ export namespace proto {
     class InvolvedCompanyResult implements IInvolvedCompanyResult {
         constructor(properties?: proto.IInvolvedCompanyResult);
         public involvedcompanies: proto.IInvolvedCompany[];
+        public static getTypeUrl(typeUrlPrefix?: string): string;
     }
 
     interface IInvolvedCompany {
@@ -1041,6 +1089,7 @@ export namespace proto {
         public supporting: boolean;
         public updated_at?: (number|null);
         public checksum: string;
+        public static getTypeUrl(typeUrlPrefix?: string): string;
     }
 
     interface IKeywordResult {
@@ -1050,6 +1099,7 @@ export namespace proto {
     class KeywordResult implements IKeywordResult {
         constructor(properties?: proto.IKeywordResult);
         public keywords: proto.IKeyword[];
+        public static getTypeUrl(typeUrlPrefix?: string): string;
     }
 
     interface IKeyword {
@@ -1071,6 +1121,7 @@ export namespace proto {
         public updated_at?: (number|null);
         public url: string;
         public checksum: string;
+        public static getTypeUrl(typeUrlPrefix?: string): string;
     }
 
     interface IMultiplayerModeResult {
@@ -1080,6 +1131,7 @@ export namespace proto {
     class MultiplayerModeResult implements IMultiplayerModeResult {
         constructor(properties?: proto.IMultiplayerModeResult);
         public multiplayermodes: proto.IMultiplayerMode[];
+        public static getTypeUrl(typeUrlPrefix?: string): string;
     }
 
     interface IMultiplayerMode {
@@ -1117,6 +1169,7 @@ export namespace proto {
         public splitscreen: boolean;
         public splitscreenonline: boolean;
         public checksum: string;
+        public static getTypeUrl(typeUrlPrefix?: string): string;
     }
 
     interface IPlatformResult {
@@ -1126,6 +1179,7 @@ export namespace proto {
     class PlatformResult implements IPlatformResult {
         constructor(properties?: proto.IPlatformResult);
         public platforms: proto.IPlatform[];
+        public static getTypeUrl(typeUrlPrefix?: string): string;
     }
 
     interface IPlatform {
@@ -1165,6 +1219,7 @@ export namespace proto {
         public versions: proto.IPlatformVersion[];
         public websites: proto.IPlatformWebsite[];
         public checksum: string;
+        public static getTypeUrl(typeUrlPrefix?: string): string;
     }
 
     enum PlatformCategoryEnum {
@@ -1184,6 +1239,7 @@ export namespace proto {
     class PlatformFamilyResult implements IPlatformFamilyResult {
         constructor(properties?: proto.IPlatformFamilyResult);
         public platformfamilies: proto.IPlatformFamily[];
+        public static getTypeUrl(typeUrlPrefix?: string): string;
     }
 
     interface IPlatformFamily {
@@ -1199,6 +1255,7 @@ export namespace proto {
         public name: string;
         public slug: string;
         public checksum: string;
+        public static getTypeUrl(typeUrlPrefix?: string): string;
     }
 
     interface IPlatformLogoResult {
@@ -1208,6 +1265,7 @@ export namespace proto {
     class PlatformLogoResult implements IPlatformLogoResult {
         constructor(properties?: proto.IPlatformLogoResult);
         public platformlogos: proto.IPlatformLogo[];
+        public static getTypeUrl(typeUrlPrefix?: string): string;
     }
 
     interface IPlatformLogo {
@@ -1231,6 +1289,7 @@ export namespace proto {
         public url: string;
         public width: number;
         public checksum: string;
+        public static getTypeUrl(typeUrlPrefix?: string): string;
     }
 
     interface IPlatformVersionResult {
@@ -1240,6 +1299,7 @@ export namespace proto {
     class PlatformVersionResult implements IPlatformVersionResult {
         constructor(properties?: proto.IPlatformVersionResult);
         public platformversions: proto.IPlatformVersion[];
+        public static getTypeUrl(typeUrlPrefix?: string): string;
     }
 
     interface IPlatformVersion {
@@ -1289,6 +1349,7 @@ export namespace proto {
         public summary: string;
         public url: string;
         public checksum: string;
+        public static getTypeUrl(typeUrlPrefix?: string): string;
     }
 
     interface IPlatformVersionCompanyResult {
@@ -1298,6 +1359,7 @@ export namespace proto {
     class PlatformVersionCompanyResult implements IPlatformVersionCompanyResult {
         constructor(properties?: proto.IPlatformVersionCompanyResult);
         public platformversioncompanies: proto.IPlatformVersionCompany[];
+        public static getTypeUrl(typeUrlPrefix?: string): string;
     }
 
     interface IPlatformVersionCompany {
@@ -1317,6 +1379,7 @@ export namespace proto {
         public developer: boolean;
         public manufacturer: boolean;
         public checksum: string;
+        public static getTypeUrl(typeUrlPrefix?: string): string;
     }
 
     interface IPlatformVersionReleaseDateResult {
@@ -1326,6 +1389,7 @@ export namespace proto {
     class PlatformVersionReleaseDateResult implements IPlatformVersionReleaseDateResult {
         constructor(properties?: proto.IPlatformVersionReleaseDateResult);
         public platformversionreleasedates: proto.IPlatformVersionReleaseDate[];
+        public static getTypeUrl(typeUrlPrefix?: string): string;
     }
 
     interface IPlatformVersionReleaseDate {
@@ -1355,6 +1419,7 @@ export namespace proto {
         public updated_at?: (number|null);
         public y: number;
         public checksum: string;
+        public static getTypeUrl(typeUrlPrefix?: string): string;
     }
 
     enum RegionRegionEnum {
@@ -1378,6 +1443,7 @@ export namespace proto {
     class PlatformWebsiteResult implements IPlatformWebsiteResult {
         constructor(properties?: proto.IPlatformWebsiteResult);
         public platformwebsites: proto.IPlatformWebsite[];
+        public static getTypeUrl(typeUrlPrefix?: string): string;
     }
 
     interface IPlatformWebsite {
@@ -1395,6 +1461,7 @@ export namespace proto {
         public trusted: boolean;
         public url: string;
         public checksum: string;
+        public static getTypeUrl(typeUrlPrefix?: string): string;
     }
 
     interface IPlayerPerspectiveResult {
@@ -1404,6 +1471,7 @@ export namespace proto {
     class PlayerPerspectiveResult implements IPlayerPerspectiveResult {
         constructor(properties?: proto.IPlayerPerspectiveResult);
         public playerperspectives: proto.IPlayerPerspective[];
+        public static getTypeUrl(typeUrlPrefix?: string): string;
     }
 
     interface IPlayerPerspective {
@@ -1425,6 +1493,7 @@ export namespace proto {
         public updated_at?: (number|null);
         public url: string;
         public checksum: string;
+        public static getTypeUrl(typeUrlPrefix?: string): string;
     }
 
     interface IReleaseDateResult {
@@ -1434,6 +1503,7 @@ export namespace proto {
     class ReleaseDateResult implements IReleaseDateResult {
         constructor(properties?: proto.IReleaseDateResult);
         public releasedates: proto.IReleaseDate[];
+        public static getTypeUrl(typeUrlPrefix?: string): string;
     }
 
     interface IReleaseDate {
@@ -1465,6 +1535,7 @@ export namespace proto {
         public updated_at?: (number|null);
         public y: number;
         public checksum: string;
+        public static getTypeUrl(typeUrlPrefix?: string): string;
     }
 
     interface IScreenshotResult {
@@ -1474,6 +1545,7 @@ export namespace proto {
     class ScreenshotResult implements IScreenshotResult {
         constructor(properties?: proto.IScreenshotResult);
         public screenshots: proto.IScreenshot[];
+        public static getTypeUrl(typeUrlPrefix?: string): string;
     }
 
     interface IScreenshot {
@@ -1499,6 +1571,7 @@ export namespace proto {
         public url: string;
         public width: number;
         public checksum: string;
+        public static getTypeUrl(typeUrlPrefix?: string): string;
     }
 
     interface ISearchResult {
@@ -1508,6 +1581,7 @@ export namespace proto {
     class SearchResult implements ISearchResult {
         constructor(properties?: proto.ISearchResult);
         public searches: proto.ISearch[];
+        public static getTypeUrl(typeUrlPrefix?: string): string;
     }
 
     interface ISearch {
@@ -1541,6 +1615,7 @@ export namespace proto {
         public test_dummy?: (proto.ITestDummy|null);
         public theme?: (proto.ITheme|null);
         public checksum: string;
+        public static getTypeUrl(typeUrlPrefix?: string): string;
     }
 
     interface ITestDummyResult {
@@ -1550,6 +1625,7 @@ export namespace proto {
     class TestDummyResult implements ITestDummyResult {
         constructor(properties?: proto.ITestDummyResult);
         public testdummies: proto.ITestDummy[];
+        public static getTypeUrl(typeUrlPrefix?: string): string;
     }
 
     interface ITestDummy {
@@ -1593,6 +1669,7 @@ export namespace proto {
         public updated_at?: (number|null);
         public url: string;
         public checksum: string;
+        public static getTypeUrl(typeUrlPrefix?: string): string;
     }
 
     enum TestDummyEnumTestEnum {
@@ -1608,6 +1685,7 @@ export namespace proto {
     class ThemeResult implements IThemeResult {
         constructor(properties?: proto.IThemeResult);
         public themes: proto.ITheme[];
+        public static getTypeUrl(typeUrlPrefix?: string): string;
     }
 
     interface ITheme {
@@ -1629,6 +1707,7 @@ export namespace proto {
         public updated_at?: (number|null);
         public url: string;
         public checksum: string;
+        public static getTypeUrl(typeUrlPrefix?: string): string;
     }
 
     interface IWebsiteResult {
@@ -1638,6 +1717,7 @@ export namespace proto {
     class WebsiteResult implements IWebsiteResult {
         constructor(properties?: proto.IWebsiteResult);
         public websites: proto.IWebsite[];
+        public static getTypeUrl(typeUrlPrefix?: string): string;
     }
 
     interface IWebsite {
@@ -1657,6 +1737,7 @@ export namespace proto {
         public trusted: boolean;
         public url: string;
         public checksum: string;
+        public static getTypeUrl(typeUrlPrefix?: string): string;
     }
 }
 
@@ -1673,6 +1754,7 @@ export namespace google {
             constructor(properties?: number);
             public seconds: number;
             public nanos: number;
+            public static getTypeUrl(typeUrlPrefix?: string): string;
         }
     }
 }

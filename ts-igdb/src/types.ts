@@ -42,6 +42,24 @@ export type Routes = RawRoutes & {
   [K in keyof RawRoutes as `${K}/count`]: RawRoutes[K]
 };
 
+export interface WebhooksRegisterOptions {
+  url: string,
+  method: 'create' | 'delete' | 'update',
+  secret: string,
+}
+
+export interface WebhooksRegister {
+  id: string, // A unique ID for the webhook
+  url: string, // Your chosen URL
+  category: number, // Based on the endpoint you chose
+  sub_category: 0 | 1 | 2, // Based on your method (can be 0, 1, 2)
+  active: boolean, // Is the webhook currently active
+  api_key: string, // Displays the api key the webhook is connected to
+  secret: string, // Your chosen secret
+  created_at: number, // Created at date
+  updated_at: number // Updated at date
+}
+
 export interface RawRoutes {
   age_ratings: proto.IAgeRating;
   age_rating_content_descriptions: proto.IAgeRatingContentDescription;

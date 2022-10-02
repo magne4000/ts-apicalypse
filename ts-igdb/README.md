@@ -132,3 +132,21 @@ if (isNamed(result, 'alias1')) {
   result.count...
 }
 ```
+
+### Webhooks
+```ts
+// Register a new webhook
+const { data } = await client.webhooks.register({
+  url: '',
+  method: 'create',
+  secret: 'MySeCrEt',
+});
+
+// Retrieve existing webhooks ...
+const { data } = await client.webhooks.get();
+// ... or one webhook in particular
+const { data } = await client.webhooks.get('someWebhookID');
+
+// Delete existing webhook
+const { data } = await client.webhooks.delete('someWebhookID');
+```

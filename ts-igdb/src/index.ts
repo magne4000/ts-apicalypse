@@ -1,6 +1,8 @@
 import type { Builder, Options, Stringifiable } from "ts-apicalypse";
 import { multi as multiA, request as requestA } from "ts-apicalypse";
 import type { ExecutorMulti, IgdbRequest, InferMode, Routes } from "./types";
+import axios, { AxiosPromise } from "axios";
+import { WebhooksRegister, WebhooksRegisterOptions } from "./types";
 
 export type {
   Builder,
@@ -68,6 +70,41 @@ function getFunctions(defaultHeaders: Record<string, string> = {}) {
           });
         }
       }
+    },
+
+    webhooks: {
+      register(params: WebhooksRegisterOptions, options: Options = {}): AxiosPromise<WebhooksRegister> {
+        return axios.create()(buildUrl('webhooks'), {
+          queryMethod: 'body',
+          method: 'post',
+          ...options,
+          data: JSON.stringify(params),
+          headers: {
+            ...options?.headers,
+            ...defaultHeaders
+          }
+        });
+      },
+      get(key?: string, options: Options = {}): AxiosPromise<typeof key extends undefined ? WebhooksRegister : WebhooksRegister[]> {
+        return axios.create()(buildUrl(key ? `webhooks/${key}` : 'webhooks'), {
+          method: 'get',
+          ...options,
+          headers: {
+            ...options?.headers,
+            ...defaultHeaders
+          }
+        });
+      },
+      delete(key: string, options: Options = {}): AxiosPromise<WebhooksRegister> {
+        return axios.create()(buildUrl(`webhooks/${key}`), {
+          method: 'delete',
+          ...options,
+          headers: {
+            ...options?.headers,
+            ...defaultHeaders
+          }
+        });
+      },
     }
   }
 }
@@ -162,6 +199,8 @@ export function igdb(clientId: string, accessToken: string) {
 
     multi<B extends Builder<any>[]>(...builders: B): Stringifiable & ExecutorMulti<B> {
       return wrappedFns.multi<B>(...builders);
-    }
+    },
+
+    webhooks: wrappedFns.webhooks
   }
 }

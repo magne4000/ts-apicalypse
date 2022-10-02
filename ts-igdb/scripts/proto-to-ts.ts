@@ -1,5 +1,5 @@
-import pbjs from "protobufjs/cli/pbjs";
-import pbts from "protobufjs/cli/pbts";
+import pbjs from "protobufjs-cli/pbjs";
+import pbts from "protobufjs-cli/pbts";
 import { resolve } from "path";
 import { readFile, writeFile } from "fs/promises";
 import axios from "axios";
