@@ -101,24 +101,25 @@ export namespace proto {
         USK_0 = 18,
         USK_6 = 19,
         USK_12 = 20,
-        USK_18 = 21,
-        GRAC_ALL = 22,
-        GRAC_TWELVE = 23,
-        GRAC_FIFTEEN = 24,
-        GRAC_EIGHTEEN = 25,
-        GRAC_TESTING = 26,
-        CLASS_IND_L = 27,
-        CLASS_IND_TEN = 28,
-        CLASS_IND_TWELVE = 29,
-        CLASS_IND_FOURTEEN = 30,
-        CLASS_IND_SIXTEEN = 31,
-        CLASS_IND_EIGHTEEN = 32,
-        ACB_G = 33,
-        ACB_PG = 34,
-        ACB_M = 35,
-        ACB_MA15 = 36,
-        ACB_R18 = 37,
-        ACB_RC = 38
+        USK_16 = 21,
+        USK_18 = 22,
+        GRAC_ALL = 23,
+        GRAC_TWELVE = 24,
+        GRAC_FIFTEEN = 25,
+        GRAC_EIGHTEEN = 26,
+        GRAC_TESTING = 27,
+        CLASS_IND_L = 28,
+        CLASS_IND_TEN = 29,
+        CLASS_IND_TWELVE = 30,
+        CLASS_IND_FOURTEEN = 31,
+        CLASS_IND_SIXTEEN = 32,
+        CLASS_IND_EIGHTEEN = 33,
+        ACB_G = 34,
+        ACB_PG = 35,
+        ACB_M = 36,
+        ACB_MA15 = 37,
+        ACB_R18 = 38,
+        ACB_RC = 39
     }
 
     interface IAgeRatingContentDescriptionResult {
@@ -133,7 +134,7 @@ export namespace proto {
 
     interface IAgeRatingContentDescription {
         id?: (number|null);
-        category?: (proto.AgeRatingRatingEnum|null);
+        category?: (proto.AgeRatingContentDescriptionCategoryEnum|null);
         description?: (string|null);
         checksum?: (string|null);
     }
@@ -141,10 +142,99 @@ export namespace proto {
     class AgeRatingContentDescription implements IAgeRatingContentDescription {
         constructor(properties?: proto.IAgeRatingContentDescription);
         public id: number;
-        public category: proto.AgeRatingRatingEnum;
+        public category: proto.AgeRatingContentDescriptionCategoryEnum;
         public description: string;
         public checksum: string;
         public static getTypeUrl(typeUrlPrefix?: string): string;
+    }
+
+    enum AgeRatingContentDescriptionCategoryEnum {
+        AGERATINGCONTENTDESCRIPTION_CATEGORY_NULL = 0,
+        ESRB_ALCOHOL_REFERENCE = 1,
+        ESRB_ANIMATED_BLOOD = 2,
+        ESRB_BLOOD = 3,
+        ESRB_BLOOD_AND_GORE = 4,
+        ESRB_CARTOON_VIOLENCE = 5,
+        ESRB_COMIC_MISCHIEF = 6,
+        ESRB_CRUDE_HUMOR = 7,
+        ESRB_DRUG_REFERENCE = 8,
+        ESRB_FANTASY_VIOLENCE = 9,
+        ESRB_INTENSE_VIOLENCE = 10,
+        ESRB_LANGUAGE = 11,
+        ESRB_LYRICS = 12,
+        ESRB_MATURE_HUMOR = 13,
+        ESRB_NUDITY = 14,
+        ESRB_PARTIAL_NUDITY = 15,
+        ESRB_REAL_GAMBLING = 16,
+        ESRB_SEXUAL_CONTENT = 17,
+        ESRB_SEXUAL_THEMES = 18,
+        ESRB_SEXUAL_VIOLENCE = 19,
+        ESRB_SIMULATED_GAMBLING = 20,
+        ESRB_STRONG_LANGUAGE = 21,
+        ESRB_STRONG_LYRICS = 22,
+        ESRB_STRONG_SEXUAL_CONTENT = 23,
+        ESRB_SUGGESTIVE_THEMES = 24,
+        ESRB_TOBACCO_REFERENCE = 25,
+        ESRB_USE_OF_ALCOHOL = 26,
+        ESRB_USE_OF_DRUGS = 27,
+        ESRB_USE_OF_TOBACCO = 28,
+        ESRB_VIOLENCE = 29,
+        ESRB_VIOLENT_REFERENCES = 30,
+        ESRB_ANIMATED_VIOLENCE = 31,
+        ESRB_MILD_LANGUAGE = 32,
+        ESRB_MILD_VIOLENCE = 33,
+        ESRB_USE_OF_DRUGS_AND_ALCOHOL = 34,
+        ESRB_DRUG_AND_ALCOHOL_REFERENCE = 35,
+        ESRB_MILD_SUGGESTIVE_THEMES = 36,
+        ESRB_MILD_CARTOON_VIOLENCE = 37,
+        ESRB_MILD_BLOOD = 38,
+        ESRB_REALISTIC_BLOOD_AND_GORE = 39,
+        ESRB_REALISTIC_VIOLENCE = 40,
+        ESRB_ALCOHOL_AND_TOBACCO_REFERENCE = 41,
+        ESRB_MATURE_SEXUAL_THEMES = 42,
+        ESRB_MILD_ANIMATED_VIOLENCE = 43,
+        ESRB_MILD_SEXUAL_THEMES = 44,
+        ESRB_USE_OF_ALCOHOL_AND_TOBACCO = 45,
+        ESRB_ANIMATED_BLOOD_AND_GORE = 46,
+        ESRB_MILD_FANTASY_VIOLENCE = 47,
+        ESRB_MILD_LYRICS = 48,
+        ESRB_REALISTIC_BLOOD = 49,
+        PEGI_VIOLENCE = 50,
+        PEGI_SEX = 51,
+        PEGI_DRUGS = 52,
+        PEGI_FEAR = 53,
+        PEGI_DISCRIMINATION = 54,
+        PEGI_BAD_LANGUAGE = 55,
+        PEGI_GAMBLING = 56,
+        PEGI_ONLINE_GAMEPLAY = 57,
+        PEGI_IN_GAME_PURCHASES = 58,
+        CERO_LOVE = 59,
+        CERO_SEXUAL_CONTENT = 60,
+        CERO_VIOLENCE = 61,
+        CERO_HORROR = 62,
+        CERO_DRINKING_SMOKING = 63,
+        CERO_GAMBLING = 64,
+        CERO_CRIME = 65,
+        CERO_CONTROLLED_SUBSTANCES = 66,
+        CERO_LANGUAGES_AND_OTHERS = 67,
+        GRAC_SEXUALITY = 68,
+        GRAC_VIOLENCE = 69,
+        GRAC_FEAR_HORROR_THREATENING = 70,
+        GRAC_LANGUAGE = 71,
+        GRAC_ALCOHOL_TOBACCO_DRUG = 72,
+        GRAC_CRIME_ANTI_SOCIAL = 73,
+        GRAC_GAMBLING = 74,
+        CLASS_IND_VIOLENCIA = 75,
+        CLASS_IND_VIOLENCIA_EXTREMA = 76,
+        CLASS_IND_CONTEUDO_SEXUAL = 77,
+        CLASS_IND_NUDEZ = 78,
+        CLASS_IND_SEXO = 79,
+        CLASS_IND_SEXO_EXPLICITO = 80,
+        CLASS_IND_DROGAS = 81,
+        CLASS_IND_DROGAS_LICITAS = 82,
+        CLASS_IND_DROGAS_ILICITAS = 83,
+        CLASS_IND_LINGUAGEM_IMPROPRIA = 84,
+        CLASS_IND_ATOS_CRIMINOSOS = 85
     }
 
     interface IAlternativeNameResult {
@@ -510,6 +600,7 @@ export namespace proto {
         url?: (string|null);
         width?: (number|null);
         checksum?: (string|null);
+        game_localization?: (proto.IGameLocalization|null);
     }
 
     class Cover implements ICover {
@@ -523,6 +614,7 @@ export namespace proto {
         public url: string;
         public width: number;
         public checksum: string;
+        public game_localization?: (proto.IGameLocalization|null);
         public static getTypeUrl(typeUrlPrefix?: string): string;
     }
 
@@ -583,7 +675,15 @@ export namespace proto {
         EXTERNALGAME_AMAZON_LUNA = 22,
         EXTERNALGAME_AMAZON_ADG = 23,
         EXTERNALGAME_EPIC_GAME_STORE = 26,
-        EXTERNALGAME_OCULUS = 28
+        EXTERNALGAME_OCULUS = 28,
+        EXTERNALGAME_UTOMIK = 29,
+        EXTERNALGAME_ITCH_IO = 30,
+        EXTERNALGAME_XBOX_MARKETPLACE = 31,
+        EXTERNALGAME_KARTRIDGE = 32,
+        EXTERNALGAME_PLAYSTATION_STORE_US = 36,
+        EXTERNALGAME_FOCUS_ENTERTAINMENT = 37,
+        EXTERNALGAME_XBOX_GAME_PASS_ULTIMATE_CLOUD = 54,
+        EXTERNALGAME_GAMEJOLT = 55
     }
 
     enum ExternalGameMediaEnum {
@@ -692,6 +792,8 @@ export namespace proto {
         expanded_games?: (proto.IGame[]|null);
         ports?: (proto.IGame[]|null);
         forks?: (proto.IGame[]|null);
+        language_supports?: (proto.ILanguageSupport[]|null);
+        game_localizations?: (proto.IGameLocalization[]|null);
     }
 
     class Game implements IGame {
@@ -751,6 +853,8 @@ export namespace proto {
         public expanded_games: proto.IGame[];
         public ports: proto.IGame[];
         public forks: proto.IGame[];
+        public language_supports: proto.ILanguageSupport[];
+        public game_localizations: proto.IGameLocalization[];
         public static getTypeUrl(typeUrlPrefix?: string): string;
     }
 
@@ -767,7 +871,9 @@ export namespace proto {
         REMASTER = 9,
         EXPANDED_GAME = 10,
         PORT = 11,
-        FORK = 12
+        FORK = 12,
+        PACK = 13,
+        UPDATE = 14
     }
 
     enum GameStatusEnum {
@@ -851,6 +957,40 @@ export namespace proto {
         public image_id: string;
         public url: string;
         public width: number;
+        public checksum: string;
+        public static getTypeUrl(typeUrlPrefix?: string): string;
+    }
+
+    interface IGameLocalizationResult {
+        gamelocalizations?: (proto.IGameLocalization[]|null);
+    }
+
+    class GameLocalizationResult implements IGameLocalizationResult {
+        constructor(properties?: proto.IGameLocalizationResult);
+        public gamelocalizations: proto.IGameLocalization[];
+        public static getTypeUrl(typeUrlPrefix?: string): string;
+    }
+
+    interface IGameLocalization {
+        id?: (number|null);
+        name?: (string|null);
+        cover?: (proto.ICover|null);
+        game?: (proto.IGame|null);
+        region?: (proto.IRegion|null);
+        created_at?: (number|null);
+        updated_at?: (number|null);
+        checksum?: (string|null);
+    }
+
+    class GameLocalization implements IGameLocalization {
+        constructor(properties?: proto.IGameLocalization);
+        public id: number;
+        public name: string;
+        public cover?: (proto.ICover|null);
+        public game?: (proto.IGame|null);
+        public region?: (proto.IRegion|null);
+        public created_at?: (number|null);
+        public updated_at?: (number|null);
         public checksum: string;
         public static getTypeUrl(typeUrlPrefix?: string): string;
     }
@@ -1120,6 +1260,98 @@ export namespace proto {
         public slug: string;
         public updated_at?: (number|null);
         public url: string;
+        public checksum: string;
+        public static getTypeUrl(typeUrlPrefix?: string): string;
+    }
+
+    interface ILanguageResult {
+        languages?: (proto.ILanguage[]|null);
+    }
+
+    class LanguageResult implements ILanguageResult {
+        constructor(properties?: proto.ILanguageResult);
+        public languages: proto.ILanguage[];
+        public static getTypeUrl(typeUrlPrefix?: string): string;
+    }
+
+    interface ILanguage {
+        id?: (number|null);
+        name?: (string|null);
+        native_name?: (string|null);
+        locale?: (string|null);
+        created_at?: (number|null);
+        updated_at?: (number|null);
+        checksum?: (string|null);
+    }
+
+    class Language implements ILanguage {
+        constructor(properties?: proto.ILanguage);
+        public id: number;
+        public name: string;
+        public native_name: string;
+        public locale: string;
+        public created_at?: (number|null);
+        public updated_at?: (number|null);
+        public checksum: string;
+        public static getTypeUrl(typeUrlPrefix?: string): string;
+    }
+
+    interface ILanguageSupportResult {
+        languagesupports?: (proto.ILanguageSupport[]|null);
+    }
+
+    class LanguageSupportResult implements ILanguageSupportResult {
+        constructor(properties?: proto.ILanguageSupportResult);
+        public languagesupports: proto.ILanguageSupport[];
+        public static getTypeUrl(typeUrlPrefix?: string): string;
+    }
+
+    interface ILanguageSupport {
+        id?: (number|null);
+        game?: (proto.IGame|null);
+        language?: (proto.ILanguage|null);
+        language_support_type?: (proto.ILanguageSupportType|null);
+        created_at?: (number|null);
+        updated_at?: (number|null);
+        checksum?: (string|null);
+    }
+
+    class LanguageSupport implements ILanguageSupport {
+        constructor(properties?: proto.ILanguageSupport);
+        public id: number;
+        public game?: (proto.IGame|null);
+        public language?: (proto.ILanguage|null);
+        public language_support_type?: (proto.ILanguageSupportType|null);
+        public created_at?: (number|null);
+        public updated_at?: (number|null);
+        public checksum: string;
+        public static getTypeUrl(typeUrlPrefix?: string): string;
+    }
+
+    interface ILanguageSupportTypeResult {
+        languagesupporttypes?: (proto.ILanguageSupportType[]|null);
+    }
+
+    class LanguageSupportTypeResult implements ILanguageSupportTypeResult {
+        constructor(properties?: proto.ILanguageSupportTypeResult);
+        public languagesupporttypes: proto.ILanguageSupportType[];
+        public static getTypeUrl(typeUrlPrefix?: string): string;
+    }
+
+    interface ILanguageSupportType {
+        id?: (number|null);
+        name?: (string|null);
+        created_at?: (number|null);
+        updated_at?: (number|null);
+        checksum?: (string|null);
+    }
+
+    class LanguageSupportType implements ILanguageSupportType {
+        constructor(properties?: proto.ILanguageSupportType);
+        public id: number;
+        public name: string;
+        public created_at?: (number|null);
+        public updated_at?: (number|null);
         public checksum: string;
         public static getTypeUrl(typeUrlPrefix?: string): string;
     }
@@ -1496,6 +1728,38 @@ export namespace proto {
         public static getTypeUrl(typeUrlPrefix?: string): string;
     }
 
+    interface IRegionResult {
+        regions?: (proto.IRegion[]|null);
+    }
+
+    class RegionResult implements IRegionResult {
+        constructor(properties?: proto.IRegionResult);
+        public regions: proto.IRegion[];
+        public static getTypeUrl(typeUrlPrefix?: string): string;
+    }
+
+    interface IRegion {
+        id?: (number|null);
+        name?: (string|null);
+        category?: (string|null);
+        identifier?: (string|null);
+        created_at?: (number|null);
+        updated_at?: (number|null);
+        checksum?: (string|null);
+    }
+
+    class Region implements IRegion {
+        constructor(properties?: proto.IRegion);
+        public id: number;
+        public name: string;
+        public category: string;
+        public identifier: string;
+        public created_at?: (number|null);
+        public updated_at?: (number|null);
+        public checksum: string;
+        public static getTypeUrl(typeUrlPrefix?: string): string;
+    }
+
     interface IReleaseDateResult {
         releasedates?: (proto.IReleaseDate[]|null);
     }
@@ -1519,6 +1783,7 @@ export namespace proto {
         updated_at?: (number|null);
         y?: (number|null);
         checksum?: (string|null);
+        status?: (proto.IReleaseDateStatus|null);
     }
 
     class ReleaseDate implements IReleaseDate {
@@ -1534,6 +1799,37 @@ export namespace proto {
         public region: proto.RegionRegionEnum;
         public updated_at?: (number|null);
         public y: number;
+        public checksum: string;
+        public status?: (proto.IReleaseDateStatus|null);
+        public static getTypeUrl(typeUrlPrefix?: string): string;
+    }
+
+    interface IReleaseDateStatusResult {
+        releasedatestatuses?: (proto.IReleaseDateStatus[]|null);
+    }
+
+    class ReleaseDateStatusResult implements IReleaseDateStatusResult {
+        constructor(properties?: proto.IReleaseDateStatusResult);
+        public releasedatestatuses: proto.IReleaseDateStatus[];
+        public static getTypeUrl(typeUrlPrefix?: string): string;
+    }
+
+    interface IReleaseDateStatus {
+        id?: (number|null);
+        name?: (string|null);
+        description?: (string|null);
+        created_at?: (number|null);
+        updated_at?: (number|null);
+        checksum?: (string|null);
+    }
+
+    class ReleaseDateStatus implements IReleaseDateStatus {
+        constructor(properties?: proto.IReleaseDateStatus);
+        public id: number;
+        public name: string;
+        public description: string;
+        public created_at?: (number|null);
+        public updated_at?: (number|null);
         public checksum: string;
         public static getTypeUrl(typeUrlPrefix?: string): string;
     }

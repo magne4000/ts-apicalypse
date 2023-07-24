@@ -25,13 +25,13 @@
     "precompile": "npm run proto-to-ts"
   },
   "devDependencies": {
-    "@types/jest": "^29.1.1",
-    "@types/node": "^16.11.63",
-    "axios": "^0.27.2",
-    "protobufjs-cli": "^1.0.2",
+    "@types/jest": "^29.5.3",
+    "@types/node": "^16.18.39",
+    "axios": "^1.4.0",
+    "protobufjs-cli": "^1.1.1",
     "ts-node": "^10.9.1",
     "ts-toolbelt": "^9.6.0",
-    "typescript": "^4.8.4"
+    "typescript": "^5.1.6"
   },
   "dependencies": {
     "ts-apicalypse": "^0.3.6"
