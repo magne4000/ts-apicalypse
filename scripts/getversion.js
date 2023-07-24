@@ -1,1 +1,0 @@
-console.log(require("../ts-apicalypse/package.json").version);
