@@ -1,7 +1,7 @@
 {
   "name": "ts-apicalypse",
   "type": "module",
-  "version": "0.3.6",
+  "version": "0.4.0",
   "description": "A Typescript client and request builder for Apicalypse",
   "author": "Joël Charles <joel.charles91@gmail.com>",
   "keywords": [
@@ -39,8 +39,13 @@
     "typescript": "^5.1.6"
   },
   "tsup": {
-    "entry": ["src/index.ts"],
-    "format": ["esm","cjs"],
+    "entry": [
+      "src/index.ts"
+    ],
+    "format": [
+      "esm",
+      "cjs"
+    ],
     "clean": true,
     "dts": true
   }
