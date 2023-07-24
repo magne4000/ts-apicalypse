@@ -10,7 +10,7 @@ import type {
   Stringifiable
 } from "ts-apicalypse";
 import type { proto } from "../proto/compiled";
-import type { FallbackIfUnknown } from "ts-apicalypse/dist/types";
+import type { FallbackIfUnknown } from "ts-apicalypse";
 
 export interface Executor<T, mode extends 'result' | 'count' = 'result'> {
   execute(options?: Options): AxiosPromise<{

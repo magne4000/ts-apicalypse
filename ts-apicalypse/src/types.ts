@@ -9,7 +9,7 @@ export interface Stringifiable {
   toApicalypseString(): string;
 }
 
-export interface Builder<T> extends Stringifiable {
+export interface Builder<T = any> extends Stringifiable {
   queryFields: {
     fields?: string,
     exclude?: string;
@@ -60,9 +60,9 @@ export type ResultMultiMono<T extends NamedBuilder<any, any>> = {
   name: T["queryName"],
 } & (
   T extends CountBuilder<any> ?
-  { count: number } :
-  { result: T extends NamedBuilder<infer S, any> ? S[] : never }
-);
+    { count: number } :
+    { result: T extends NamedBuilder<infer S, any> ? S[] : never }
+  );
 
 export interface ExecutorMulti<T extends Builder<any>[]> {
   execute(url: string, options?: Options):
@@ -135,7 +135,6 @@ type InnerKey<key extends string, K> = [
   : never;
 
 
-
 // -- Custom Autopath equivalent compatible with Apicalypse syntax
 
 type FlatKey<O, K extends keyof O> = Exclude<O[K], null | undefined> extends Array<infer I> ? I : O[K];
@@ -189,8 +188,8 @@ type ExecPath<A, SP extends L.List<Index>, D extends string, St extends string> 
 
 type HintPath<A, P extends string, SP extends L.List<Index>, Exec extends string, D extends string, St extends string> = [Exec] extends [never] // if has not found paths
   ? CurrentPath<Path<MetaPath<A, D, St, SP>, SP>> extends never // no current path
-  ? ExecPath<A, L.Pop<SP>, D, St> // display previous paths
-  : CurrentPath<Path<MetaPath<A, D, St, SP>, SP>> // display current path
+    ? ExecPath<A, L.Pop<SP>, D, St> // display previous paths
+    : CurrentPath<Path<MetaPath<A, D, St, SP>, SP>> // display current path
   : Exec | P; // display current + next
 
 type _AutoPath<A, P extends string, D extends string, St extends string, SP extends L.List<Index> = S.Split<P, D>> =

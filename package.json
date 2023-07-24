@@ -9,10 +9,10 @@
   "scripts": {
     "test": "jest",
     "clean": "rimraf \"ts-apicalypse/dist\" \"ts-igdb/dist\" \"**/*.tsbuildinfo\"",
-    "compile": "npm run clean && npm run -w ts-igdb precompile && tsc -b ./tsconfig.build.json",
-    "build": "npm run compile && npm run test",
-    "version": "./scripts/version.sh && npm install",
-    "publish": "npm run build && npm run version && npm publish -ws"
+    "compile": "pnpm run clean && pnpm run -r build",
+    "build": "pnpm run compile && pnpm run test",
+    "version": "./scripts/version.sh && pnpm i",
+    "publish": "pnpm run build && pnpm run version && pnpm publish -r"
   },
   "devDependencies": {
     "@types/jest": "^29.5.3",

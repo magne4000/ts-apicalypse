@@ -1,8 +1,6 @@
-import type { Builder, Options, Stringifiable } from "ts-apicalypse";
-import { multi as multiA, request as requestA } from "ts-apicalypse";
-import type { ExecutorMulti, IgdbRequest, InferMode, Routes } from "./types";
+import { type Builder, multi as multiA, type Options, request as requestA, type Stringifiable } from "ts-apicalypse";
+import type { ExecutorMulti, IgdbRequest, InferMode, Routes, WebhooksRegister, WebhooksRegisterOptions } from "./types";
 import axios, { type AxiosPromise } from "axios";
-import type { WebhooksRegister, WebhooksRegisterOptions } from "./types";
 
 export type {
   Builder,
@@ -18,7 +16,9 @@ export type {
   Executor,
   NamedBuilderOperator,
 } from "ts-apicalypse";
-export { and, exclude, fields, limit, offset, or, search, sort, where, whereIn, WhereFlags, WhereInFlags } from "ts-apicalypse";
+export {
+  and, exclude, fields, limit, offset, or, search, sort, where, whereIn, WhereFlags, WhereInFlags
+} from "ts-apicalypse";
 export { twitchAccessToken } from './twitch';
 
 const BASE_URL = 'https://api.igdb.com/v4';
@@ -215,3 +215,6 @@ export function igdb(clientId: string, accessToken: string) {
     webhooks: wrappedFns.webhooks
   }
 }
+
+export * from './types';
+export type * from '../proto/compiled';

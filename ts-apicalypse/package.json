@@ -13,20 +13,35 @@
   },
   "homepage": "https://github.com/magne4000/ts-apicalypse/tree/main/ts-apicalypse",
   "license": "MIT",
-  "main": "dist/index.js",
-  "types": "dist/index.d.ts",
+  "main": "./dist/index.cjs",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "import": "./dist/index.js",
+      "require": "./dist/index.cjs"
+    }
+  },
   "files": [
     "dist",
-    "src",
     "README.md"
   ],
-  "scripts": {},
+  "scripts": {
+    "build": "tsup"
+  },
   "dependencies": {
     "axios": "^1.4.0"
   },
   "devDependencies": {
     "@types/jest": "^29.5.3",
     "ts-toolbelt": "^9.6.0",
+    "tsup": "^7.1.0",
     "typescript": "^5.1.6"
+  },
+  "tsup": {
+    "entry": ["src/index.ts"],
+    "format": ["esm","cjs"],
+    "clean": true,
+    "dts": true
   }
 }

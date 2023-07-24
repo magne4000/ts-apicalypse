@@ -13,17 +13,22 @@
     "url": "https://github.com/magne4000/ts-apicalypse.git"
   },
   "homepage": "https://github.com/magne4000/ts-apicalypse/tree/main/ts-igdb",
-  "main": "dist/index.js",
-  "types": "dist/index.d.ts",
+  "main": "./dist/index.cjs",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
   "files": [
     "dist",
-    "src",
-    "README.md",
-    "proto/compiled.d.ts"
+    "README.md"
   ],
+  "exports": {
+    ".": {
+      "import": "./dist/index.js",
+      "require": "./dist/index.cjs"
+    }
+  },
   "scripts": {
-    "proto-to-ts": "ts-node scripts/proto-to-ts.ts",
-    "precompile": "npm run proto-to-ts"
+    "proto-to-ts": "node scripts/proto-to-ts.js",
+    "build": "pnpm run proto-to-ts && tsup"
   },
   "devDependencies": {
     "@types/jest": "^29.5.3",
@@ -32,9 +37,21 @@
     "protobufjs-cli": "^1.1.1",
     "ts-node": "^10.9.1",
     "ts-toolbelt": "^9.6.0",
+    "tsup": "^7.1.0",
     "typescript": "^5.1.6"
   },
   "dependencies": {
-    "ts-apicalypse": "^0.3.6"
+    "ts-apicalypse": "workspace:^"
+  },
+  "tsup": {
+    "entry": [
+      "src/index.ts"
+    ],
+    "format": [
+      "esm",
+      "cjs"
+    ],
+    "clean": true,
+    "dts": true
   }
 }
