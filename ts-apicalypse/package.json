@@ -47,6 +47,8 @@
       "cjs"
     ],
     "clean": true,
-    "dts": true
+    "dts": {
+      "resolve": true
+    }
   }
 }
