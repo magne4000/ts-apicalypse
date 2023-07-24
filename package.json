@@ -1,6 +1,7 @@
 {
   "name": "mono-ts-apicalypse",
   "private": true,
+  "type": "module",
   "workspaces": [
     "ts-apicalypse",
     "ts-igdb"

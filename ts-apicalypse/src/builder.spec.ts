@@ -1,5 +1,5 @@
 import { and, exclude, fields, limit, offset, or, search, sort, where, whereIn } from "./builder";
-import { AutoPath, BuilderOperator, DeepPick, WhereFlags, WhereInFlags } from "./types";
+import { type AutoPath, type BuilderOperator, type DeepPick, WhereFlags, WhereInFlags } from "./types";
 import { isNamed, multi, request } from "./index";
 import type { AxiosPromise } from "axios";
 import type { proto } from "../test-data/compiled";

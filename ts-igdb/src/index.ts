@@ -1,8 +1,8 @@
 import type { Builder, Options, Stringifiable } from "ts-apicalypse";
 import { multi as multiA, request as requestA } from "ts-apicalypse";
 import type { ExecutorMulti, IgdbRequest, InferMode, Routes } from "./types";
-import axios, { AxiosPromise } from "axios";
-import { WebhooksRegister, WebhooksRegisterOptions } from "./types";
+import axios, { type AxiosPromise } from "axios";
+import type { WebhooksRegister, WebhooksRegisterOptions } from "./types";
 
 export type {
   Builder,

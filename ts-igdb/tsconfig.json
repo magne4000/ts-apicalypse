@@ -4,6 +4,5 @@
     "declaration": true,
     "outDir": "./dist",
     "sourceMap": true
-  },
-  "references": [{ "path": "../ts-apicalypse" }]
+  }
 }

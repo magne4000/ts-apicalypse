@@ -1,5 +1,6 @@
 {
   "name": "ts-igdb-client",
+  "type": "module",
   "version": "0.3.6",
   "description": "A Typescript client and request builder for IGDB using ts-apicalypse",
   "author": "Joël Charles <joel.charles91@gmail.com>",
