@@ -12,7 +12,7 @@
     "clean": "rimraf \"ts-apicalypse/dist\" \"ts-igdb/dist\" \"**/*.tsbuildinfo\"",
     "compile": "pnpm run clean && pnpm run -r build",
     "build": "pnpm run compile && pnpm run test",
-    "publish": "pnpm run build && bumpp && pnpm publish -r"
+    "publish": "pnpm run build && bumpp -r && pnpm publish -r"
   },
   "devDependencies": {
     "@types/jest": "^29.5.3",
